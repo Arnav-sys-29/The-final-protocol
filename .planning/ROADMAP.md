@@ -14,11 +14,11 @@ graph TD
 
 ### Phase 1: Core Architecture, Authoritative Server & Room Client
 **Goal:** Establish the `sandwich-hell` project directory, dependencies, Node.js + Express + Socket.IO server with in-memory room management, and the `room-client.js` connector.
-- [ ] Initialize `sandwich-hell/package.json` with `express` and `socket.io`.
-- [ ] Implement `sandwich-hell/server.js` with authoritative room state machine (`lobby`, `intro`, `picking`, `playing`, `finale`, `ending`).
-- [ ] Implement player management: 6-character room codes, player joining, host privileges, disconnect/reconnect handling.
-- [ ] Implement chapter locking mechanism: first-come first-served atomic claiming.
-- [ ] Implement `sandwich-hell/public/shared/room-client.js` with storage persistence and `Room.complete(...)` API.
+- [x] Initialize `sandwich-hell/package.json` with `express` and `socket.io`.
+- [x] Implement `sandwich-hell/server.js` with authoritative room state machine (`lobby`, `intro`, `picking`, `playing`, `finale`, `ending`).
+- [x] Implement player management: 6-character room codes, player joining, host privileges, disconnect/reconnect handling.
+- [x] Implement chapter locking mechanism: first-come first-served atomic claiming.
+- [x] Implement `sandwich-hell/public/shared/room-client.js` with storage persistence and `Room.complete(...)` API.
 
 ---
 

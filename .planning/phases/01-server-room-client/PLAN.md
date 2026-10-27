@@ -80,29 +80,29 @@ Exposes `window.Room`:
 ## Tasks
 
 ### Task 1: Initialize Project & Dependencies
-- Create directory `sandwich-hell` and subdirectories (`public/shared`, `public/lobby`, `public/intro`, `public/pick`, `public/hell`, `public/alien`, `public/ocean`, `public/market`, `public/finale`).
-- Create `sandwich-hell/package.json` with `"dependencies": { "express": "^4.19.2", "socket.io": "^4.7.5" }`.
-- Run `npm install` in `sandwich-hell`.
+- [x] Create directory `sandwich-hell` and subdirectories (`public/shared`, `public/lobby`, `public/intro`, `public/pick`, `public/hell`, `public/alien`, `public/ocean`, `public/market`, `public/finale`).
+- [x] Create `sandwich-hell/package.json` with `"dependencies": { "express": "^4.19.2", "socket.io": "^4.7.5" }`.
+- [x] Run `npm install` in `sandwich-hell`.
 
 ### Task 2: Implement Authoritative Server (`sandwich-hell/server.js`)
-- Express web server serving static files from `sandwich-hell/public`.
-- Configure URL rewrites / friendly routes (`/lobby`, `/intro`, `/pick`, `/hell`, `/alien`, `/ocean`, `/market`, `/finale`).
-- Implement in-memory room store with clean 6-character room codes.
-- Implement atomic chapter claim logic with lock broadcast.
-- Implement completion gate logic broadcasting transition to `/finale` when all 4 report complete.
-- Implement local IP detection logging (displays both `http://localhost:3000` and `http://<LAN_IP>:3000` on startup for multi-device play).
+- [x] Express web server serving static files from `sandwich-hell/public`.
+- [x] Configure URL rewrites / friendly routes (`/lobby`, `/intro`, `/pick`, `/hell`, `/alien`, `/ocean`, `/market`, `/finale`).
+- [x] Implement in-memory room store with clean 6-character room codes.
+- [x] Implement atomic chapter claim logic with lock broadcast.
+- [x] Implement completion gate logic broadcasting transition to `/finale` when all 4 report complete.
+- [x] Implement local IP detection logging (displays both `http://localhost:3000` and `http://<LAN_IP>:3000` on startup for multi-device play).
 
 ### Task 3: Implement Shared Room Client (`sandwich-hell/public/shared/room-client.js`)
-- Socket.IO initialization and automatic reconnection handling.
-- Storage sync across `sessionStorage` and `localStorage` so refreshing or moving between pages (`/pick` -> `/hell` -> `/finale`) maintains room and player context.
-- Simple, developer-friendly API: `Room.complete('hell')`, `Room.claim('hell')`, `Room.on('room_updated', ...)`.
+- [x] Socket.IO initialization and automatic reconnection handling.
+- [x] Storage sync across `sessionStorage` and `localStorage` so refreshing or moving between pages (`/pick` -> `/hell` -> `/finale`) maintains room and player context.
+- [x] Simple, developer-friendly API: `Room.complete('hell')`, `Room.claim('hell')`, `Room.on('room_updated', ...)`.
 
 ### Task 4: Verification Script & Phase Gate
-- Write a Node.js verification script (`sandwich-hell/test-socket-flow.js`) that simulates 4 distinct socket clients:
+- [x] Write a Node.js verification script (`sandwich-hell/test-socket-flow.js`) that simulates 4 distinct socket clients:
   1. Client 1 creates room `TEST01`, verifies host status.
   2. Clients 2, 3, 4 join room `TEST01`.
   3. Client 1 claims `hell`; Client 2 attempts to claim `hell` (verifies rejection).
   4. Clients 2, 3, 4 claim `alien`, `ocean`, `market` successfully.
   5. Clients 1, 2, 3, 4 report completion sequentially.
   6. Verify server emits `all_chapters_completed` with `nextUrl: '/finale'`.
-- Run verification script to guarantee server correctness.
+- [x] Run verification script to guarantee server correctness (6/6 tests passed).

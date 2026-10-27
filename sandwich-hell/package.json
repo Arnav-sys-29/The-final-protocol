@@ -1,0 +1,17 @@
+{
+  "name": "sandwich-hell",
+  "version": "1.0.0",
+  "description": "The Legendary Sandwich From Hell - 4-Player Multi-Screen Cooperative Experience",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test-socket-flow.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.7.5"
+  }
+}

@@ -1,42 +1,46 @@
 /* ==========================================================================
-   THE LEGENDARY SANDWICH FROM HELL — SHARED DESIGN SYSTEM
-   Cosmic Horror Meets Culinary Comedy
+   THE LEGENDARY SANDWICH FROM HELL — SPOOKY SCARY HORROR DESIGN SYSTEM
+   Cosmic Horror • Blasphemous Culinary Fantasy • Dripping Gore & Phantoms
+   Derived from Stitch Design System "Abyssal Gastronomy"
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Creepster&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Outfit:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 :root {
-  /* Color Palette */
-  --bg-dark: #07050d;
-  --bg-card: rgba(18, 14, 30, 0.75);
-  --bg-card-hover: rgba(30, 24, 48, 0.85);
-  --border-subtle: rgba(147, 51, 234, 0.25);
-  --border-glow: rgba(168, 85, 247, 0.6);
+  --mouse-x: 0.5;
+  --mouse-y: 0.5;
 
-  /* Element Theming */
-  --color-hell: #f97316;     /* Cheese / Fire / Hell */
-  --color-alien: #10b981;    /* Vegetables / Bio-Cyber / Alien */
-  --color-ocean: #06b6d4;    /* Sauce / Abyssal Cyan */
-  --color-market: #eab308;   /* Bread / Occult Gold */
-  --color-cosmic: #a855f7;   /* Vorbulon / Cosmic Violet */
-  --color-danger: #ef4444;
+  /* Stitch Abyssal Palette */
+  --bg-dark: #080608;
+  --bg-card: rgba(18, 13, 19, 0.88);
+  --bg-card-hover: rgba(31, 20, 31, 0.94);
+  --border-subtle: #4a0404;      /* Dried sacrificial blood maroon */
+  --border-glow: #ff1a2b;        /* Arterial neon red */
+
+  /* Thematic Horror Elements */
+  --color-hell: #ff1a2b;         /* Arterial Red / Lava Cheese */
+  --color-alien: #00ff66;        /* Necrotic Eldritch Green */
+  --color-ocean: #00f5d4;        /* Spectral Soul Cyan */
+  --color-market: #eab308;       /* Occult Goblin Gold */
+  --color-cosmic: #c026d3;       /* Void Violet */
+  --color-danger: #dc2626;
 
   /* Text Colors */
   --text-main: #f3f4f6;
-  --text-muted: #9ca3af;
-  --text-dim: #6b7280;
+  --text-muted: #af8783;
+  --text-dim: #6b5a6b;
 
   /* Typography */
-  --font-display: 'Cinzel', serif;
+  --font-scary: 'Creepster', cursive;
+  --font-display: 'EB Garamond', 'Cinzel', serif;
   --font-body: 'Outfit', sans-serif;
-  --font-code: 'JetBrains Mono', monospace;
+  --font-code: 'Space Mono', monospace;
 
-  /* Shadows & Glows */
-  --glow-purple: 0 0 25px rgba(168, 85, 247, 0.45);
-  --glow-orange: 0 0 25px rgba(249, 115, 22, 0.45);
-  --glow-green: 0 0 25px rgba(16, 185, 129, 0.45);
-  --glow-blue: 0 0 25px rgba(6, 182, 212, 0.45);
-  --glow-gold: 0 0 25px rgba(234, 179, 8, 0.45);
+  /* Shadows & Eldritch Blood Glows */
+  --glow-blood: 0 0 25px rgba(255, 26, 43, 0.65), inset 0 0 15px rgba(147, 0, 10, 0.5);
+  --glow-necrotic: 0 0 25px rgba(0, 255, 102, 0.55), inset 0 0 10px rgba(0, 255, 102, 0.3);
+  --glow-spectral: 0 0 25px rgba(0, 245, 212, 0.55);
+  --glow-purple: 0 0 25px rgba(168, 85, 247, 0.55);
 }
 
 * {
@@ -54,36 +58,173 @@ body {
   flex-direction: column;
   overflow-x: hidden;
   background-image: 
-    radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 85% 80%, rgba(249, 115, 22, 0.12) 0%, transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 60%);
+    radial-gradient(circle at calc(var(--mouse-x) * 100%) calc(var(--mouse-y) * 100%), rgba(255, 26, 43, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(0, 255, 102, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 15% 85%, rgba(0, 245, 212, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at center, #120d13 0%, #080608 100%);
   background-attachment: fixed;
 }
 
-/* Background Cosmic Stars Animation */
-body::before {
-  content: '';
+/* ==========================================================================
+   SPOOKY PARALLAX ATMOSPHERE (GHOSTS, BLOOD DROPS, OCCULT RUNES)
+   ========================================================================== */
+
+.spooky-atmosphere-wrapper {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(1px 1px at 25px 35px, #ffffff88, transparent),
-    radial-gradient(1.5px 1.5px at 150px 180px, #a855f7aa, transparent),
-    radial-gradient(1px 1px at 280px 320px, #f97316aa, transparent),
-    radial-gradient(2px 2px at 450px 80px, #10b981aa, transparent),
-    radial-gradient(1.5px 1.5px at 600px 300px, #06b6d4aa, transparent);
-  background-size: 550px 550px;
+  inset: 0;
   pointer-events: none;
-  opacity: 0.65;
   z-index: 0;
+  overflow: hidden;
 }
 
-/* Base Container */
+/* Occult Rune Layer */
+.occult-rune-layer {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 750px;
+  height: 750px;
+  margin-left: -375px;
+  margin-top: -375px;
+  opacity: 0.18;
+  transition: transform 0.2s ease-out;
+}
+
+.occult-rune-layer.small {
+  width: 500px;
+  height: 500px;
+  margin-left: -250px;
+  margin-top: -250px;
+  opacity: 0.14;
+}
+
+.rune-svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes runeSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes runeSpinReverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+.animate-rune-spin {
+  animation: runeSpin 60s linear infinite;
+}
+
+.animate-rune-reverse {
+  animation: runeSpinReverse 45s linear infinite;
+}
+
+/* Haunting Floating Ghosts */
+.haunting-ghost {
+  position: absolute;
+  pointer-events: none;
+  transition: transform 0.3s ease-out;
+  filter: blur(25px);
+}
+
+.haunting-ghost.ghost-1 {
+  top: 15%;
+  left: 10%;
+  width: 180px;
+  height: 240px;
+  animation: ghostSway 9s ease-in-out infinite alternate;
+}
+
+.haunting-ghost.ghost-2 {
+  top: 45%;
+  right: 12%;
+  width: 220px;
+  height: 280px;
+  animation: ghostSway 12s ease-in-out infinite alternate-reverse;
+}
+
+.haunting-ghost.ghost-3 {
+  bottom: 10%;
+  left: 30%;
+  width: 200px;
+  height: 220px;
+  animation: ghostSway 8s ease-in-out infinite alternate;
+}
+
+.ghost-shape {
+  width: 100%;
+  height: 100%;
+  border-radius: 50% 50% 25% 25%;
+  background: radial-gradient(circle, rgba(0, 245, 212, 0.4) 0%, rgba(168, 85, 247, 0.2) 60%, transparent 80%);
+  mix-blend-mode: screen;
+}
+
+.ghost-shape.red {
+  background: radial-gradient(circle, rgba(255, 26, 43, 0.45) 0%, rgba(147, 0, 10, 0.25) 60%, transparent 80%);
+}
+
+.ghost-shape.green {
+  background: radial-gradient(circle, rgba(0, 255, 102, 0.4) 0%, rgba(6, 182, 212, 0.2) 60%, transparent 80%);
+}
+
+@keyframes ghostSway {
+  0% { transform: translateY(0) scale(1); opacity: 0.25; }
+  50% { transform: translateY(-35px) translateX(25px) scale(1.15); opacity: 0.55; }
+  100% { transform: translateY(-15px) translateX(-20px) scale(0.95); opacity: 0.3; }
+}
+
+/* Dripping Bloody Droplets */
+.blood-drip-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.blood-drip {
+  position: absolute;
+  top: -20px;
+  width: 3px;
+  background: linear-gradient(to bottom, #4a0404, #ff1a2b, #ff544e);
+  border-radius: 999px;
+  box-shadow: 0 0 10px rgba(255, 26, 43, 0.8);
+}
+
+.blood-drip.d1 { left: 12%; height: 32px; animation: dripFall 5.5s infinite linear 0.5s; }
+.blood-drip.d2 { left: 34%; height: 48px; animation: dripFall 4.2s infinite linear 2.1s; }
+.blood-drip.d3 { left: 62%; height: 26px; animation: dripFall 6.8s infinite linear 1.2s; }
+.blood-drip.d4 { left: 81%; height: 55px; animation: dripFall 4.7s infinite linear 3.4s; }
+.blood-drip.d5 { left: 93%; height: 38px; animation: dripFall 5.9s infinite linear 0.9s; }
+
+@keyframes dripFall {
+  0% { transform: translateY(-30px); opacity: 0; }
+  15% { opacity: 0.95; }
+  85% { opacity: 0.95; }
+  100% { transform: translateY(105vh); opacity: 0; }
+}
+
+/* Weeping Blood Border Header */
+.weeping-blood-border {
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  background-image: radial-gradient(circle at 10px 0, #ff1a2b 4px, transparent 5px);
+  background-size: 24px 12px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* ==========================================================================
+   BASE CONTAINERS & CARD ELEVATION
+   ========================================================================== */
+
 .app-container {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
@@ -94,78 +235,103 @@ body::before {
   min-height: 100vh;
 }
 
-/* Header & Typography */
+/* Typography */
 h1, h2, h3, .font-display {
   font-family: var(--font-display);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
+.font-code {
+  font-family: var(--font-code);
+}
+
+.font-scary {
+  font-family: var(--font-scary);
+}
+
 .title-hero {
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-size: clamp(2.3rem, 5.5vw, 4.2rem);
+  font-family: var(--font-display);
   font-weight: 900;
   text-align: center;
-  background: linear-gradient(135deg, #f97316 0%, #ec4899 50%, #a855f7 100%);
+  background: linear-gradient(135deg, #ff1a2b 0%, #ff544e 45%, #ffb3ac 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 20px rgba(236, 72, 153, 0.4));
+  filter: drop-shadow(0 0 30px rgba(255, 26, 43, 0.65));
   margin-bottom: 0.5rem;
 }
 
 .subtitle-hero {
   color: var(--text-muted);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   text-align: center;
-  max-width: 600px;
+  max-width: 650px;
   margin-bottom: 2.5rem;
-  font-weight: 300;
+  font-weight: 400;
+  font-style: italic;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
 }
 
-/* Glassmorphism Cards */
+/* Chamfered Gothic Tombstone Panels */
 .glass-panel {
   background: var(--bg-card);
   backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-subtle);
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  padding: 2.2rem;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 20px rgba(74, 4, 4, 0.4);
+  position: relative;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.glass-panel:hover {
-  border-color: var(--border-glow);
-  box-shadow: var(--glow-purple);
+/* Chiseled Top Highlight */
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff1a2b, transparent);
+  border-radius: 8px 8px 0 0;
 }
 
-/* Buttons */
+.glass-panel:hover {
+  border-color: #ff1a2b;
+  box-shadow: var(--glow-blood);
+}
+
+/* Buttons — Chamfered Eldritch Brutalism */
 .btn {
-  font-family: var(--font-display);
+  font-family: var(--font-code);
   font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 0.85rem 1.75rem;
-  border-radius: 10px;
+  letter-spacing: 0.1em;
+  padding: 0.9rem 1.8rem;
   border: none;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
+  gap: 0.7rem;
   transition: all 0.25s ease;
   text-decoration: none;
   font-size: 1rem;
+  text-transform: uppercase;
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #9333ea, #c026d3);
-  color: #ffffff;
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+  background: #ff1a2b;
+  color: #080608;
+  box-shadow: 0 0 20px rgba(255, 26, 43, 0.6);
 }
 
 .btn-primary:hover:not(:disabled) {
+  background: #ff544e;
   transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(192, 38, 211, 0.6);
-  filter: brightness(1.1);
+  box-shadow: 0 0 35px rgba(255, 26, 43, 0.9);
+  filter: brightness(1.15);
 }
 
 .btn-primary:disabled {
@@ -176,103 +342,103 @@ h1, h2, h3, .font-display {
 }
 
 .btn-danger {
-  background: linear-gradient(135deg, #dc2626, #ea580c);
-  color: #ffffff;
-  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+  background: linear-gradient(135deg, #4a0404, #93000a);
+  color: #ffdad6;
+  border: 1px solid #ff1a2b;
+  box-shadow: 0 0 20px rgba(255, 26, 43, 0.5);
 }
 
 .btn-danger:hover:not(:disabled) {
+  background: #ff1a2b;
+  color: #080608;
   transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(234, 88, 12, 0.6);
+  box-shadow: var(--glow-blood);
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.08);
+  background: #151215;
   color: var(--text-main);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--border-subtle);
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: var(--color-alien);
+  color: var(--color-alien);
+  box-shadow: var(--glow-necrotic);
 }
 
 /* Inputs */
 .input-field {
-  background: rgba(10, 8, 20, 0.7);
-  border: 1px solid rgba(168, 85, 247, 0.3);
-  border-radius: 8px;
-  padding: 0.85rem 1.2rem;
+  background: #100d10;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 0.9rem 1.2rem;
   color: #ffffff;
-  font-family: var(--font-body);
+  font-family: var(--font-code);
   font-size: 1.05rem;
   outline: none;
   width: 100%;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.2s;
 }
 
 .input-field:focus {
-  border-color: #c026d3;
-  box-shadow: 0 0 12px rgba(192, 38, 211, 0.5);
+  border-color: var(--color-alien);
+  box-shadow: inset 0 0 12px rgba(0, 255, 102, 0.2), 0 0 15px rgba(0, 255, 102, 0.4);
 }
 
-/* Badge Pills */
+/* Badges */
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.3rem 0.8rem;
-  border-radius: 9999px;
-  font-size: 0.85rem;
-  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: var(--font-code);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  border-radius: 4px;
 }
 
 .badge-host {
-  background: rgba(234, 179, 8, 0.15);
-  color: #facc15;
-  border: 1px solid rgba(234, 179, 8, 0.4);
+  background: rgba(255, 26, 43, 0.15);
+  color: #ffb3ac;
+  border: 1px solid #ff1a2b;
+  box-shadow: 0 0 12px rgba(255, 26, 43, 0.4);
 }
 
 .badge-connected {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.4);
+  background: rgba(0, 255, 102, 0.12);
+  color: #00ff66;
+  border: 1px solid #00ff66;
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
 }
 
 /* Shakes & Animations */
-@keyframes shake {
+@keyframes bloodShake {
   0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-8px); }
-  40%, 80% { transform: translateX(8px); }
+  20%, 60% { transform: translateX(-9px) rotate(-1deg); }
+  40%, 80% { transform: translateX(9px) rotate(1deg); }
 }
 
 .animate-shake {
-  animation: shake 0.4s ease-in-out;
+  animation: bloodShake 0.45s ease-in-out;
 }
 
-@keyframes pulseGlow {
-  0%, 100% { opacity: 0.8; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.02); }
+@keyframes arterialPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 26, 43, 0.5), inset 0 0 10px rgba(147, 0, 10, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 32px rgba(255, 26, 43, 0.9), inset 0 0 20px rgba(255, 84, 78, 0.6);
+    transform: scale(1.02);
+  }
 }
 
 .animate-pulse-glow {
-  animation: pulseGlow 2.5s infinite ease-in-out;
+  animation: arterialPulse 2.4s infinite ease-in-out;
 }
-
-/* Chapter Card Colors */
-.card-hell { border-color: rgba(249, 115, 22, 0.4); }
-.card-hell:hover { border-color: var(--color-hell); box-shadow: var(--glow-orange); }
-
-.card-alien { border-color: rgba(16, 185, 129, 0.4); }
-.card-alien:hover { border-color: var(--color-alien); box-shadow: var(--glow-green); }
-
-.card-ocean { border-color: rgba(6, 182, 212, 0.4); }
-.card-ocean:hover { border-color: var(--color-ocean); box-shadow: var(--glow-blue); }
-
-.card-market { border-color: rgba(234, 179, 8, 0.4); }
-.card-market:hover { border-color: var(--color-market); box-shadow: var(--glow-gold); }
 
 /* Top Navigation Bar / Monitor HUD */
 .top-hud {
@@ -280,24 +446,25 @@ h1, h2, h3, .font-display {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1.5rem;
-  background: rgba(15, 11, 28, 0.85);
+  padding: 0.85rem 1.75rem;
+  background: #100d10;
   border-bottom: 1px solid var(--border-subtle);
   position: sticky;
   top: 0;
   z-index: 100;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
 }
 
 .room-pill {
-  background: rgba(168, 85, 247, 0.15);
-  border: 1px solid var(--border-glow);
-  padding: 0.35rem 0.9rem;
-  border-radius: 8px;
+  background: #1e1b1d;
+  border: 1px solid var(--border-subtle);
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
   font-family: var(--font-code);
   font-size: 0.95rem;
-  color: #d8b4fe;
+  color: #ffb3ac;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }

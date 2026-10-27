@@ -6,10 +6,48 @@
   <title>The Legendary Sandwich From Hell — Chamber of Summoning</title>
   <link rel="stylesheet" href="/shared/theme.css">
   <style>
+    /* Spooky Gothic Altar Styling */
     .lobby-box {
       width: 100%;
-      max-width: 850px;
-      margin-top: 1rem;
+      max-width: 880px;
+      margin-top: 1.5rem;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .sanity-strip {
+      width: 100%;
+      background: #100d10;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.5rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      font-family: var(--font-code);
+      font-size: 0.82rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .sanity-bar-track {
+      width: 140px;
+      height: 8px;
+      background: #1e1b1d;
+      border: 1px solid var(--border-subtle);
+      display: inline-block;
+      vertical-align: middle;
+      overflow: hidden;
+      margin: 0 0.5rem;
+    }
+
+    .sanity-bar-fill {
+      width: 13%;
+      height: 100%;
+      background: linear-gradient(90deg, #00f5d4, #00ff66, #ff1a2b);
+      box-shadow: 0 0 10px rgba(255, 26, 43, 0.9);
+      animation: pulseGlow 1.8s infinite;
     }
 
     .mode-switch {
@@ -25,17 +63,19 @@
       background: none;
       border: none;
       color: var(--text-muted);
-      font-family: var(--font-display);
-      font-size: 1.15rem;
+      font-family: var(--font-code);
+      font-size: 1.05rem;
       font-weight: 700;
       padding: 0.5rem 1.5rem;
       cursor: pointer;
       position: relative;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
       transition: color 0.2s;
     }
 
     .mode-btn.active {
-      color: #ffffff;
+      color: #ffb3ac;
     }
 
     .mode-btn.active::after {
@@ -45,8 +85,8 @@
       left: 0;
       width: 100%;
       height: 3px;
-      background: linear-gradient(90deg, #f97316, #a855f7);
-      box-shadow: var(--glow-purple);
+      background: #ff1a2b;
+      box-shadow: var(--glow-blood);
     }
 
     /* Active Room State */
@@ -58,103 +98,106 @@
     .code-display-wrap {
       display: inline-flex;
       align-items: center;
-      gap: 1rem;
-      background: rgba(139, 92, 246, 0.12);
-      border: 2px dashed rgba(168, 85, 247, 0.5);
-      border-radius: 12px;
-      padding: 0.8rem 1.8rem;
+      gap: 1.25rem;
+      background: rgba(74, 4, 4, 0.25);
+      border: 2px dashed #ff1a2b;
+      border-radius: 8px;
+      padding: 0.8rem 2rem;
       margin-top: 1rem;
+      box-shadow: var(--glow-blood);
     }
 
     .code-letters {
       font-family: var(--font-code);
-      font-size: 2.8rem;
+      font-size: 3rem;
       font-weight: 800;
       letter-spacing: 0.25em;
-      color: #facc15;
-      text-shadow: 0 0 15px rgba(250, 204, 21, 0.5);
+      color: #ff544e;
+      text-shadow: 0 0 20px rgba(255, 26, 43, 0.8);
     }
 
     .copy-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #fff;
-      padding: 0.5rem 0.9rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
+      background: #1f141f;
+      border: 1px solid var(--border-subtle);
+      color: #ffb3ac;
+      padding: 0.5rem 1rem;
+      font-size: 0.82rem;
+      font-family: var(--font-code);
+      text-transform: uppercase;
       cursor: pointer;
-      font-family: var(--font-body);
       transition: all 0.2s;
     }
 
     .copy-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      border-color: #fff;
+      background: #4a0404;
+      border-color: #ff1a2b;
+      color: #fff;
     }
 
     /* Player Slots Grid */
     .player-slots {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
       gap: 1.25rem;
       margin: 2.5rem 0;
     }
 
     .slot-card {
-      background: rgba(12, 9, 24, 0.8);
+      background: #120d13;
       border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 1.5rem 1rem;
+      border-radius: 8px;
+      padding: 1.75rem 1rem;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 190px;
+      min-height: 200px;
       position: relative;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .slot-card.occupied {
-      border-color: rgba(168, 85, 247, 0.5);
-      background: rgba(24, 18, 48, 0.8);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      border-color: #ff1a2b;
+      background: #1b121b;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 26, 43, 0.3);
     }
 
     .slot-card.empty {
       border-style: dashed;
-      opacity: 0.6;
+      opacity: 0.5;
     }
 
     .slot-card.empty:hover {
-      opacity: 0.85;
-      border-color: rgba(168, 85, 247, 0.4);
+      opacity: 0.8;
+      border-color: var(--color-alien);
     }
 
     .slot-avatar {
-      width: 58px;
-      height: 58px;
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: #100d10;
+      border: 2px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.8rem;
-      margin-bottom: 0.75rem;
+      font-size: 2rem;
+      margin-bottom: 0.85rem;
     }
 
     .slot-card.occupied .slot-avatar {
-      background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(249, 115, 22, 0.3));
-      border-color: #a855f7;
-      box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+      border-color: #ff1a2b;
+      box-shadow: var(--glow-blood);
     }
 
     .slot-name {
       font-weight: 700;
+      font-family: var(--font-code);
       font-size: 1.05rem;
+      color: #ffdad6;
       margin-bottom: 0.35rem;
-      max-width: 150px;
+      max-width: 160px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -164,33 +207,73 @@
       position: absolute;
       top: 10px;
       right: 10px;
-      font-size: 1.1rem;
-      filter: drop-shadow(0 0 5px gold);
+      font-size: 1.2rem;
+      filter: drop-shadow(0 0 6px #ff1a2b);
     }
 
     .lan-info-card {
-      background: rgba(6, 182, 212, 0.08);
-      border: 1px solid rgba(6, 182, 212, 0.3);
-      border-radius: 10px;
+      background: rgba(74, 4, 4, 0.2);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
       padding: 0.9rem 1.4rem;
-      font-size: 0.9rem;
-      color: #a5f3fc;
+      font-size: 0.88rem;
+      color: var(--text-muted);
       margin-bottom: 2rem;
       display: flex;
       align-items: center;
-      gap: 0.8rem;
+      gap: 0.9rem;
     }
 
-    .lan-icon {
-      font-size: 1.4rem;
+    /* Head Necro-Chef Gordon Ram-Slay Dialogue Box */
+    .chef-banter-card {
+      background: #100d10;
+      border-left: 3px solid #ff1a2b;
+      padding: 1rem 1.4rem;
+      margin-top: 1.5rem;
+      text-align: left;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .chef-quote {
+      font-style: italic;
+      color: #ffb3ac;
+      font-size: 0.92rem;
+      line-height: 1.5;
     }
   </style>
 </head>
 <body>
+  <!-- OCCULT SANITY HUD STRIP -->
+  <aside class="sanity-strip">
+    <div style="display: flex; align-items: center;">
+      <span style="color: #ff544e;">💀 SANITY:</span>
+      <div class="sanity-bar-track">
+        <div class="sanity-bar-fill"></div>
+      </div>
+      <strong style="color: #ff1a2b;">13%</strong>
+      <span style="color: #dc2626; margin-left: 0.5rem; font-size: 0.72rem;">[COLLAPSE IMMINENT]</span>
+    </div>
+
+    <div>
+      <span style="color: var(--text-muted);">DOOM TIER:</span>
+      <strong style="color: #00f5d4;">IX</strong>
+      <span style="margin: 0 0.5rem; color: #4a0404;">|</span>
+      <span style="color: var(--text-muted);">SOULS:</span>
+      <strong style="color: #00ff66;">66,600</strong>
+    </div>
+
+    <div style="color: #ffb3ac; font-size: 0.75rem;">
+      CURSE: <em>"Eternal Heartburn of Cthulhu"</em>
+    </div>
+  </aside>
+
   <div class="app-container">
     <header style="text-align: center; margin-top: 1rem;">
-      <h1 class="title-hero">The Legendary Sandwich From Hell</h1>
-      <p class="subtitle-hero">A 4-Monitor Cosmic Horror Culinary Odyssey. Assemble the four cursed ingredients or be devoured by the stars.</p>
+      <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0.9rem; background: #1b121b; border: 1px solid #4a0404; font-family: var(--font-code); font-size: 0.75rem; color: #00ff66; margin-bottom: 0.75rem; letter-spacing: 0.15em;">
+        ✦ THE APOCALYPTIC TASTE TRIALS • PROTOCOL OMEGA ✦
+      </div>
+      <h1 class="title-hero">THE LEGENDARY SANDWICH FROM HELL</h1>
+      <p class="subtitle-hero">"Fashioned from forbidden cosmic dough, seared in brimstone, and weeping the condensed anguish of a thousand unhallowed stars."</p>
     </header>
 
     <!-- MAIN LOBBY CONTAINER -->
@@ -199,45 +282,51 @@
       <section id="auth-section">
         <div class="mode-switch">
           <button id="tab-create" class="mode-btn active" onclick="switchMode('create')">Summon Room (Host)</button>
-          <button id="tab-join" class="mode-btn" onclick="switchMode('join')">Join Ritual</button>
+          <button id="tab-join" class="mode-btn" onclick="switchMode('join')">Join Coven</button>
         </div>
 
         <div style="max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.25rem;">
           <div>
-            <label for="player-name-input" style="display:block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase;">Your Chef Moniker</label>
-            <input type="text" id="player-name-input" class="input-field" placeholder="e.g. Master Chef Azazel" maxlength="20">
+            <label for="player-name-input" style="display:block; margin-bottom: 0.5rem; font-size: 0.82rem; color: var(--text-muted); font-family: var(--font-code); text-transform: uppercase;">Your Chef Moniker</label>
+            <input type="text" id="player-name-input" class="input-field" placeholder="e.g. Arch-Necro-Chef Azazel" maxlength="20">
           </div>
 
           <div id="join-code-group" style="display: none;">
-            <label for="room-code-input" style="display:block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase;">6-Character Room Code</label>
-            <input type="text" id="room-code-input" class="input-field font-code" placeholder="e.g. RDDM9G" maxlength="6" style="text-transform: uppercase; font-size: 1.3rem; letter-spacing: 0.15em;">
+            <label for="room-code-input" style="display:block; margin-bottom: 0.5rem; font-size: 0.82rem; color: var(--text-muted); font-family: var(--font-code); text-transform: uppercase;">6-Character Rune Code</label>
+            <input type="text" id="room-code-input" class="input-field font-code" placeholder="e.g. RDDM9G" maxlength="6" style="text-transform: uppercase; font-size: 1.35rem; letter-spacing: 0.2em; text-align: center; color: #ff544e;">
           </div>
 
-          <div id="error-banner" style="display: none; color: #f87171; background: rgba(220, 38, 38, 0.15); border: 1px solid rgba(220, 38, 38, 0.4); padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9rem; text-align: center;"></div>
+          <div id="error-banner" style="display: none; color: #f87171; background: rgba(74, 4, 4, 0.4); border: 1px solid #ff1a2b; padding: 0.75rem 1rem; font-size: 0.88rem; text-align: center; font-family: var(--font-code);"></div>
 
           <button id="submit-btn" class="btn btn-primary" style="margin-top: 0.5rem; font-size: 1.1rem;" onclick="handleSubmit()">
-            <span>Summon Chamber</span> ⚡
+            <span>CONSECRATE ALTAR</span> ⚡
           </button>
+        </div>
+
+        <!-- CHEF GORDON RAM-SLAY BANTER -->
+        <div class="chef-banter-card">
+          <strong style="color: #ff1a2b; font-family: var(--font-code); font-size: 0.8rem; text-transform: uppercase;">HEAD NECRO-CHEF GORDON RAM-SLAY:</strong>
+          <p class="chef-quote" id="chef-quote">"IT'S RAW! THE SENTIENT TENTACLES ARE STILL WHISPERING FORBIDDEN SECRETS OF NON-EUCLIDEAN GEOMETRY TO THE PATRONS! ENTER THE ALTAR OR GET OUT OF MY KITCHEN!"</p>
         </div>
       </section>
 
       <!-- VIEW 2: ACTIVE ROOM DASHBOARD -->
       <section id="room-section" style="display: none;">
         <div class="room-header">
-          <span class="badge badge-host" id="role-badge">Summoning Chamber Active</span>
-          <h2 style="margin-top: 0.75rem; font-size: 1.6rem;">Prepare the 4-Monitor Link</h2>
+          <span class="badge badge-host" id="role-badge">SUMMONING ALTAR CONSECRATED</span>
+          <h2 style="margin-top: 0.85rem; font-size: 1.6rem; color: #ffdad6;">Prepare the 4-Monitor Telepathic Link</h2>
 
           <div class="code-display-wrap">
-            <span style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Room Code:</span>
+            <span style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-code); text-transform: uppercase;">Rune Code:</span>
             <span class="code-letters" id="display-room-code">------</span>
-            <button class="copy-btn" id="copy-code-btn" onclick="copyRoomCode()">Copy Code</button>
+            <button class="copy-btn" id="copy-code-btn" onclick="copyRoomCode()">Copy Rune</button>
           </div>
         </div>
 
         <div class="lan-info-card">
-          <span class="lan-icon">🌐</span>
+          <span style="font-size: 1.5rem;">🩸</span>
           <div>
-            <strong>Multi-Monitor Instructions:</strong> Open this game on 3 other screens or monitors on the same network and enter this Room Code to link the four ingredients.
+            <strong style="color: #ff544e;">4-Monitor Multi-Screen Protocol:</strong> Open this chamber on 3 other monitors on your local network and enter this Rune Code to bind the four ingredients together.
           </div>
         </div>
 
@@ -247,13 +336,13 @@
         </div>
 
         <!-- ACTIONS -->
-        <div style="text-align: center; margin-top: 1rem;">
-          <button id="start-game-btn" class="btn btn-danger animate-pulse-glow" style="display: none; font-size: 1.25rem; padding: 1.1rem 2.8rem;" onclick="startRitual()">
+        <div style="text-align: center; margin-top: 1.5rem;">
+          <button id="start-game-btn" class="btn btn-danger animate-pulse-glow" style="display: none; font-size: 1.25rem; padding: 1.2rem 3.2rem;" onclick="startRitual()">
             🔥 IGNITE RITUAL (START GAME)
           </button>
 
-          <p id="guest-waiting-msg" style="display: none; color: var(--text-muted); font-size: 1.05rem; font-style: italic;">
-            ⏳ Waiting for Host to ignite the summoning ritual...
+          <p id="guest-waiting-msg" style="display: none; color: var(--text-muted); font-size: 1.05rem; font-style: italic; font-family: var(--font-code);">
+            ⏳ Waiting for Host to ignite the sacrificial hellfire...
           </p>
         </div>
       </section>
@@ -261,9 +350,25 @@
   </div>
 
   <script src="/shared/audio.js"></script>
+  <script src="/shared/parallax.js"></script>
   <script src="/shared/room-client.js"></script>
   <script>
     let currentMode = 'create';
+
+    const chefRants = [
+      "\"IT'S RAW! THE SENTIENT TENTACLES ARE STILL WHISPERING FORBIDDEN SECRETS OF NON-EUCLIDEAN GEOMETRY TO THE PATRONS! YOU CALL THIS COAGULATION?!\"",
+      "\"YOU DONKEY-DEMON! YOU DIDN'T TOAST THE VOID SOURDOUGH ENOUGH! IT'S NOT SUPPOSED TO WHIMPER, IT'S SUPPOSED TO HOWL AT 400 DEGREES OF DAMNATION!\"",
+      "\"WHERE IS THE ABYSSAL SAUCE?! A BABOON FROM THE NINTH CIRCLE COULD BALANCE THIS ACIDITY BETTER! WAKE UP OR I WILL FEED YOUR APRON TO CTHULHU!\"",
+      "\"FINALLY! A SANDWICH SO DISASTROUSLY CURSED THAT EVEN THE REAPER REFUSES TO CARRY IT WITHOUT OVEN MITTS! NOW SUMMON IT!\""
+    ];
+    let rantIndex = 0;
+
+    function cycleChefRant() {
+      rantIndex = (rantIndex + 1) % chefRants.length;
+      const el = document.getElementById('chef-quote');
+      if (el) el.textContent = chefRants[rantIndex];
+    }
+    setInterval(cycleChefRant, 6500);
 
     function switchMode(mode) {
       currentMode = mode;
@@ -277,12 +382,12 @@
         tabCreate.classList.add('active');
         tabJoin.classList.remove('active');
         joinGroup.style.display = 'none';
-        submitBtn.innerHTML = '<span>Summon Chamber</span> ⚡';
+        submitBtn.innerHTML = '<span>CONSECRATE ALTAR</span> ⚡';
       } else {
         tabJoin.classList.add('active');
         tabCreate.classList.remove('active');
         joinGroup.style.display = 'block';
-        submitBtn.innerHTML = '<span>Enter Chamber</span> 🚪';
+        submitBtn.innerHTML = '<span>ENTER COVEN</span> 🚪';
       }
       clearError();
     }
@@ -303,7 +408,7 @@
     function handleSubmit() {
       clearError();
       const nameInput = document.getElementById('player-name-input').value.trim();
-      const name = nameInput || ('Chef ' + Math.floor(Math.random() * 900 + 100));
+      const name = nameInput || ('Necro-Chef ' + Math.floor(Math.random() * 900 + 100));
 
       if (currentMode === 'create') {
         SoundFX.play('click');
@@ -311,7 +416,7 @@
       } else {
         const code = document.getElementById('room-code-input').value.trim().toUpperCase();
         if (!code || code.length !== 6) {
-          return showError('Please enter a valid 6-character room code.');
+          return showError('Please enter a valid 6-character rune code.');
         }
         SoundFX.play('click');
         Room.join(code, name);
@@ -325,7 +430,7 @@
           SoundFX.play('click');
           const btn = document.getElementById('copy-code-btn');
           const orig = btn.textContent;
-          btn.textContent = 'Copied!';
+          btn.textContent = 'COPIED!';
           setTimeout(() => btn.textContent = orig, 1800);
         });
       }
@@ -369,19 +474,19 @@
         if (p) {
           card.className = 'slot-card occupied';
           card.innerHTML = `
-            ${p.isHost ? '<span class="host-crown" title="Summoner / Host">👑</span>' : ''}
+            ${p.isHost ? '<span class="host-crown" title="Arch-Summoner / Host">👑</span>' : ''}
             <div class="slot-avatar">${avatars[i % avatars.length]}</div>
             <div class="slot-name">${p.name}</div>
-            <span class="badge badge-connected" style="margin-top: 0.5rem; font-size: 0.75rem;">
-              ● ${p.connected ? 'Connected' : 'Offline'}
+            <span class="badge badge-connected" style="margin-top: 0.5rem; font-size: 0.72rem;">
+              ● ${p.connected ? 'BONDED' : 'SEVERED'}
             </span>
           `;
         } else {
           card.className = 'slot-card empty';
           card.innerHTML = `
             <div class="slot-avatar" style="opacity: 0.4;">⏳</div>
-            <div class="slot-name" style="color: var(--text-dim); font-size: 0.9rem;">Slot ${i + 1}</div>
-            <span style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.4rem;">Awaiting Chef...</span>
+            <div class="slot-name" style="color: var(--text-dim); font-size: 0.9rem;">Altar Slot ${i + 1}</div>
+            <span style="font-size: 0.78rem; color: var(--text-dim); margin-top: 0.4rem; font-family: var(--font-code);">Awaiting Chef...</span>
           `;
         }
         slotsContainer.appendChild(card);
@@ -411,7 +516,6 @@
       showError(data.message);
     });
 
-    // Populate existing name if stored
     window.addEventListener('DOMContentLoaded', () => {
       const storedName = Room.getPlayerName();
       if (storedName && storedName !== 'Chef') {

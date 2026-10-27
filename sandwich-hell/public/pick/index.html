@@ -8,121 +8,190 @@
   <style>
     .picker-container {
       width: 100%;
-      max-width: 1100px;
+      max-width: 1200px;
       margin-top: 1rem;
     }
 
-    .chapter-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-
-    .chapter-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(14px);
-      border: 2px solid var(--border-subtle);
-      border-radius: 16px;
-      padding: 1.75rem 1.25rem;
+    /* Central Relic Hero Section */
+    .relic-hero-section {
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-align: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .sandwich-relic-frame {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid #ff1a2b;
+      box-shadow: 0 0 35px rgba(255, 26, 43, 0.6), 0 15px 35px rgba(0,0,0,0.9);
+      animation: levitateEntity 5s ease-in-out infinite;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .sandwich-relic-frame:hover {
+      transform: scale(1.08) rotate(1deg);
+    }
+
+    .sandwich-relic-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: contrast(1.2) brightness(0.95);
+    }
+
+    @keyframes levitateEntity {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+
+    /* 4 Ingredient Cards Grid */
+    .chapter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .chapter-card {
+      background: #120d13;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 1.75rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       cursor: pointer;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.85);
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    .chapter-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+    }
+
     .chapter-card:hover:not(.locked) {
-      transform: translateY(-6px);
+      transform: translateY(-8px);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.95);
     }
 
     .card-icon {
-      font-size: 3.8rem;
+      width: 58px;
+      height: 58px;
+      background: #080608;
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
       margin-bottom: 1rem;
-      transition: transform 0.3s ease;
-      filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.2));
+      transition: transform 0.3s;
     }
 
     .chapter-card:hover:not(.locked) .card-icon {
-      transform: scale(1.15) rotate(4deg);
+      transform: scale(1.15) rotate(5deg);
     }
 
     .card-title {
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 800;
       margin-bottom: 0.35rem;
+      color: #ffdad6;
     }
 
     .ingredient-subtitle {
-      font-size: 0.95rem;
+      font-size: 0.82rem;
       font-weight: 700;
-      letter-spacing: 0.08em;
+      font-family: var(--font-code);
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
     }
 
     .card-desc {
       font-size: 0.88rem;
       color: var(--text-muted);
-      line-height: 1.45;
-      margin-bottom: 1.5rem;
+      line-height: 1.5;
+      font-style: italic;
+      margin-bottom: 1.25rem;
       flex-grow: 1;
     }
 
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-code);
+      font-size: 0.76rem;
+      padding: 0.3rem 0;
+      border-top: 1px solid rgba(74, 4, 4, 0.4);
+      color: var(--text-muted);
+    }
+
     .topic-pill {
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 0.4rem 0.8rem;
-      border-radius: 6px;
+      background: #080608;
+      border: 1px solid var(--border-subtle);
+      padding: 0.45rem 0.8rem;
+      border-radius: 4px;
       font-family: var(--font-code);
       font-size: 0.75rem;
-      color: #e2e8f0;
-      margin-bottom: 1.25rem;
-      width: 100%;
+      color: #ffb3ac;
+      margin: 1rem 0;
+      text-align: center;
     }
 
     .claim-action-btn {
       width: 100%;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      font-family: var(--font-display);
+      padding: 0.85rem 1rem;
+      font-family: var(--font-code);
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       border: none;
       cursor: pointer;
+      text-transform: uppercase;
       transition: all 0.2s;
+      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
     }
 
     /* THEME SPECIFICS */
-    .card-hell { border-color: rgba(249, 115, 22, 0.4); }
+    .card-hell { border-color: rgba(255, 26, 43, 0.4); }
     .card-hell .ingredient-subtitle { color: var(--color-hell); }
-    .card-hell .claim-action-btn { background: linear-gradient(135deg, #ea580c, #c2410c); color: #fff; }
-    .card-hell:hover:not(.locked) { border-color: var(--color-hell); box-shadow: var(--glow-orange); }
+    .card-hell .claim-action-btn { background: #ff1a2b; color: #080608; }
+    .card-hell:hover:not(.locked) { border-color: var(--color-hell); box-shadow: var(--glow-blood); }
 
-    .card-alien { border-color: rgba(16, 185, 129, 0.4); }
+    .card-alien { border-color: rgba(0, 255, 102, 0.35); }
     .card-alien .ingredient-subtitle { color: var(--color-alien); }
-    .card-alien .claim-action-btn { background: linear-gradient(135deg, #059669, #047857); color: #fff; }
-    .card-alien:hover:not(.locked) { border-color: var(--color-alien); box-shadow: var(--glow-green); }
+    .card-alien .claim-action-btn { background: var(--color-alien); color: #080608; }
+    .card-alien:hover:not(.locked) { border-color: var(--color-alien); box-shadow: var(--glow-necrotic); }
 
-    .card-ocean { border-color: rgba(6, 182, 212, 0.4); }
+    .card-ocean { border-color: rgba(0, 245, 212, 0.35); }
     .card-ocean .ingredient-subtitle { color: var(--color-ocean); }
-    .card-ocean .claim-action-btn { background: linear-gradient(135deg, #0891b2, #0e7490); color: #fff; }
-    .card-ocean:hover:not(.locked) { border-color: var(--color-ocean); box-shadow: var(--glow-blue); }
+    .card-ocean .claim-action-btn { background: var(--color-ocean); color: #080608; }
+    .card-ocean:hover:not(.locked) { border-color: var(--color-ocean); box-shadow: var(--glow-spectral); }
 
-    .card-market { border-color: rgba(234, 179, 8, 0.4); }
+    .card-market { border-color: rgba(234, 179, 8, 0.35); }
     .card-market .ingredient-subtitle { color: var(--color-market); }
-    .card-market .claim-action-btn { background: linear-gradient(135deg, #ca8a04, #a16207); color: #fff; }
-    .card-market:hover:not(.locked) { border-color: var(--color-market); box-shadow: var(--glow-gold); }
+    .card-market .claim-action-btn { background: var(--color-market); color: #080608; }
+    .card-market:hover:not(.locked) { border-color: var(--color-market); box-shadow: 0 0 25px rgba(234, 179, 8, 0.6); }
 
     /* LOCKED OVERLAY STATE */
     .chapter-card.locked {
-      opacity: 0.65;
+      opacity: 0.55;
       cursor: not-allowed;
-      filter: grayscale(0.4);
-      border-color: rgba(255, 255, 255, 0.15) !important;
+      filter: grayscale(0.5);
+      border-color: #2e0202 !important;
       box-shadow: none !important;
     }
 
@@ -130,47 +199,47 @@
       position: absolute;
       top: 12px;
       right: 12px;
-      background: rgba(220, 38, 38, 0.85);
-      border: 1px solid #ef4444;
-      color: #fff;
-      font-size: 0.75rem;
+      background: #93000a;
+      border: 1px solid #ff1a2b;
+      color: #ffdad6;
+      font-size: 0.72rem;
+      font-family: var(--font-code);
       font-weight: 800;
-      padding: 0.25rem 0.6rem;
-      border-radius: 4px;
-      letter-spacing: 0.05em;
+      padding: 0.25rem 0.65rem;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      box-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+      box-shadow: 0 0 12px rgba(255, 26, 43, 0.7);
     }
 
     /* TELEPORT OVERLAY */
     #teleport-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(7, 5, 13, 0.94);
+      background: rgba(8, 6, 8, 0.96);
       z-index: 999;
       display: none;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      backdrop-filter: blur(20px);
+      backdrop-filter: blur(24px);
     }
 
     .portal-ring {
-      width: 140px;
-      height: 140px;
+      width: 150px;
+      height: 150px;
       border-radius: 50%;
-      border: 4px dashed #a855f7;
-      animation: spin 3s linear infinite;
+      border: 4px dashed #ff1a2b;
+      animation: portalSpin 3s linear infinite;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 3.5rem;
+      font-size: 3.8rem;
       margin-bottom: 2rem;
-      box-shadow: 0 0 35px rgba(168, 85, 247, 0.6);
+      box-shadow: var(--glow-blood);
     }
 
-    @keyframes spin {
+    @keyframes portalSpin {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
@@ -180,14 +249,14 @@
   <!-- TOP MONITOR HUD -->
   <header class="top-hud">
     <div style="display: flex; align-items: center; gap: 0.75rem;">
-      <span style="font-size: 1.3rem;">🥪</span>
-      <span style="font-weight: 800; font-family: var(--font-display);">RITUAL GATEWAY</span>
+      <span style="font-size: 1.4rem;">🥪</span>
+      <span style="font-weight: 800; font-family: var(--font-display); color: #ffb3ac;">RITUAL ALTAR OF TRIAL</span>
     </div>
 
     <div style="display: flex; align-items: center; gap: 1rem;">
       <div class="room-pill">
-        <span>ROOM:</span>
-        <strong id="hud-room-code">------</strong>
+        <span style="color: var(--text-muted);">RUNE:</span>
+        <strong id="hud-room-code" style="color: #ff544e;">------</strong>
       </div>
       <span class="badge badge-host" id="hud-status">First-Come First-Served</span>
     </div>
@@ -196,14 +265,24 @@
   <!-- TELEPORT TRANSITION MODAL -->
   <div id="teleport-overlay">
     <div class="portal-ring" id="portal-icon">🌀</div>
-    <h2 class="title-hero" id="teleport-title" style="font-size: 2.2rem;">CLAIMING REALM...</h2>
-    <p class="subtitle-hero" id="teleport-sub">Stabilizing quantum frequency for your monitor.</p>
+    <h2 class="title-hero" id="teleport-title" style="font-size: 2.4rem;">WARPING TO TRIAL REALM...</h2>
+    <p class="subtitle-hero" id="teleport-sub">Harmonizing mental frequency with the cursed altar.</p>
   </div>
 
   <div class="app-container">
     <div style="text-align: center; margin-top: 1rem;">
-      <h1 class="title-hero" style="font-size: 2.5rem;">Choose Your Trial</h1>
-      <p class="subtitle-hero">Each monitor must claim one distinct ingredient. The moment you lock it in, this screen teleports to your personal trial chamber.</p>
+      <h1 class="title-hero" style="font-size: 2.8rem;">CHOOSE THINE OFFERING</h1>
+      <p class="subtitle-hero">Each monitor must claim one forbidden ingredient. Locking your claim immediately teleports this monitor into your trial chamber.</p>
+    </div>
+
+    <!-- LEVITATING CURSED SANDWICH RELIC HERO (STITCH ASSET) -->
+    <div class="relic-hero-section">
+      <div class="sandwich-relic-frame" title="The Cursed Sandwich Relic">
+        <img class="sandwich-relic-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBT8iEVuk6PtiKf4vfMgtZi_53URrNyKO5ZqacHk4kj6aRKQYF1a3UBrGkIIjswiN95Q5yNPwIhG_RSyvv8JvBvsa3UF-l-4ZpzMUZU3k6yfNYr67b9mQQOfhrZ4JzjsqdvXkViEmOWm_jvBiuU9QRpT8fIN31Q_-RsKIczIiwtbpkU3lQTFZ11-nXMSKVTWZZE9_wtQOuHwedhNnip2A6WfH97ulVuAPwHJXrF-pFUFYKXRvdyClmxaamX_ARAQrB_GLRyaIjz96o" alt="Cursed Sandwich Centerpiece">
+      </div>
+      <div style="margin-top: 0.75rem; font-family: var(--font-code); font-size: 0.78rem; color: #ff544e; letter-spacing: 0.15em;">
+        ✦ 999,999,999 SHU • -666 SOULS • BEYOND COMPREHENSION ✦
+      </div>
     </div>
 
     <!-- 4 INGREDIENT CARDS -->
@@ -211,48 +290,73 @@
       <div class="chapter-grid" id="chapter-grid">
         <!-- 1. HELL / CHEESE -->
         <div class="chapter-card card-hell" id="card-hell" onclick="attemptClaim('hell')">
-          <div class="card-icon">🧀</div>
-          <div class="ingredient-subtitle">Infernal Cheese</div>
-          <h2 class="card-title">THE DEPTHS OF HELL</h2>
-          <p class="card-desc">Brave the molten river of sulfur and calibrate the Brimstone Gate using pure Boolean logic.</p>
-          <div class="topic-pill">Domain: Conditions & Booleans</div>
-          <button class="claim-action-btn" id="btn-hell">CLAIM INFERNO ➔</button>
+          <div>
+            <div class="card-icon">🧀</div>
+            <div class="ingredient-subtitle">Infernal Cheese</div>
+            <h2 class="card-title">SEVENTH CIRCLE OF GEHENNA</h2>
+            <p class="card-desc">Lava mozzarella aged in the abyss. Bubbles incessantly with brimstone. Solved via Boolean condition gates.</p>
+            <div class="stat-row"><span>Core Temp:</span><strong style="color: #ff544e;">1,400°F</strong></div>
+            <div class="stat-row"><span>Sanity Toll:</span><strong style="color: #ef4444;">-15%</strong></div>
+          </div>
+          <div>
+            <div class="topic-pill">Trial: Boolean Logic & Conditions</div>
+            <button class="claim-action-btn" id="btn-hell">CLAIM INFERNO ➔</button>
+          </div>
         </div>
 
         <!-- 2. ALIEN / VEGETABLES -->
         <div class="chapter-card card-alien" id="card-alien" onclick="attemptClaim('alien')">
-          <div class="card-icon">🥬</div>
-          <div class="ingredient-subtitle">Cosmic Vegetables</div>
-          <h2 class="card-title">HYPER-DIMENSIONAL SPACE</h2>
-          <p class="card-desc">Navigate the extraterrestrial hydroponics greenhouse and repair robotic harvesting loops.</p>
-          <div class="topic-pill">Domain: Loops & Lists</div>
-          <button class="claim-action-btn" id="btn-alien">CLAIM VEGETATION ➔</button>
+          <div>
+            <div class="card-icon">🥬</div>
+            <div class="ingredient-subtitle">Cosmic Vegetables</div>
+            <h2 class="card-title">HYPER-DIMENSIONAL SPACE</h2>
+            <p class="card-desc">Writhing sentient tentacles, shrieking shadow pickles, and nightmare lettuce. Solved via automated loops.</p>
+            <div class="stat-row"><span>Suction Grip:</span><strong style="color: #00ff66;">92 PSI</strong></div>
+            <div class="stat-row"><span>Sanity Toll:</span><strong style="color: #ef4444;">-15%</strong></div>
+          </div>
+          <div>
+            <div class="topic-pill">Trial: Loops, Lists & Automation</div>
+            <button class="claim-action-btn" id="btn-alien">CLAIM VEGETATION ➔</button>
+          </div>
         </div>
 
         <!-- 3. OCEAN / SAUCE -->
         <div class="chapter-card card-ocean" id="card-ocean" onclick="attemptClaim('ocean')">
-          <div class="card-icon">🥫</div>
-          <div class="ingredient-subtitle">Abyssal Sauce</div>
-          <h2 class="card-title">THE MARIANA TRENCH</h2>
-          <p class="card-desc">Plunge 36,000 feet into the dark bioluminescent depths to brew the ancient marinara formula.</p>
-          <div class="topic-pill">Domain: Functions & Strings</div>
-          <button class="claim-action-btn" id="btn-ocean">CLAIM DEPTHS ➔</button>
+          <div>
+            <div class="card-icon">🥫</div>
+            <div class="ingredient-subtitle">Abyssal Sauce</div>
+            <h2 class="card-title">MARIANA TRENCH (36,000 FT)</h2>
+            <p class="card-desc">Fermented blood-red chili mash with crushed astral void peppers and demonic tears. Solved via function alchemy.</p>
+            <div class="stat-row"><span>Acidity:</span><strong style="color: #00f5d4;">pH -1.4</strong></div>
+            <div class="stat-row"><span>Sanity Toll:</span><strong style="color: #ef4444;">-15%</strong></div>
+          </div>
+          <div>
+            <div class="topic-pill">Trial: Functions & Strings</div>
+            <button class="claim-action-btn" id="btn-ocean">CLAIM DEPTHS ➔</button>
+          </div>
         </div>
 
         <!-- 4. MARKET / BREAD -->
         <div class="chapter-card card-market" id="card-market" onclick="attemptClaim('market')">
-          <div class="card-icon">🍞</div>
-          <div class="ingredient-subtitle">Eldritch Bread</div>
-          <h2 class="card-title">THE BLACK BAZAAR</h2>
-          <p class="card-desc">Infiltrate the midnight goblin market, haggle with occult vendors, and organize the grain ledger.</p>
-          <div class="topic-pill">Domain: Dictionaries & Sorting</div>
-          <button class="claim-action-btn" id="btn-market">CLAIM BREAD ➔</button>
+          <div>
+            <div class="card-icon">🍞</div>
+            <div class="ingredient-subtitle">Eldritch Bread</div>
+            <h2 class="card-title">THE BLACK BAZAAR</h2>
+            <p class="card-desc">Void sourdough fermented with wailing starter since 10,000 BC. Infiltrate occult vendors and ledger queues.</p>
+            <div class="stat-row"><span>Void Age:</span><strong style="color: #eab308;">12,024 Cycles</strong></div>
+            <div class="stat-row"><span>Sanity Toll:</span><strong style="color: #ef4444;">-15%</strong></div>
+          </div>
+          <div>
+            <div class="topic-pill">Trial: Dictionaries & Sorting</div>
+            <button class="claim-action-btn" id="btn-market">CLAIM BREAD ➔</button>
+          </div>
         </div>
       </div>
     </main>
   </div>
 
   <script src="/shared/audio.js"></script>
+  <script src="/shared/parallax.js"></script>
   <script src="/shared/room-client.js"></script>
   <script>
     const CHAPTER_DATA = {
@@ -275,7 +379,6 @@
         const btn = document.getElementById(`btn-${ch}`);
         const ownerId = claims[ch];
 
-        // Clear existing seals
         const existingSeal = card.querySelector('.locked-seal');
         if (existingSeal) existingSeal.remove();
 
@@ -286,11 +389,11 @@
 
           const seal = document.createElement('div');
           seal.className = 'locked-seal';
-          seal.textContent = isMe ? 'YOUR CHOICE' : `CLAIMED BY ${ownerName.toUpperCase()}`;
+          seal.textContent = isMe ? 'YOU CONSECRATED THIS' : `CLAIMED BY ${ownerName.toUpperCase()}`;
           card.appendChild(seal);
 
-          btn.textContent = isMe ? 'YOU CLAIMED THIS' : 'LOCKED';
-          btn.style.opacity = '0.7';
+          btn.textContent = isMe ? 'YOUR CHOICE' : 'LOCKED';
+          btn.style.opacity = '0.6';
         } else {
           card.classList.remove('locked');
           btn.textContent = 'CLAIM TRIAL ➔';
@@ -339,7 +442,6 @@
       SoundFX.play('teleport');
       const info = CHAPTER_DATA[data.chapter] || { name: data.chapter, icon: '🌀', url: data.url };
 
-      // Trigger Teleport Overlay Animation
       const overlay = document.getElementById('teleport-overlay');
       document.getElementById('portal-icon').textContent = info.icon;
       document.getElementById('teleport-title').textContent = `WARPING TO ${info.name.toUpperCase()}...`;
@@ -350,7 +452,6 @@
       }, 1400);
     });
 
-    // Check on startup
     window.addEventListener('DOMContentLoaded', () => {
       const code = Room.getRoomCode();
       if (code) document.getElementById('hud-room-code').textContent = code;

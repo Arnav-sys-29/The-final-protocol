@@ -1,0 +1,34 @@
+{
+  "project_name": "sandwich-hell",
+  "workspace_subdir": "sandwich-hell",
+  "port": 3000,
+  "stack": {
+    "runtime": "node",
+    "backend": "express",
+    "realtime": "socket.io",
+    "frontend": "vanilla-html-css-js",
+    "code_runner": "pyodide-webworker"
+  },
+  "chapters": {
+    "hell": {
+      "name": "Hell",
+      "ingredient": "Cheese",
+      "topic": "Boolean logic, conditions (if/elif/else), authentication"
+    },
+    "alien": {
+      "name": "Alien",
+      "ingredient": "Vegetables",
+      "topic": "Loops (for/while), lists, robotics/automation"
+    },
+    "ocean": {
+      "name": "Ocean",
+      "ingredient": "Sauce",
+      "topic": "Functions, parameters, string manipulation"
+    },
+    "market": {
+      "name": "Market",
+      "ingredient": "Bread",
+      "topic": "Dictionaries, lookups, sorting/queues"
+    }
+  }
+}

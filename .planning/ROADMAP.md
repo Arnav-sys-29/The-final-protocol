@@ -24,10 +24,10 @@ graph TD
 
 ### Phase 2: Lobby, Synchronized Intro & Real-Time Chapter Picker
 **Goal:** Create a polished pre-game experience orchestrating all 4 monitors before gameplay.
-- [ ] Implement `public/lobby/index.html` with Create/Join room, code copy, and live player roster.
-- [ ] Implement synchronized intro cinematic screen with browser autoplay fallback.
-- [ ] Implement `public/pick/index.html` featuring interactive cards for Hell, Alien, Ocean, and Market.
-- [ ] Real-time card locking visual effects and automatic monitor redirection to claimed chapter URLs.
+- [x] Implement `public/lobby/index.html` with Create/Join room, code copy, and live player roster.
+- [x] Implement synchronized intro cinematic screen with browser autoplay fallback.
+- [x] Implement `public/pick/index.html` featuring interactive cards for Hell, Alien, Ocean, and Market.
+- [x] Real-time card locking visual effects and automatic monitor redirection to claimed chapter URLs.
 
 ---
 

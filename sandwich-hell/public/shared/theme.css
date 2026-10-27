@@ -1,0 +1,303 @@
+/* ==========================================================================
+   THE LEGENDARY SANDWICH FROM HELL — SHARED DESIGN SYSTEM
+   Cosmic Horror Meets Culinary Comedy
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  /* Color Palette */
+  --bg-dark: #07050d;
+  --bg-card: rgba(18, 14, 30, 0.75);
+  --bg-card-hover: rgba(30, 24, 48, 0.85);
+  --border-subtle: rgba(147, 51, 234, 0.25);
+  --border-glow: rgba(168, 85, 247, 0.6);
+
+  /* Element Theming */
+  --color-hell: #f97316;     /* Cheese / Fire / Hell */
+  --color-alien: #10b981;    /* Vegetables / Bio-Cyber / Alien */
+  --color-ocean: #06b6d4;    /* Sauce / Abyssal Cyan */
+  --color-market: #eab308;   /* Bread / Occult Gold */
+  --color-cosmic: #a855f7;   /* Vorbulon / Cosmic Violet */
+  --color-danger: #ef4444;
+
+  /* Text Colors */
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
+  --text-dim: #6b7280;
+
+  /* Typography */
+  --font-display: 'Cinzel', serif;
+  --font-body: 'Outfit', sans-serif;
+  --font-code: 'JetBrains Mono', monospace;
+
+  /* Shadows & Glows */
+  --glow-purple: 0 0 25px rgba(168, 85, 247, 0.45);
+  --glow-orange: 0 0 25px rgba(249, 115, 22, 0.45);
+  --glow-green: 0 0 25px rgba(16, 185, 129, 0.45);
+  --glow-blue: 0 0 25px rgba(6, 182, 212, 0.45);
+  --glow-gold: 0 0 25px rgba(234, 179, 8, 0.45);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(249, 115, 22, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 60%);
+  background-attachment: fixed;
+}
+
+/* Background Cosmic Stars Animation */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(1px 1px at 25px 35px, #ffffff88, transparent),
+    radial-gradient(1.5px 1.5px at 150px 180px, #a855f7aa, transparent),
+    radial-gradient(1px 1px at 280px 320px, #f97316aa, transparent),
+    radial-gradient(2px 2px at 450px 80px, #10b981aa, transparent),
+    radial-gradient(1.5px 1.5px at 600px 300px, #06b6d4aa, transparent);
+  background-size: 550px 550px;
+  pointer-events: none;
+  opacity: 0.65;
+  z-index: 0;
+}
+
+/* Base Container */
+.app-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Header & Typography */
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.title-hero {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  text-align: center;
+  background: linear-gradient(135deg, #f97316 0%, #ec4899 50%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 20px rgba(236, 72, 153, 0.4));
+  margin-bottom: 0.5rem;
+}
+
+.subtitle-hero {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  text-align: center;
+  max-width: 600px;
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+}
+
+/* Glassmorphism Cards */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel:hover {
+  border-color: var(--border-glow);
+  box-shadow: var(--glow-purple);
+}
+
+/* Buttons */
+.btn {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.85rem 1.75rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition: all 0.25s ease;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #9333ea, #c026d3);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(192, 38, 211, 0.6);
+  filter: brightness(1.1);
+}
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #dc2626, #ea580c);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+}
+
+.btn-danger:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(234, 88, 12, 0.6);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Inputs */
+.input-field {
+  background: rgba(10, 8, 20, 0.7);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 8px;
+  padding: 0.85rem 1.2rem;
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-field:focus {
+  border-color: #c026d3;
+  box-shadow: 0 0 12px rgba(192, 38, 211, 0.5);
+}
+
+/* Badge Pills */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-host {
+  background: rgba(234, 179, 8, 0.15);
+  color: #facc15;
+  border: 1px solid rgba(234, 179, 8, 0.4);
+}
+
+.badge-connected {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+/* Shakes & Animations */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2.5s infinite ease-in-out;
+}
+
+/* Chapter Card Colors */
+.card-hell { border-color: rgba(249, 115, 22, 0.4); }
+.card-hell:hover { border-color: var(--color-hell); box-shadow: var(--glow-orange); }
+
+.card-alien { border-color: rgba(16, 185, 129, 0.4); }
+.card-alien:hover { border-color: var(--color-alien); box-shadow: var(--glow-green); }
+
+.card-ocean { border-color: rgba(6, 182, 212, 0.4); }
+.card-ocean:hover { border-color: var(--color-ocean); box-shadow: var(--glow-blue); }
+
+.card-market { border-color: rgba(234, 179, 8, 0.4); }
+.card-market:hover { border-color: var(--color-market); box-shadow: var(--glow-gold); }
+
+/* Top Navigation Bar / Monitor HUD */
+.top-hud {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background: rgba(15, 11, 28, 0.85);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.room-pill {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid var(--border-glow);
+  padding: 0.35rem 0.9rem;
+  border-radius: 8px;
+  font-family: var(--font-code);
+  font-size: 0.95rem;
+  color: #d8b4fe;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

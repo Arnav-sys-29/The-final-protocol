@@ -1,1 +1,362 @@
-<!DOCTYPE html><html><head><title>pick</title></head><body><h1>pick</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Legendary Sandwich From Hell — Claim Your Trial</title>
+  <link rel="stylesheet" href="/shared/theme.css">
+  <style>
+    .picker-container {
+      width: 100%;
+      max-width: 1100px;
+      margin-top: 1rem;
+    }
+
+    .chapter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .chapter-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(14px);
+      border: 2px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 1.75rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .chapter-card:hover:not(.locked) {
+      transform: translateY(-6px);
+    }
+
+    .card-icon {
+      font-size: 3.8rem;
+      margin-bottom: 1rem;
+      transition: transform 0.3s ease;
+      filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.2));
+    }
+
+    .chapter-card:hover:not(.locked) .card-icon {
+      transform: scale(1.15) rotate(4deg);
+    }
+
+    .card-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+    }
+
+    .ingredient-subtitle {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+
+    .topic-pill {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-family: var(--font-code);
+      font-size: 0.75rem;
+      color: #e2e8f0;
+      margin-bottom: 1.25rem;
+      width: 100%;
+    }
+
+    .claim-action-btn {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    /* THEME SPECIFICS */
+    .card-hell { border-color: rgba(249, 115, 22, 0.4); }
+    .card-hell .ingredient-subtitle { color: var(--color-hell); }
+    .card-hell .claim-action-btn { background: linear-gradient(135deg, #ea580c, #c2410c); color: #fff; }
+    .card-hell:hover:not(.locked) { border-color: var(--color-hell); box-shadow: var(--glow-orange); }
+
+    .card-alien { border-color: rgba(16, 185, 129, 0.4); }
+    .card-alien .ingredient-subtitle { color: var(--color-alien); }
+    .card-alien .claim-action-btn { background: linear-gradient(135deg, #059669, #047857); color: #fff; }
+    .card-alien:hover:not(.locked) { border-color: var(--color-alien); box-shadow: var(--glow-green); }
+
+    .card-ocean { border-color: rgba(6, 182, 212, 0.4); }
+    .card-ocean .ingredient-subtitle { color: var(--color-ocean); }
+    .card-ocean .claim-action-btn { background: linear-gradient(135deg, #0891b2, #0e7490); color: #fff; }
+    .card-ocean:hover:not(.locked) { border-color: var(--color-ocean); box-shadow: var(--glow-blue); }
+
+    .card-market { border-color: rgba(234, 179, 8, 0.4); }
+    .card-market .ingredient-subtitle { color: var(--color-market); }
+    .card-market .claim-action-btn { background: linear-gradient(135deg, #ca8a04, #a16207); color: #fff; }
+    .card-market:hover:not(.locked) { border-color: var(--color-market); box-shadow: var(--glow-gold); }
+
+    /* LOCKED OVERLAY STATE */
+    .chapter-card.locked {
+      opacity: 0.65;
+      cursor: not-allowed;
+      filter: grayscale(0.4);
+      border-color: rgba(255, 255, 255, 0.15) !important;
+      box-shadow: none !important;
+    }
+
+    .locked-seal {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(220, 38, 38, 0.85);
+      border: 1px solid #ef4444;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      box-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+    }
+
+    /* TELEPORT OVERLAY */
+    #teleport-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 5, 13, 0.94);
+      z-index: 999;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      backdrop-filter: blur(20px);
+    }
+
+    .portal-ring {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 4px dashed #a855f7;
+      animation: spin 3s linear infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 0 35px rgba(168, 85, 247, 0.6);
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- TOP MONITOR HUD -->
+  <header class="top-hud">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <span style="font-size: 1.3rem;">🥪</span>
+      <span style="font-weight: 800; font-family: var(--font-display);">RITUAL GATEWAY</span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div class="room-pill">
+        <span>ROOM:</span>
+        <strong id="hud-room-code">------</strong>
+      </div>
+      <span class="badge badge-host" id="hud-status">First-Come First-Served</span>
+    </div>
+  </header>
+
+  <!-- TELEPORT TRANSITION MODAL -->
+  <div id="teleport-overlay">
+    <div class="portal-ring" id="portal-icon">🌀</div>
+    <h2 class="title-hero" id="teleport-title" style="font-size: 2.2rem;">CLAIMING REALM...</h2>
+    <p class="subtitle-hero" id="teleport-sub">Stabilizing quantum frequency for your monitor.</p>
+  </div>
+
+  <div class="app-container">
+    <div style="text-align: center; margin-top: 1rem;">
+      <h1 class="title-hero" style="font-size: 2.5rem;">Choose Your Trial</h1>
+      <p class="subtitle-hero">Each monitor must claim one distinct ingredient. The moment you lock it in, this screen teleports to your personal trial chamber.</p>
+    </div>
+
+    <!-- 4 INGREDIENT CARDS -->
+    <main class="picker-container">
+      <div class="chapter-grid" id="chapter-grid">
+        <!-- 1. HELL / CHEESE -->
+        <div class="chapter-card card-hell" id="card-hell" onclick="attemptClaim('hell')">
+          <div class="card-icon">🧀</div>
+          <div class="ingredient-subtitle">Infernal Cheese</div>
+          <h2 class="card-title">THE DEPTHS OF HELL</h2>
+          <p class="card-desc">Brave the molten river of sulfur and calibrate the Brimstone Gate using pure Boolean logic.</p>
+          <div class="topic-pill">Domain: Conditions & Booleans</div>
+          <button class="claim-action-btn" id="btn-hell">CLAIM INFERNO ➔</button>
+        </div>
+
+        <!-- 2. ALIEN / VEGETABLES -->
+        <div class="chapter-card card-alien" id="card-alien" onclick="attemptClaim('alien')">
+          <div class="card-icon">🥬</div>
+          <div class="ingredient-subtitle">Cosmic Vegetables</div>
+          <h2 class="card-title">HYPER-DIMENSIONAL SPACE</h2>
+          <p class="card-desc">Navigate the extraterrestrial hydroponics greenhouse and repair robotic harvesting loops.</p>
+          <div class="topic-pill">Domain: Loops & Lists</div>
+          <button class="claim-action-btn" id="btn-alien">CLAIM VEGETATION ➔</button>
+        </div>
+
+        <!-- 3. OCEAN / SAUCE -->
+        <div class="chapter-card card-ocean" id="card-ocean" onclick="attemptClaim('ocean')">
+          <div class="card-icon">🥫</div>
+          <div class="ingredient-subtitle">Abyssal Sauce</div>
+          <h2 class="card-title">THE MARIANA TRENCH</h2>
+          <p class="card-desc">Plunge 36,000 feet into the dark bioluminescent depths to brew the ancient marinara formula.</p>
+          <div class="topic-pill">Domain: Functions & Strings</div>
+          <button class="claim-action-btn" id="btn-ocean">CLAIM DEPTHS ➔</button>
+        </div>
+
+        <!-- 4. MARKET / BREAD -->
+        <div class="chapter-card card-market" id="card-market" onclick="attemptClaim('market')">
+          <div class="card-icon">🍞</div>
+          <div class="ingredient-subtitle">Eldritch Bread</div>
+          <h2 class="card-title">THE BLACK BAZAAR</h2>
+          <p class="card-desc">Infiltrate the midnight goblin market, haggle with occult vendors, and organize the grain ledger.</p>
+          <div class="topic-pill">Domain: Dictionaries & Sorting</div>
+          <button class="claim-action-btn" id="btn-market">CLAIM BREAD ➔</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/shared/audio.js"></script>
+  <script src="/shared/room-client.js"></script>
+  <script>
+    const CHAPTER_DATA = {
+      hell: { name: 'Infernal Cheese', icon: '🔥', url: '/hell' },
+      alien: { name: 'Cosmic Vegetables', icon: '🛸', url: '/alien' },
+      ocean: { name: 'Abyssal Sauce', icon: '🌊', url: '/ocean' },
+      market: { name: 'Eldritch Bread', icon: '🍞', url: '/market' }
+    };
+
+    function updateCardLocks(claims, players) {
+      if (!claims) return;
+
+      const playerMap = {};
+      if (players) {
+        players.forEach(p => playerMap[p.id] = p.name);
+      }
+
+      ['hell', 'alien', 'ocean', 'market'].forEach(ch => {
+        const card = document.getElementById(`card-${ch}`);
+        const btn = document.getElementById(`btn-${ch}`);
+        const ownerId = claims[ch];
+
+        // Clear existing seals
+        const existingSeal = card.querySelector('.locked-seal');
+        if (existingSeal) existingSeal.remove();
+
+        if (ownerId) {
+          card.classList.add('locked');
+          const ownerName = playerMap[ownerId] || 'Chef';
+          const isMe = ownerId === Room.getPlayerId();
+
+          const seal = document.createElement('div');
+          seal.className = 'locked-seal';
+          seal.textContent = isMe ? 'YOUR CHOICE' : `CLAIMED BY ${ownerName.toUpperCase()}`;
+          card.appendChild(seal);
+
+          btn.textContent = isMe ? 'YOU CLAIMED THIS' : 'LOCKED';
+          btn.style.opacity = '0.7';
+        } else {
+          card.classList.remove('locked');
+          btn.textContent = 'CLAIM TRIAL ➔';
+          btn.style.opacity = '1';
+        }
+      });
+    }
+
+    function attemptClaim(chapter) {
+      const card = document.getElementById(`card-${chapter}`);
+      if (card.classList.contains('locked')) {
+        SoundFX.play('reject');
+        card.classList.add('animate-shake');
+        setTimeout(() => card.classList.remove('animate-shake'), 450);
+        return;
+      }
+
+      SoundFX.play('lock');
+      Room.claim(chapter);
+    }
+
+    // Bind Room Events
+    Room.on('room_updated', (data) => {
+      const state = data.roomState;
+      if (state) {
+        document.getElementById('hud-room-code').textContent = state.code;
+        updateCardLocks(state.claims, state.players);
+      }
+    });
+
+    Room.on('chapter_claimed', (data) => {
+      SoundFX.play('lock');
+      updateCardLocks(data.claims, data.roomState ? data.roomState.players : null);
+    });
+
+    Room.on('claim_rejected', (data) => {
+      SoundFX.play('reject');
+      const card = document.getElementById(`card-${data.chapter}`);
+      if (card) {
+        card.classList.add('animate-shake');
+        setTimeout(() => card.classList.remove('animate-shake'), 450);
+      }
+    });
+
+    Room.on('claim_confirmed', (data) => {
+      SoundFX.play('teleport');
+      const info = CHAPTER_DATA[data.chapter] || { name: data.chapter, icon: '🌀', url: data.url };
+
+      // Trigger Teleport Overlay Animation
+      const overlay = document.getElementById('teleport-overlay');
+      document.getElementById('portal-icon').textContent = info.icon;
+      document.getElementById('teleport-title').textContent = `WARPING TO ${info.name.toUpperCase()}...`;
+      overlay.style.display = 'flex';
+
+      setTimeout(() => {
+        window.location.href = data.url || info.url;
+      }, 1400);
+    });
+
+    // Check on startup
+    window.addEventListener('DOMContentLoaded', () => {
+      const code = Room.getRoomCode();
+      if (code) document.getElementById('hud-room-code').textContent = code;
+      const state = Room.getState();
+      if (state) updateCardLocks(state.claims, state.players);
+    });
+  </script>
+</body>
+</html>

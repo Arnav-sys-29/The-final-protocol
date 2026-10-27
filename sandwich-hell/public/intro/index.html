@@ -1,1 +1,307 @@
-<!DOCTYPE html><html><head><title>intro</title></head><body><h1>intro</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Legendary Sandwich From Hell — The Prophecy</title>
+  <link rel="stylesheet" href="/shared/theme.css">
+  <style>
+    body {
+      background: #040208;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cinematic-stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      z-index: 10;
+    }
+
+    /* Autoplay / Gesture Overlay */
+    #sync-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 2, 8, 0.95);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(16px);
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .sync-btn {
+      font-size: 1.4rem;
+      padding: 1.2rem 3rem;
+      border-radius: 50px;
+      margin-top: 2rem;
+    }
+
+    /* Narrative Slide Container */
+    .slide-wrapper {
+      max-width: 850px;
+      text-align: center;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .act-tag {
+      font-size: 0.9rem;
+      letter-spacing: 0.25em;
+      color: #c084fc;
+      text-transform: uppercase;
+      font-family: var(--font-code);
+      margin-bottom: 1rem;
+    }
+
+    .act-title {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-family: var(--font-display);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #facc15, #f97316, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 25px rgba(249, 115, 22, 0.4));
+    }
+
+    .act-description {
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      line-height: 1.6;
+      color: #e2e8f0;
+      max-width: 720px;
+      font-weight: 300;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+
+    /* Ingredient Hologram Icons */
+    .ingredient-grid {
+      display: flex;
+      gap: 2rem;
+      margin-top: 2rem;
+      justify-content: center;
+    }
+
+    .ing-holo {
+      font-size: 2.8rem;
+      filter: drop-shadow(0 0 15px currentColor);
+      animation: float 3s ease-in-out infinite alternate;
+    }
+
+    .ing-holo:nth-child(2) { animation-delay: 0.5s; }
+    .ing-holo:nth-child(3) { animation-delay: 1.0s; }
+    .ing-holo:nth-child(4) { animation-delay: 1.5s; }
+
+    @keyframes float {
+      from { transform: translateY(0px) rotate(0deg); }
+      to { transform: translateY(-12px) rotate(4deg); }
+    }
+
+    /* Bottom Timeline HUD */
+    .timeline-bar {
+      position: fixed;
+      bottom: 2rem;
+      width: min(650px, 90vw);
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      overflow: hidden;
+      z-index: 50;
+    }
+
+    .timeline-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #f97316, #a855f7, #06b6d4);
+      transition: width 0.3s linear;
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.8);
+    }
+
+    .skip-btn {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 200;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-muted);
+      font-family: var(--font-display);
+      padding: 0.6rem 1.4rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .skip-btn:hover {
+      background: rgba(168, 85, 247, 0.3);
+      color: #fff;
+      border-color: #a855f7;
+    }
+  </style>
+</head>
+<body>
+  <!-- AUTOPLAY UNLOCK OVERLAY -->
+  <div id="sync-overlay">
+    <h1 class="title-hero" style="font-size: 2.8rem;">THE AWAKENING</h1>
+    <p class="subtitle-hero">Touch the altar to synchronize this monitor with the cosmic network.</p>
+    <button class="btn btn-primary sync-btn animate-pulse-glow" id="start-sync-btn" onclick="startCinematic()">
+      ⚡ SYNCHRONIZE MONITOR ⚡
+    </button>
+  </div>
+
+  <!-- SKIP BUTTON (Host Only) -->
+  <button id="host-skip-btn" class="skip-btn" style="display: none;" onclick="skipToPick()">
+    Skip To Ingredients ⏩
+  </button>
+
+  <!-- CINEMATIC STAGE -->
+  <div class="cinematic-stage">
+    <div class="slide-wrapper" id="slide-wrapper">
+      <div class="act-tag" id="act-tag">PROLOGUE</div>
+      <h2 class="act-title" id="act-title">BEFORE TIME BEGAN...</h2>
+      <p class="act-description" id="act-desc">
+        A hunger stirred between the dying stars. An ancient, bottomless maw that whispers for one thing and one thing alone...
+      </p>
+
+      <div class="ingredient-grid" id="ingredient-display" style="display: none;">
+        <span class="ing-holo" style="color: #f97316;">🧀</span>
+        <span class="ing-holo" style="color: #10b981;">🥬</span>
+        <span class="ing-holo" style="color: #06b6d4;">🥫</span>
+        <span class="ing-holo" style="color: #eab308;">🍞</span>
+      </div>
+    </div>
+
+    <!-- TIMELINE PROGRESS -->
+    <div class="timeline-bar">
+      <div class="timeline-fill" id="timeline-fill"></div>
+    </div>
+  </div>
+
+  <script src="/shared/audio.js"></script>
+  <script src="/shared/room-client.js"></script>
+  <script>
+    const ACTS = [
+      {
+        tag: "ACT I: THE VOID AWAKENS",
+        title: "BEFORE TIME BEGAN...",
+        desc: "A terrible, ancient hunger stirred between the dying stars. An endless void known in dread whispers as Vorbulon...",
+        showIngredients: false,
+        duration: 4500
+      },
+      {
+        tag: "ACT II: THE FORBIDDEN FEAST",
+        title: "THE LEGENDARY SANDWICH",
+        desc: "Ancient scripture speaks of a single cosmic artifact capable of staying the monster's wrath: The Legendary Sandwich From Hell.",
+        showIngredients: true,
+        duration: 5000
+      },
+      {
+        tag: "ACT III: FOUR CHEFS, FOUR TRIALS",
+        title: "SCATTERED ACROSS REALITY",
+        desc: "Four cursed components await in the depths of Hell, Alien Space, the Oceanic Trench, and the Black Market. Four monitors. Four chosen chefs. Claim your destiny!",
+        showIngredients: true,
+        duration: 5500
+      }
+    ];
+
+    let currentActIndex = 0;
+    let actTimer = null;
+    let timelineTimer = null;
+    let startTime = 0;
+    let totalDuration = ACTS.reduce((sum, a) => sum + a.duration, 0);
+
+    function startCinematic() {
+      SoundFX.unlock();
+      SoundFX.play('teleport');
+      document.getElementById('sync-overlay').style.display = 'none';
+
+      if (Room.isHost()) {
+        document.getElementById('host-skip-btn').style.display = 'block';
+      }
+
+      startTime = Date.now();
+      playAct(0);
+      startTimeline();
+    }
+
+    function playAct(index) {
+      if (index >= ACTS.length) {
+        finishIntro();
+        return;
+      }
+
+      currentActIndex = index;
+      const act = ACTS[index];
+
+      SoundFX.play('click');
+      document.getElementById('act-tag').textContent = act.tag;
+      document.getElementById('act-title').textContent = act.title;
+      document.getElementById('act-desc').textContent = act.desc;
+
+      const ingGrid = document.getElementById('ingredient-display');
+      ingGrid.style.display = act.showIngredients ? 'flex' : 'none';
+
+      actTimer = setTimeout(() => {
+        playAct(index + 1);
+      }, act.duration);
+    }
+
+    function startTimeline() {
+      const fill = document.getElementById('timeline-fill');
+      timelineTimer = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const pct = Math.min(100, (elapsed / totalDuration) * 100);
+        fill.style.width = pct + '%';
+        if (pct >= 100) clearInterval(timelineTimer);
+      }, 100);
+    }
+
+    function finishIntro() {
+      clearTimeout(actTimer);
+      clearInterval(timelineTimer);
+      SoundFX.play('success');
+
+      // If host, advance the entire room to picking phase
+      if (Room.isHost()) {
+        Room.advance('pick');
+      } else {
+        // Fallback redirection
+        setTimeout(() => {
+          if (window.location.pathname !== '/pick') {
+            window.location.href = '/pick';
+          }
+        }, 1200);
+      }
+    }
+
+    function skipToPick() {
+      SoundFX.play('click');
+      Room.advance('pick');
+    }
+
+    // Auto-check host status
+    Room.on('room_updated', () => {
+      if (Room.isHost()) {
+        document.getElementById('host-skip-btn').style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

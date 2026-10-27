@@ -1,8 +1,8 @@
 # Project State: The Legendary Sandwich From Hell
 
 ## Current Milestone: Milestone 1 - The Shared Backbone & 4-Player Engine
-- **Current Phase:** Ready for Phase 2 (`Phase 2: Lobby, Synchronized Intro & Real-Time Chapter Picker`)
-- **Status:** Phase 1 executed & verified (6/6 tests passed)
+- **Current Phase:** Ready for Phase 3 (`Phase 3: Drop-in Chapter Templates & Teammate Integration`)
+- **Status:** Phase 2 executed & visually verified
 - **Last Updated:** 2026-10-28
 
 ## Progress Summary
@@ -10,7 +10,7 @@
 - [x] Requirements specification created (`.planning/REQUIREMENTS.md`)
 - [x] 5-phase roadmap established (`.planning/ROADMAP.md`)
 - [x] Phase 1: Core Architecture, Authoritative Server & Room Client
-- [ ] Phase 2: Lobby, Synchronized Intro & Real-Time Chapter Picker
+- [x] Phase 2: Lobby, Synchronized Intro & Real-Time Chapter Picker
 - [ ] Phase 3: Drop-in Chapter Templates & Teammate Integration
 - [ ] Phase 4: Sandwich Assembly Cinematic & Vorbulon Boss Finale
 - [ ] Phase 5: Multi-Screen Playtesting, LAN Setup & Final Polish

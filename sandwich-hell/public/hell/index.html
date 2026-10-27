@@ -1,1 +1,560 @@
-<!DOCTYPE html><html><head><title>hell</title></head><body><h1>hell</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter I: Infernal Cheese | The Legendary Sandwich From Hell</title>
+  <meta name="description" content="Descend into the Lake of Fire to harvest the molten Infernal Cheese by calibrating the Brimstone Gate in C.">
+
+  <!-- Spooky Fonts & Styles -->
+  <link rel="stylesheet" href="/shared/theme.css">
+  <link rel="stylesheet" href="/shared/chapter.css">
+
+  <style>
+    /* Hell-specific atmospheric accents */
+    :root {
+      --chapter-accent: #ff1a2b;
+      --chapter-glow: rgba(255, 26, 43, 0.6);
+    }
+
+    body {
+      background-image: 
+        radial-gradient(circle at calc(var(--mouse-x) * 100%) calc(var(--mouse-y) * 100%), rgba(255, 60, 20, 0.22) 0%, transparent 45%),
+        radial-gradient(circle at 50% 100%, rgba(255, 20, 0, 0.25) 0%, transparent 60%),
+        radial-gradient(ellipse at center, #1a0a0c 0%, #080405 100%);
+    }
+
+    /* Interactive Molten Gate Visual */
+    .gate-vault-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, #2a0808 0%, #0c0405 90%);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .molten-glow-core {
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ff5500 0%, #ff0033 60%, transparent 80%);
+      filter: blur(15px);
+      opacity: 0.5;
+      animation: magmaPulse 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes magmaPulse {
+      0% { transform: scale(0.9); opacity: 0.4; }
+      100% { transform: scale(1.15); opacity: 0.8; }
+    }
+
+    .gate-doors {
+      display: flex;
+      width: 200px;
+      height: 140px;
+      z-index: 2;
+      position: relative;
+      transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .gate-door {
+      flex: 1;
+      height: 100%;
+      background: linear-gradient(180deg, #3d1c1e 0%, #1a0809 100%);
+      border: 2px solid #ff3344;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform 0.6s ease;
+    }
+
+    .gate-door.left {
+      border-right: 1px dashed #ff8800;
+      border-radius: 8px 0 0 8px;
+    }
+
+    .gate-door.right {
+      border-left: 1px dashed #ff8800;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .gate-vault-container.unlocked .gate-door.left {
+      transform: translateX(-35px);
+    }
+
+    .gate-vault-container.unlocked .gate-door.right {
+      transform: translateX(35px);
+    }
+
+    .gate-vault-container.unlocked .molten-glow-core {
+      filter: blur(25px);
+      opacity: 1;
+      transform: scale(1.4);
+    }
+
+    .sigil-rune {
+      font-family: var(--font-scary);
+      font-size: 2.5rem;
+      color: #ff3344;
+      text-shadow: 0 0 15px #ff1a2b;
+      user-select: none;
+    }
+
+    .vault-temperature-readout {
+      position: absolute;
+      bottom: 8px;
+      font-family: var(--font-code);
+      font-size: 0.75rem;
+      color: #ffaa44;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 0.2rem 0.6rem;
+      border-radius: 10px;
+      z-index: 3;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Spooky Atmosphere Background -->
+  <div class="spooky-atmosphere-wrapper">
+    <div class="occult-rune-layer animate-rune-spin">
+      <svg class="rune-svg" viewBox="0 0 500 500">
+        <circle cx="250" cy="250" r="230" fill="none" stroke="#ff1a2b" stroke-width="1.5" stroke-dasharray="8 6"/>
+        <polygon points="250,30 440,380 60,380" fill="none" stroke="#ff1a2b" stroke-width="1.5"/>
+        <polygon points="250,470 440,120 60,120" fill="none" stroke="#ff1a2b" stroke-width="1.5"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="chapter-container">
+
+    <!-- Top Status HUD -->
+    <header class="chapter-hud">
+      <div class="hud-left">
+        <a href="/pick" style="text-decoration:none; color:var(--text-muted); font-size:1.2rem;" title="Return to Portal">←</a>
+        <span class="hud-badge room-code" id="hud-room">ROOM: ----</span>
+        <span class="hud-badge player-name" id="hud-player">Chef: Loading...</span>
+      </div>
+      
+      <div class="hud-center">
+        <span class="hud-badge ingredient-target" style="border-color:#ff1a2b; color:#ff4d5a; background:rgba(255,26,43,0.15)">
+          🧀 Target: Infernal Cheese
+        </span>
+      </div>
+
+      <div class="hud-right">
+        <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; color:var(--text-muted);">
+          <span class="connection-dot" id="hud-dot"></span>
+          <span id="hud-status">Connected</span>
+        </div>
+        <button class="dev-skip-btn" id="btn-instant-victory" title="Simulate solving all 10 gates immediately">
+          ⚡ Instant Victory (Dev)
+        </button>
+      </div>
+    </header>
+
+    <!-- ======================================================== -->
+    <!-- DROP-IN REPLACEMENT ZONE FOR TEAMMATES                   -->
+    <!-- Replace this workspace with your custom UI if desired.  -->
+    <!-- When completed, invoke: window.Room.complete('hell')     -->
+    <!-- ======================================================== -->
+    <main class="chapter-workspace">
+
+      <!-- Left Column: Centerpiece & Question Selector -->
+      <aside class="left-panel">
+        
+        <!-- Interactive Centerpiece: The Brimstone Vault Gate -->
+        <div class="centerpiece-card">
+          <h3>🔥 Brimstone Vault Gate</h3>
+          <div class="centerpiece-visual">
+            <div class="gate-vault-container" id="vault-visual">
+              <div class="molten-glow-core"></div>
+              <div class="gate-doors">
+                <div class="gate-door left"><span class="sigil-rune">⛧</span></div>
+                <div class="gate-door right"><span class="sigil-rune">⛧</span></div>
+              </div>
+              <div class="vault-temperature-readout" id="vault-temp">CORE: 1,666°C • LOCKED</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10 Gate Selector Grid -->
+        <div class="question-nav-card">
+          <div class="progress-header">
+            <span>Thermal Gate Calibration</span>
+            <span id="progress-text" style="font-weight:700; color:#ff4d5a;">0 / 10 Solved</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-bar"></div>
+          </div>
+          <div class="gate-buttons-grid" id="gate-buttons">
+            <!-- Populated via JavaScript -->
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- Right Column: Question Workspace & C Code Editor -->
+      <section class="right-panel">
+
+        <!-- Question Info Banner -->
+        <div class="question-banner">
+          <div class="question-title-row">
+            <h2 id="q-title">Gate 1: Thermal Pressure Seal</h2>
+            <span class="difficulty-badge basic" id="q-difficulty">BASIC</span>
+          </div>
+          <p class="question-desc" id="q-desc">
+            Return 1 if temperature >= 1000 and pressure < 50; otherwise return 0.
+          </p>
+        </div>
+
+        <!-- Code Editor Card -->
+        <div class="editor-card">
+          <div class="editor-header">
+            <div class="editor-lang">
+              <span>⚡ C Programming (C99 / C11)</span>
+            </div>
+            <div class="editor-actions">
+              <button class="btn-secondary" id="btn-reset">↺ Reset Boilerplate</button>
+              <button class="btn-run" id="btn-run">▶ Run & Test Code</button>
+            </div>
+          </div>
+          <textarea class="code-textarea" id="code-editor" spellcheck="false"></textarea>
+          <div class="error-banner" id="error-banner"></div>
+        </div>
+
+        <!-- Test Results Card -->
+        <div class="test-results-card">
+          <div class="results-header">
+            <span class="results-summary" id="results-summary">Run tests to calibrate this gate</span>
+            <span style="font-size:0.8rem; color:var(--text-muted);">Press Ctrl+Enter to Run</span>
+          </div>
+          <div class="test-cards-list" id="test-cards">
+            <!-- Test cases output here -->
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+    <!-- ======================================================== -->
+    <!-- END OF DROP-IN REPLACEMENT ZONE                          -->
+    <!-- ======================================================== -->
+
+  </div>
+
+  <!-- Victory / Waiting Modal -->
+  <div class="victory-modal-overlay" id="victory-modal">
+    <div class="victory-modal-content">
+      <h2>INGREDIENT SECURED!</h2>
+      <p class="lore">
+        The blazing Brimstone Vault swings open! The Infernal Cheese curd sizzles with unholy perfection and is sealed within your soul canister.
+      </p>
+
+      <div style="font-family:var(--font-code); font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">
+        CHEF ROSTER SYNCHRONIZATION:
+      </div>
+      <div class="chefs-status-grid" id="chefs-roster">
+        <div class="chef-status-pill ready">🧀 Hell (You)</div>
+        <div class="chef-status-pill" id="roster-alien">🥦 Alien...</div>
+        <div class="chef-status-pill" id="roster-ocean">🌊 Ocean...</div>
+        <div class="chef-status-pill" id="roster-market">🍞 Market...</div>
+      </div>
+
+      <div class="warp-countdown-text" id="warp-status">
+        Waiting for all 4 ingredients to be forged...
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Scripts -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/shared/parallax.js"></script>
+  <script src="/shared/spooky-entities.js"></script>
+  <script src="/shared/audio.js"></script>
+  <script src="/shared/room-client.js"></script>
+  <script src="/shared/c-runner.js"></script>
+  <script src="/shared/questions-data.js"></script>
+
+  <script>
+    (function() {
+      'use strict';
+
+      const CHAPTER_ID = 'hell';
+      const questions = window.CHAPTER_QUESTIONS ? window.CHAPTER_QUESTIONS[CHAPTER_ID] : [];
+      let currentQuestionIndex = 0;
+      const solvedGates = new Set();
+
+      // DOM Elements
+      const hudRoom = document.getElementById('hud-room');
+      const hudPlayer = document.getElementById('hud-player');
+      const hudDot = document.getElementById('hud-dot');
+      const hudStatus = document.getElementById('hud-status');
+      const gateButtonsContainer = document.getElementById('gate-buttons');
+      const progressBar = document.getElementById('progress-bar');
+      const progressText = document.getElementById('progress-text');
+      const qTitle = document.getElementById('q-title');
+      const qDifficulty = document.getElementById('q-difficulty');
+      const qDesc = document.getElementById('q-desc');
+      const codeEditor = document.getElementById('code-editor');
+      const btnReset = document.getElementById('btn-reset');
+      const btnRun = document.getElementById('btn-run');
+      const btnInstantVictory = document.getElementById('btn-instant-victory');
+      const errorBanner = document.getElementById('error-banner');
+      const testCards = document.getElementById('test-cards');
+      const resultsSummary = document.getElementById('results-summary');
+      const vaultVisual = document.getElementById('vault-visual');
+      const vaultTemp = document.getElementById('vault-temp');
+      const victoryModal = document.getElementById('victory-modal');
+
+      // Initialize Gates UI
+      function initGatesGrid() {
+        gateButtonsContainer.innerHTML = '';
+        questions.forEach((q, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'gate-btn' + (idx === 0 ? ' active' : '');
+          btn.id = `gate-btn-${idx}`;
+          btn.innerHTML = `<span>${idx + 1}</span><span class="gate-status-icon">🔒</span>`;
+          btn.onclick = () => selectQuestion(idx);
+          gateButtonsContainer.appendChild(btn);
+        });
+        loadQuestion(0);
+      }
+
+      function selectQuestion(idx) {
+        currentQuestionIndex = idx;
+        document.querySelectorAll('.gate-btn').forEach((b, i) => {
+          b.classList.toggle('active', i === idx);
+        });
+        loadQuestion(idx);
+      }
+
+      function loadQuestion(idx) {
+        const q = questions[idx];
+        if (!q) return;
+
+        qTitle.textContent = q.title;
+        qDifficulty.textContent = q.difficulty.toUpperCase();
+        qDifficulty.className = `difficulty-badge ${q.difficulty.toLowerCase()}`;
+        qDesc.textContent = q.desc;
+
+        // Restore saved code or use boilerplate
+        const savedCode = localStorage.getItem(`code_${CHAPTER_ID}_${q.id}`);
+        codeEditor.value = savedCode || q.boilerplate;
+
+        errorBanner.style.display = 'none';
+        errorBanner.textContent = '';
+        renderInitialTestCards(q.testCases);
+      }
+
+      function renderInitialTestCards(testCases) {
+        resultsSummary.textContent = 'Ready to test in C';
+        resultsSummary.className = 'results-summary';
+        testCards.innerHTML = '';
+
+        testCases.forEach((t, i) => {
+          const card = document.createElement('div');
+          card.className = 'test-card';
+          card.id = `test-card-${i}`;
+          card.innerHTML = `
+            <div class="test-info">
+              <span class="test-input">Test #${t.id}: Input: ${JSON.stringify(t.input)}</span>
+              <div class="test-io">
+                <span>Expected: <strong style="color:#93c5fd;">${JSON.stringify(t.expectedArray || t.expected)}</strong></span>
+                <span id="actual-val-${i}">Actual: <em>Pending</em></span>
+              </div>
+            </div>
+            <span class="test-status-badge" id="badge-${i}" style="background:rgba(255,255,255,0.06); color:#9ca3af;">READY</span>
+          `;
+          testCards.appendChild(card);
+        });
+      }
+
+      // Handle Tab Key Indentation & Ctrl+Enter in Editor
+      codeEditor.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = codeEditor.selectionStart;
+          const end = codeEditor.selectionEnd;
+          codeEditor.value = codeEditor.value.substring(0, start) + '    ' + codeEditor.value.substring(end);
+          codeEditor.selectionStart = codeEditor.selectionEnd = start + 4;
+        } else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          runActiveTest();
+        }
+      });
+
+      // Reset Boilerplate
+      btnReset.addEventListener('click', () => {
+        const q = questions[currentQuestionIndex];
+        if (q) {
+          codeEditor.value = q.boilerplate;
+          localStorage.removeItem(`code_${CHAPTER_ID}_${q.id}`);
+          renderInitialTestCards(q.testCases);
+          if (window.SoundFX) window.SoundFX.click();
+        }
+      });
+
+      // Run Tests
+      async function runActiveTest() {
+        const q = questions[currentQuestionIndex];
+        if (!q) return;
+
+        const userCode = codeEditor.value;
+        localStorage.setItem(`code_${CHAPTER_ID}_${q.id}`, userCode);
+
+        btnRun.disabled = true;
+        btnRun.textContent = 'Testing...';
+        errorBanner.style.display = 'none';
+
+        if (window.SoundFX) window.SoundFX.click();
+
+        try {
+          const outcome = await window.CRunner.runTests(userCode, q.functionName, q.testCases);
+
+          if (!outcome.success) {
+            errorBanner.style.display = 'block';
+            errorBanner.textContent = 'C Compilation Error:\n' + outcome.compileError;
+            resultsSummary.textContent = 'Compilation Failed';
+            resultsSummary.className = 'results-summary has-fail';
+            if (window.SoundFX) window.SoundFX.error();
+            return;
+          }
+
+          // Update test cards
+          outcome.results.forEach((r, i) => {
+            const card = document.getElementById(`test-card-${i}`);
+            const badge = document.getElementById(`badge-${i}`);
+            const actualVal = document.getElementById(`actual-val-${i}`);
+
+            if (card && badge && actualVal) {
+              card.className = `test-card ${r.passed ? 'passed' : 'failed'}`;
+              badge.className = `test-status-badge ${r.passed ? 'pass' : 'fail'}`;
+              badge.textContent = r.passed ? 'PASS' : 'FAIL';
+              actualVal.innerHTML = `Actual: <strong style="color:${r.passed ? '#34d399' : '#f87171'}">${r.actual}</strong>`;
+            }
+          });
+
+          if (outcome.allPassed) {
+            resultsSummary.textContent = `All ${outcome.totalTests} Tests Passed! Gate Calibrated.`;
+            resultsSummary.className = 'results-summary all-pass';
+            if (window.SoundFX) window.SoundFX.success();
+            markGateSolved(currentQuestionIndex);
+          } else {
+            resultsSummary.textContent = `${outcome.testsPassed} / ${outcome.totalTests} Passed`;
+            resultsSummary.className = 'results-summary has-fail';
+            if (window.SoundFX) window.SoundFX.error();
+          }
+
+        } catch (err) {
+          errorBanner.style.display = 'block';
+          errorBanner.textContent = 'Runtime Exception:\n' + err.message;
+          if (window.SoundFX) window.SoundFX.error();
+        } finally {
+          btnRun.disabled = false;
+          btnRun.textContent = '▶ Run & Test Code';
+        }
+      }
+
+      btnRun.addEventListener('click', runActiveTest);
+
+      function markGateSolved(idx) {
+        solvedGates.add(idx);
+        const btn = document.getElementById(`gate-btn-${idx}`);
+        if (btn) {
+          btn.classList.add('solved');
+          btn.querySelector('.gate-status-icon').textContent = '✔';
+        }
+
+        const solvedCount = solvedGates.size;
+        progressBar.style.width = `${(solvedCount / questions.length) * 100}%`;
+        progressText.textContent = `${solvedCount} / ${questions.length} Solved`;
+
+        // Update Centerpiece Visual
+        vaultTemp.textContent = `CORE: ${1666 + (solvedCount * 100)}°C • GATES: ${solvedCount}/10`;
+        if (solvedCount >= questions.length) {
+          triggerChapterVictory();
+        }
+      }
+
+      function triggerChapterVictory() {
+        vaultVisual.classList.add('unlocked');
+        vaultTemp.textContent = 'CORE: UNLOCKED • INFERNAL CHEESE HARVESTED';
+        victoryModal.classList.add('visible');
+
+        if (window.SoundFX) window.SoundFX.portalWarp();
+
+        // Signal authoritative server
+        if (window.Room) {
+          window.Room.complete(CHAPTER_ID);
+        }
+      }
+
+      // Instant Victory Dev Trigger
+      btnInstantVictory.addEventListener('click', () => {
+        for (let i = 0; i < questions.length; i++) {
+          markGateSolved(i);
+        }
+        triggerChapterVictory();
+      });
+
+      // Room Client Sync & Events
+      function setupNetworking() {
+        if (!window.Room) return;
+
+        hudRoom.textContent = `ROOM: ${window.Room.getRoomCode() || 'DEV-TEST'}`;
+        hudPlayer.textContent = `Chef: ${window.Room.getPlayerName()}`;
+
+        window.Room.on('room_updated', (data) => {
+          updateRosterStatus(data.roomState);
+        });
+
+        window.Room.on('chapter_completed', (data) => {
+          updateRosterStatus(data.roomState);
+          if (data.allCompleted) {
+            document.getElementById('warp-status').textContent = 'All 4 Ingredients Secured! Warping to the Finale...';
+          }
+        });
+
+        window.Room.on('all_chapters_completed', () => {
+          document.getElementById('warp-status').textContent = 'Rift opened! Entering the Finale chamber...';
+        });
+
+        window.Room.on('disconnect', () => {
+          hudDot.classList.add('disconnected');
+          hudStatus.textContent = 'Offline (Retrying...)';
+        });
+
+        window.Room.on('connect', () => {
+          hudDot.classList.remove('disconnected');
+          hudStatus.textContent = 'Connected';
+        });
+      }
+
+      function updateRosterStatus(state) {
+        if (!state || !state.completed) return;
+        const c = state.completed;
+        const alienPill = document.getElementById('roster-alien');
+        const oceanPill = document.getElementById('roster-ocean');
+        const marketPill = document.getElementById('roster-market');
+
+        if (alienPill && c.alien) { alienPill.className = 'chef-status-pill ready'; alienPill.textContent = '🥦 Alien (Ready)'; }
+        if (oceanPill && c.ocean) { oceanPill.className = 'chef-status-pill ready'; oceanPill.textContent = '🌊 Ocean (Ready)'; }
+        if (marketPill && c.market) { marketPill.className = 'chef-status-pill ready'; marketPill.textContent = '🍞 Market (Ready)'; }
+      }
+
+      // Initialize
+      initGatesGrid();
+      setTimeout(setupNetworking, 300);
+
+    })();
+  </script>
+</body>
+</html>

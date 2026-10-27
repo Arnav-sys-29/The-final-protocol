@@ -1,1 +1,548 @@
-<!DOCTYPE html><html><head><title>ocean</title></head><body><h1>ocean</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter III: Abyssal Sauce | The Legendary Sandwich From Hell</title>
+  <meta name="description" content="Descend into the Mariana Trench pressure chamber to distill Abyssal Sauce by implementing recursive alchemy in C.">
+
+  <!-- Spooky Fonts & Styles -->
+  <link rel="stylesheet" href="/shared/theme.css">
+  <link rel="stylesheet" href="/shared/chapter.css">
+
+  <style>
+    /* Ocean-specific atmospheric accents */
+    :root {
+      --chapter-accent: #00f5d4;
+      --chapter-glow: rgba(0, 245, 212, 0.55);
+    }
+
+    body {
+      background-image: 
+        radial-gradient(circle at calc(var(--mouse-x) * 100%) calc(var(--mouse-y) * 100%), rgba(0, 245, 212, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 20% 80%, rgba(0, 160, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at center, #05141e 0%, #03080e 100%);
+    }
+
+    /* Interactive Pressure Chamber Visual */
+    .pressure-chamber-box {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, #081d28 0%, #030a10 90%);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .bubble-column {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -15px;
+      background: rgba(0, 245, 212, 0.5);
+      border-radius: 50%;
+      box-shadow: 0 0 8px #00f5d4;
+      animation: bubbleRise 3s infinite ease-in;
+    }
+
+    @keyframes bubbleRise {
+      0% { transform: translateY(0) scale(1); opacity: 0.8; }
+      100% { transform: translateY(-220px) scale(1.4); opacity: 0; }
+    }
+
+    .dial-gauge-wrapper {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px solid #00f5d4;
+      background: rgba(0, 15, 25, 0.85);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(0, 245, 212, 0.4), inset 0 0 15px rgba(0, 245, 212, 0.2);
+      z-index: 2;
+    }
+
+    .needle {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      width: 3px;
+      height: 42px;
+      background: #ff3344;
+      transform-origin: bottom center;
+      transform: rotate(120deg);
+      transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 0 6px #ff3344;
+      border-radius: 2px;
+    }
+
+    .gauge-center-pin {
+      width: 12px;
+      height: 12px;
+      background: #00f5d4;
+      border-radius: 50%;
+      z-index: 3;
+      box-shadow: 0 0 8px #00f5d4;
+    }
+
+    .gauge-readout {
+      position: absolute;
+      bottom: 8px;
+      font-family: var(--font-code);
+      font-size: 0.75rem;
+      color: #00f5d4;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 0.2rem 0.6rem;
+      border-radius: 10px;
+      z-index: 3;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Spooky Atmosphere Background -->
+  <div class="spooky-atmosphere-wrapper">
+    <div class="occult-rune-layer small animate-rune-spin">
+      <svg class="rune-svg" viewBox="0 0 500 500">
+        <circle cx="250" cy="250" r="230" fill="none" stroke="#00f5d4" stroke-width="1.5" stroke-dasharray="8 6"/>
+        <polygon points="250,50 420,350 80,350" fill="none" stroke="#00f5d4" stroke-width="1.5"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="chapter-container">
+
+    <!-- Top Status HUD -->
+    <header class="chapter-hud">
+      <div class="hud-left">
+        <a href="/pick" style="text-decoration:none; color:var(--text-muted); font-size:1.2rem;" title="Return to Portal">←</a>
+        <span class="hud-badge room-code" id="hud-room">ROOM: ----</span>
+        <span class="hud-badge player-name" id="hud-player">Chef: Loading...</span>
+      </div>
+      
+      <div class="hud-center">
+        <span class="hud-badge ingredient-target" style="border-color:#00f5d4; color:#00f5d4; background:rgba(0,245,212,0.15)">
+          🌊 Target: Abyssal Sauce
+        </span>
+      </div>
+
+      <div class="hud-right">
+        <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; color:var(--text-muted);">
+          <span class="connection-dot" id="hud-dot"></span>
+          <span id="hud-status">Connected</span>
+        </div>
+        <button class="dev-skip-btn" id="btn-instant-victory" title="Simulate solving all 10 trench gates immediately">
+          ⚡ Instant Victory (Dev)
+        </button>
+      </div>
+    </header>
+
+    <!-- ======================================================== -->
+    <!-- DROP-IN REPLACEMENT ZONE FOR TEAMMATES                   -->
+    <!-- Replace this workspace with your custom UI if desired.  -->
+    <!-- When completed, invoke: window.Room.complete('ocean')    -->
+    <!-- ======================================================== -->
+    <main class="chapter-workspace">
+
+      <!-- Left Column: Centerpiece & Question Selector -->
+      <aside class="left-panel">
+        
+        <!-- Interactive Centerpiece: Trench Pressure Chamber -->
+        <div class="centerpiece-card">
+          <h3 style="color:#00f5d4;">🌊 Mariana Pressure Chamber</h3>
+          <div class="centerpiece-visual">
+            <div class="pressure-chamber-box" id="chamber-visual">
+              <div class="bubble-column" id="bubble-container">
+                <div class="bubble" style="left:20%; width:8px; height:8px; animation-delay:0.2s;"></div>
+                <div class="bubble" style="left:50%; width:14px; height:14px; animation-delay:1.1s;"></div>
+                <div class="bubble" style="left:80%; width:10px; height:10px; animation-delay:0.7s;"></div>
+              </div>
+              <div class="dial-gauge-wrapper">
+                <div class="needle" id="gauge-needle"></div>
+                <div class="gauge-center-pin"></div>
+              </div>
+              <div class="gauge-readout" id="pressure-readout">PRESSURE: 1,090 ATM (CRITICAL)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10 Gate Selector Grid -->
+        <div class="question-nav-card">
+          <div class="progress-header">
+            <span>Pressure De-Acidification</span>
+            <span id="progress-text" style="font-weight:700; color:#00f5d4;">0 / 10 Solved</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-bar" style="background:linear-gradient(90deg, #00f5d4, #3b82f6); box-shadow:0 0 10px rgba(0,245,212,0.7);"></div>
+          </div>
+          <div class="gate-buttons-grid" id="gate-buttons">
+            <!-- Populated via JavaScript -->
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- Right Column: Question Workspace & C Code Editor -->
+      <section class="right-panel">
+
+        <!-- Question Info Banner -->
+        <div class="question-banner">
+          <div class="question-title-row">
+            <h2 id="q-title">Trench 1: Recursive Power Generator</h2>
+            <span class="difficulty-badge basic" id="q-difficulty">BASIC</span>
+          </div>
+          <p class="question-desc" id="q-desc">
+            Calculate base^exp recursively. Assume exp >= 0.
+          </p>
+        </div>
+
+        <!-- Code Editor Card -->
+        <div class="editor-card">
+          <div class="editor-header">
+            <div class="editor-lang">
+              <span style="color:#00f5d4;">⚡ C Programming (C99 / C11)</span>
+            </div>
+            <div class="editor-actions">
+              <button class="btn-secondary" id="btn-reset">↺ Reset Boilerplate</button>
+              <button class="btn-run" id="btn-run" style="background:linear-gradient(135deg, #00b4d8, #0077b6); border-color:#00f5d4; box-shadow:0 0 15px rgba(0,245,212,0.4);">
+                ▶ Run & Test Code
+              </button>
+            </div>
+          </div>
+          <textarea class="code-textarea" id="code-editor" spellcheck="false"></textarea>
+          <div class="error-banner" id="error-banner"></div>
+        </div>
+
+        <!-- Test Results Card -->
+        <div class="test-results-card">
+          <div class="results-header">
+            <span class="results-summary" id="results-summary">Ready to test recursion in C</span>
+            <span style="font-size:0.8rem; color:var(--text-muted);">Press Ctrl+Enter to Run</span>
+          </div>
+          <div class="test-cards-list" id="test-cards">
+            <!-- Test cases output here -->
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+    <!-- ======================================================== -->
+    <!-- END OF DROP-IN REPLACEMENT ZONE                          -->
+    <!-- ======================================================== -->
+
+  </div>
+
+  <!-- Victory / Waiting Modal -->
+  <div class="victory-modal-overlay" id="victory-modal">
+    <div class="victory-modal-content" style="border-color:#00f5d4; box-shadow:0 0 50px rgba(0,245,212,0.5);">
+      <h2 style="color:#00f5d4; text-shadow:0 0 20px rgba(0,245,212,0.8);">INGREDIENT SECURED!</h2>
+      <p class="lore">
+        Pressure normalized to 1 ATM! The iridescent Abyssal Sauce drips into your alchemical flask, radiating unholy culinary power.
+      </p>
+
+      <div style="font-family:var(--font-code); font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">
+        CHEF ROSTER SYNCHRONIZATION:
+      </div>
+      <div class="chefs-status-grid" id="chefs-roster">
+        <div class="chef-status-pill" id="roster-hell">🧀 Hell...</div>
+        <div class="chef-status-pill" id="roster-alien">🥦 Alien...</div>
+        <div class="chef-status-pill ready">🌊 Ocean (You)</div>
+        <div class="chef-status-pill" id="roster-market">🍞 Market...</div>
+      </div>
+
+      <div class="warp-countdown-text" id="warp-status">
+        Waiting for all 4 ingredients to be forged...
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Scripts -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/shared/parallax.js"></script>
+  <script src="/shared/spooky-entities.js"></script>
+  <script src="/shared/audio.js"></script>
+  <script src="/shared/room-client.js"></script>
+  <script src="/shared/c-runner.js"></script>
+  <script src="/shared/questions-data.js"></script>
+
+  <script>
+    (function() {
+      'use strict';
+
+      const CHAPTER_ID = 'ocean';
+      const questions = window.CHAPTER_QUESTIONS ? window.CHAPTER_QUESTIONS[CHAPTER_ID] : [];
+      let currentQuestionIndex = 0;
+      const solvedGates = new Set();
+
+      // DOM Elements
+      const hudRoom = document.getElementById('hud-room');
+      const hudPlayer = document.getElementById('hud-player');
+      const hudDot = document.getElementById('hud-dot');
+      const hudStatus = document.getElementById('hud-status');
+      const gateButtonsContainer = document.getElementById('gate-buttons');
+      const progressBar = document.getElementById('progress-bar');
+      const progressText = document.getElementById('progress-text');
+      const qTitle = document.getElementById('q-title');
+      const qDifficulty = document.getElementById('q-difficulty');
+      const qDesc = document.getElementById('q-desc');
+      const codeEditor = document.getElementById('code-editor');
+      const btnReset = document.getElementById('btn-reset');
+      const btnRun = document.getElementById('btn-run');
+      const btnInstantVictory = document.getElementById('btn-instant-victory');
+      const errorBanner = document.getElementById('error-banner');
+      const testCards = document.getElementById('test-cards');
+      const resultsSummary = document.getElementById('results-summary');
+      const gaugeNeedle = document.getElementById('gauge-needle');
+      const pressureReadout = document.getElementById('pressure-readout');
+      const victoryModal = document.getElementById('victory-modal');
+
+      function initGatesGrid() {
+        gateButtonsContainer.innerHTML = '';
+        questions.forEach((q, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'gate-btn' + (idx === 0 ? ' active' : '');
+          btn.id = `gate-btn-${idx}`;
+          btn.innerHTML = `<span>${idx + 1}</span><span class="gate-status-icon">🔒</span>`;
+          btn.onclick = () => selectQuestion(idx);
+          gateButtonsContainer.appendChild(btn);
+        });
+        loadQuestion(0);
+      }
+
+      function selectQuestion(idx) {
+        currentQuestionIndex = idx;
+        document.querySelectorAll('.gate-btn').forEach((b, i) => {
+          b.classList.toggle('active', i === idx);
+        });
+        loadQuestion(idx);
+      }
+
+      function loadQuestion(idx) {
+        const q = questions[idx];
+        if (!q) return;
+
+        qTitle.textContent = q.title;
+        qDifficulty.textContent = q.difficulty.toUpperCase();
+        qDifficulty.className = `difficulty-badge ${q.difficulty.toLowerCase()}`;
+        qDesc.textContent = q.desc;
+
+        const savedCode = localStorage.getItem(`code_${CHAPTER_ID}_${q.id}`);
+        codeEditor.value = savedCode || q.boilerplate;
+
+        errorBanner.style.display = 'none';
+        errorBanner.textContent = '';
+        renderInitialTestCards(q.testCases);
+      }
+
+      function renderInitialTestCards(testCases) {
+        resultsSummary.textContent = 'Ready to test in C';
+        resultsSummary.className = 'results-summary';
+        testCards.innerHTML = '';
+
+        testCases.forEach((t, i) => {
+          const card = document.createElement('div');
+          card.className = 'test-card';
+          card.id = `test-card-${i}`;
+          card.innerHTML = `
+            <div class="test-info">
+              <span class="test-input">Test #${t.id}: Input: ${JSON.stringify(t.input)}</span>
+              <div class="test-io">
+                <span>Expected: <strong style="color:#00f5d4;">${JSON.stringify(t.expectedArray || t.expected)}</strong></span>
+                <span id="actual-val-${i}">Actual: <em>Pending</em></span>
+              </div>
+            </div>
+            <span class="test-status-badge" id="badge-${i}" style="background:rgba(255,255,255,0.06); color:#9ca3af;">READY</span>
+          `;
+          testCards.appendChild(card);
+        });
+      }
+
+      codeEditor.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = codeEditor.selectionStart;
+          const end = codeEditor.selectionEnd;
+          codeEditor.value = codeEditor.value.substring(0, start) + '    ' + codeEditor.value.substring(end);
+          codeEditor.selectionStart = codeEditor.selectionEnd = start + 4;
+        } else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          runActiveTest();
+        }
+      });
+
+      btnReset.addEventListener('click', () => {
+        const q = questions[currentQuestionIndex];
+        if (q) {
+          codeEditor.value = q.boilerplate;
+          localStorage.removeItem(`code_${CHAPTER_ID}_${q.id}`);
+          renderInitialTestCards(q.testCases);
+          if (window.SoundFX) window.SoundFX.click();
+        }
+      });
+
+      async function runActiveTest() {
+        const q = questions[currentQuestionIndex];
+        if (!q) return;
+
+        const userCode = codeEditor.value;
+        localStorage.setItem(`code_${CHAPTER_ID}_${q.id}`, userCode);
+
+        btnRun.disabled = true;
+        btnRun.textContent = 'Testing...';
+        errorBanner.style.display = 'none';
+
+        if (window.SoundFX) window.SoundFX.click();
+
+        try {
+          const outcome = await window.CRunner.runTests(userCode, q.functionName, q.testCases);
+
+          if (!outcome.success) {
+            errorBanner.style.display = 'block';
+            errorBanner.textContent = 'C Compilation Error:\n' + outcome.compileError;
+            resultsSummary.textContent = 'Compilation Failed';
+            resultsSummary.className = 'results-summary has-fail';
+            if (window.SoundFX) window.SoundFX.error();
+            return;
+          }
+
+          outcome.results.forEach((r, i) => {
+            const card = document.getElementById(`test-card-${i}`);
+            const badge = document.getElementById(`badge-${i}`);
+            const actualVal = document.getElementById(`actual-val-${i}`);
+
+            if (card && badge && actualVal) {
+              card.className = `test-card ${r.passed ? 'passed' : 'failed'}`;
+              badge.className = `test-status-badge ${r.passed ? 'pass' : 'fail'}`;
+              badge.textContent = r.passed ? 'PASS' : 'FAIL';
+              actualVal.innerHTML = `Actual: <strong style="color:${r.passed ? '#00f5d4' : '#f87171'}">${r.actual}</strong>`;
+            }
+          });
+
+          if (outcome.allPassed) {
+            resultsSummary.textContent = `All ${outcome.totalTests} Tests Passed! Valve Depressurized.`;
+            resultsSummary.className = 'results-summary all-pass';
+            if (window.SoundFX) window.SoundFX.success();
+            markGateSolved(currentQuestionIndex);
+          } else {
+            resultsSummary.textContent = `${outcome.testsPassed} / ${outcome.totalTests} Passed`;
+            resultsSummary.className = 'results-summary has-fail';
+            if (window.SoundFX) window.SoundFX.error();
+          }
+
+        } catch (err) {
+          errorBanner.style.display = 'block';
+          errorBanner.textContent = 'Runtime Exception:\n' + err.message;
+          if (window.SoundFX) window.SoundFX.error();
+        } finally {
+          btnRun.disabled = false;
+          btnRun.textContent = '▶ Run & Test Code';
+        }
+      }
+
+      btnRun.addEventListener('click', runActiveTest);
+
+      function markGateSolved(idx) {
+        solvedGates.add(idx);
+        const btn = document.getElementById(`gate-btn-${idx}`);
+        if (btn) {
+          btn.classList.add('solved');
+          btn.querySelector('.gate-status-icon').textContent = '✔';
+        }
+
+        const solvedCount = solvedGates.size;
+        progressBar.style.width = `${(solvedCount / questions.length) * 100}%`;
+        progressText.textContent = `${solvedCount} / ${questions.length} Solved`;
+
+        // Rotate Gauge needle: from 120deg (critical) down to -60deg (safe)
+        const newAngle = 120 - ((solvedCount / questions.length) * 180);
+        gaugeNeedle.style.transform = `rotate(${newAngle}deg)`;
+
+        const currentAtm = Math.max(1, 1090 - Math.floor((solvedCount / questions.length) * 1089));
+        pressureReadout.textContent = `PRESSURE: ${currentAtm} ATM ${solvedCount >= questions.length ? '(OPTIMAL)' : '(VENTING)'}`;
+
+        if (solvedCount >= questions.length) {
+          triggerChapterVictory();
+        }
+      }
+
+      function triggerChapterVictory() {
+        pressureReadout.textContent = 'PRESSURE: 1 ATM (OPTIMAL) • DISTILLATION COMPLETE';
+        victoryModal.classList.add('visible');
+
+        if (window.SoundFX) window.SoundFX.portalWarp();
+
+        if (window.Room) {
+          window.Room.complete(CHAPTER_ID);
+        }
+      }
+
+      btnInstantVictory.addEventListener('click', () => {
+        for (let i = 0; i < questions.length; i++) {
+          markGateSolved(i);
+        }
+        triggerChapterVictory();
+      });
+
+      function setupNetworking() {
+        if (!window.Room) return;
+
+        hudRoom.textContent = `ROOM: ${window.Room.getRoomCode() || 'DEV-TEST'}`;
+        hudPlayer.textContent = `Chef: ${window.Room.getPlayerName()}`;
+
+        window.Room.on('room_updated', (data) => {
+          updateRosterStatus(data.roomState);
+        });
+
+        window.Room.on('chapter_completed', (data) => {
+          updateRosterStatus(data.roomState);
+          if (data.allCompleted) {
+            document.getElementById('warp-status').textContent = 'All 4 Ingredients Secured! Warping to the Finale...';
+          }
+        });
+
+        window.Room.on('all_chapters_completed', () => {
+          document.getElementById('warp-status').textContent = 'Rift opened! Entering the Finale chamber...';
+        });
+
+        window.Room.on('disconnect', () => {
+          hudDot.classList.add('disconnected');
+          hudStatus.textContent = 'Offline (Retrying...)';
+        });
+
+        window.Room.on('connect', () => {
+          hudDot.classList.remove('disconnected');
+          hudStatus.textContent = 'Connected';
+        });
+      }
+
+      function updateRosterStatus(state) {
+        if (!state || !state.completed) return;
+        const c = state.completed;
+        const hellPill = document.getElementById('roster-hell');
+        const alienPill = document.getElementById('roster-alien');
+        const marketPill = document.getElementById('roster-market');
+
+        if (hellPill && c.hell) { hellPill.className = 'chef-status-pill ready'; hellPill.textContent = '🧀 Hell (Ready)'; }
+        if (alienPill && c.alien) { alienPill.className = 'chef-status-pill ready'; alienPill.textContent = '🥦 Alien (Ready)'; }
+        if (marketPill && c.market) { marketPill.className = 'chef-status-pill ready'; marketPill.textContent = '🍞 Market (Ready)'; }
+      }
+
+      initGatesGrid();
+      setTimeout(setupNetworking, 300);
+
+    })();
+  </script>
+</body>
+</html>

@@ -33,12 +33,12 @@ graph TD
 
 ### Phase 3: Drop-in Chapter Templates & Teammate Integration
 **Goal:** Provide ready-to-drop scaffolds for teammates' chapter pages with verified communication back to the server.
-- [ ] Implement `public/hell/index.html` (Cheese / Boolean Logic) with demo puzzle trigger.
-- [ ] Implement `public/alien/index.html` (Vegetables / Loops) with demo puzzle trigger.
-- [ ] Implement `public/ocean/index.html` (Sauce / Functions) with demo puzzle trigger.
-- [ ] Implement `public/market/index.html` (Bread / Dictionaries) with demo puzzle trigger.
-- [ ] Integrate consolidated helper API routes (e.g. Market judge) directly into `server.js`.
-- [ ] Document drop-in instructions for teammates in each template.
+- [x] Implement `public/hell/index.html` (Cheese / Booleans & Conditions in C) with molten gate calibration and 10 C questions.
+- [x] Implement `public/alien/index.html` (Vegetables / Loops & Arrays in C) with bio-conveyor purge animation and 10 C questions.
+- [x] Implement `public/ocean/index.html` (Sauce / Functions & Recursion in C) with pressure chamber dial and 10 C questions.
+- [x] Implement `public/market/index.html` (Bread / Strings & Arrays in C) with goblin vault safe tumbler and 10 C questions.
+- [x] Implement `public/shared/c-runner.js` and `public/shared/questions-data.js` for in-browser C execution with 40/40 passing test suites.
+- [x] Document drop-in instructions for teammates in each template and `README-TEAMMATES.md`.
 
 ---
 

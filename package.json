@@ -1,0 +1,10 @@
+{
+  "name": "sandwich-game-root",
+  "version": "1.0.0",
+  "description": "Root runner for The Legendary Sandwich From Hell",
+  "scripts": {
+    "dev": "npm --prefix sandwich-hell run dev",
+    "start": "npm --prefix sandwich-hell start",
+    "test": "npm --prefix sandwich-hell test"
+  }
+}

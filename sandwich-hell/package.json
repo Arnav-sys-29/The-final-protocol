@@ -4,8 +4,9 @@
   "description": "The Legendary Sandwich From Hell - 4-Player Multi-Screen Cooperative Experience",
   "main": "server.js",
   "scripts": {
+    "dev": "node server.js --open",
     "start": "node server.js",
-    "test": "node test-socket-flow.js"
+    "test": "node test-socket-flow.js && node test-c-questions.js"
   },
   "dependencies": {
     "express": "^4.19.2",

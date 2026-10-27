@@ -14,7 +14,7 @@ const io = new Server(server, {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+let PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
@@ -434,6 +434,27 @@ function getLocalIp() {
   return 'localhost';
 }
 
+const { exec } = require('child_process');
+
+function openBrowser(url) {
+  const start = process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open';
+  exec(`${start} ${url}`, (err) => {
+    if (err) console.warn('Could not auto-open browser:', err.message);
+  });
+}
+
+// Handle Port in Use gracefully
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    const nextPort = Number(PORT) + 1;
+    console.warn(`⚠️  Port ${PORT} is busy. Trying http://localhost:${nextPort}...`);
+    PORT = nextPort;
+    server.listen(PORT, '0.0.0.0');
+  } else {
+    console.error('Server error:', err);
+  }
+});
+
 // Start Server
 server.listen(PORT, '0.0.0.0', () => {
   const localIp = getLocalIp();
@@ -443,4 +464,13 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`Local Access:   http://localhost:${PORT}`);
   console.log(`LAN Access:     http://${localIp}:${PORT}  (Connect from 4 monitors/PCs)`);
   console.log('=================================================================');
+
+  const shouldOpen = process.argv.includes('--open') || process.env.npm_lifecycle_event === 'dev';
+  if (shouldOpen) {
+    console.log(`🚀 Launching live page in browser: http://localhost:${PORT}/lobby ...`);
+    setTimeout(() => {
+      openBrowser(`http://localhost:${PORT}/lobby`);
+    }, 600);
+  }
 });
+

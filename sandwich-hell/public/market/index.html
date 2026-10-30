@@ -1,538 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chapter IV: Eldritch Bread | The Legendary Sandwich From Hell</title>
-  <meta name="description" content="Infiltrate the Midnight Goblin Bazaar to liberate the Eldritch Bread by solving occult barter algorithms in C.">
-
-  <!-- Spooky Fonts & Styles -->
-  <link rel="stylesheet" href="/shared/theme.css">
-  <link rel="stylesheet" href="/shared/chapter.css">
-
-  <style>
-    /* Market-specific atmospheric accents */
-    :root {
-      --chapter-accent: #eab308;
-      --chapter-glow: rgba(234, 179, 8, 0.55);
-    }
-
-    body {
-      background-image: 
-        radial-gradient(circle at calc(var(--mouse-x) * 100%) calc(var(--mouse-y) * 100%), rgba(234, 179, 8, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 75% 85%, rgba(200, 140, 20, 0.12) 0%, transparent 50%),
-        radial-gradient(ellipse at center, #161005 0%, #080602 100%);
-    }
-
-    /* Interactive Goblin Vault Safe Visual */
-    .vault-safe-box {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle, #251a08 0%, #0a0702 90%);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .safe-door-frame {
-      width: 140px;
-      height: 140px;
-      border: 3px solid #eab308;
-      border-radius: 50%;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 25px rgba(234, 179, 8, 0.3), inset 0 0 20px rgba(234, 179, 8, 0.2);
-      transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .tumbler-dial {
-      position: absolute;
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      border: 2px dashed #ca8a04;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.6s ease;
-    }
-
-    .safe-handle {
-      width: 45px;
-      height: 45px;
-      background: linear-gradient(135deg, #eab308, #854d0e);
-      border-radius: 50%;
-      border: 2px solid #fef08a;
-      box-shadow: 0 0 10px rgba(234, 179, 8, 0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      user-select: none;
-      z-index: 2;
-    }
-
-    .vault-safe-box.unlocked .safe-door-frame {
-      border-color: #34d399;
-      box-shadow: 0 0 35px rgba(52, 211, 153, 0.6);
-      transform: scale(1.1);
-    }
-
-    .vault-safe-box.unlocked .safe-handle {
-      background: linear-gradient(135deg, #10b981, #047857);
-      border-color: #a7f3d0;
-    }
-
-    .vault-readout {
-      position: absolute;
-      bottom: 8px;
-      font-family: var(--font-code);
-      font-size: 0.75rem;
-      color: #eab308;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 0.2rem 0.6rem;
-      border-radius: 10px;
-      z-index: 3;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eldritch Bread · The Legendary Sandwich From Hell</title>
+<link rel="stylesheet" href="/shared/chapter-hud.css">
+<style>
+:root{--panel:rgba(6,14,42,.76);--ink:#e9eefc;--dim:#9db3e6;--gold:#f5a623;--ok:#7bd88f;--bad:#ff8a7a;--disp:"Chiller","Jokerman","Papyrus","Segoe Print",fantasy}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#000;overflow:hidden;color:var(--ink);font-family:"Raleway","Segoe UI",system-ui,sans-serif}
+#stage{position:absolute;width:1920px;height:1080px;transform-origin:0 0;display:flex;flex-direction:column;overflow:hidden;
+ background:radial-gradient(ellipse 700px 230px at 22% 30%,rgba(130,175,255,.30),transparent 70%),radial-gradient(ellipse 900px 270px at 78% 22%,rgba(95,145,235,.32),transparent 70%),radial-gradient(ellipse 800px 250px at 50% 58%,rgba(40,85,175,.45),transparent 70%),linear-gradient(#091a44,#17409a 58%,#0a1c4a)}
+#scene,#rain{position:absolute;inset:0;pointer-events:none}#scene{z-index:0}#rain{z-index:1;overflow:hidden}
+#rain i{position:absolute;top:-120px;width:2px;background:linear-gradient(transparent,#cfe0ff);transform:rotate(10deg);animation:fall linear infinite}
+@keyframes fall{to{transform:translate(-220px,1250px) rotate(10deg)}}
+.glow{filter:drop-shadow(0 0 16px #ff9a1a);animation:flick 3.2s ease-in-out infinite}
+@keyframes flick{0%,100%{opacity:1}45%{opacity:.82}55%{opacity:.95}}
+#stage:not(.playing) #main,#stage:not(.playing) #ticker{visibility:hidden}
+#ticker{position:relative;z-index:2;height:64px;background:rgba(0,0,0,.5);border-bottom:2px solid var(--gold);overflow:hidden;white-space:nowrap;font-size:28px;line-height:62px;color:var(--gold);letter-spacing:1px}
+#ticker span{display:inline-block;padding-left:100%;animation:tick 40s linear infinite}
+@keyframes tick{to{transform:translateX(-100%)}}
+#main{position:relative;z-index:2;flex:1;display:flex;gap:32px;padding:24px 32px 200px;min-height:0}
+.col{background:var(--panel);border:1px solid rgba(130,170,255,.28);border-radius:18px;padding:26px;display:flex;flex-direction:column;min-height:0;backdrop-filter:blur(3px)}
+#left{width:760px}#right{flex:1}
+#qno{color:var(--dim);font-size:24px;letter-spacing:3px;text-transform:uppercase}
+h1{margin:4px 0 4px;font:normal 64px var(--disp);color:var(--gold);letter-spacing:2px;text-shadow:0 3px 0 #7a3b00}
+#lvl{display:inline-block;font-size:21px;padding:2px 16px;border:2px solid var(--gold);border-radius:20px;margin-bottom:14px;color:var(--gold)}
+#txt{font-size:28px;line-height:1.4;overflow:auto}
+pre{font-family:ui-monospace,Consolas,monospace;margin:0;white-space:pre-wrap}
+.io{display:flex;gap:20px;margin-top:14px}.io div{flex:1;background:rgba(2,6,24,.7);border-radius:10px;padding:12px 16px;font-size:27px}
+.io b{display:block;font-family:inherit;color:var(--dim);font-size:20px;margin-bottom:4px;letter-spacing:2px;text-transform:uppercase}
+#bar{display:flex;gap:16px;align-items:center;margin-bottom:14px;font-size:27px}
+select,button{font:inherit;font-size:26px;padding:8px 22px;border-radius:30px;border:0;background:rgba(255,255,255,.15);color:var(--ink);cursor:pointer;letter-spacing:2px;text-transform:uppercase;backdrop-filter:blur(4px)}
+select{text-transform:none;letter-spacing:0;background:rgba(2,6,24,.8)}
+button:hover{background:rgba(255,255,255,.28)}button.go{background:var(--gold);color:#1a0d00;font-weight:bold}button:disabled{opacity:.5;cursor:wait}
+#code{flex:1;min-height:0;resize:none;background:rgba(2,6,24,.88);color:#eaf0ff;border:1px solid rgba(130,170,255,.3);border-radius:10px;padding:16px;font:32px/1.4 ui-monospace,Consolas,monospace;tab-size:4;outline:none}
+#result{height:170px;margin-top:12px;font-size:26px;overflow:auto}
+#result .msg{font-weight:bold;margin-bottom:6px}.okc{color:var(--ok)}.badc{color:var(--bad)}
+#result pre{font-size:22px;color:var(--dim)}
+#start,#fin{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:28px;z-index:9}
+#start{justify-content:flex-start;padding-top:70px}
+#fin{display:none;justify-content:center;background:rgba(4,10,30,.88)}
+#start .date{font-size:30px;letter-spacing:6px;text-transform:uppercase;color:#dbe6ff}
+#start h1,#fin h1{font-size:150px;margin:0}#fin h1{color:var(--gold)}
+#start p,#fin p{font-size:30px;max-width:1000px;margin:0;color:#dbe6ff;line-height:1.5}
+#start button,#fin button{font-size:34px;padding:16px 56px;margin-top:40px}
+</style>
 </head>
 <body>
-
-  <!-- Spooky Atmosphere Background -->
-  <div class="spooky-atmosphere-wrapper">
-    <div class="occult-rune-layer small animate-rune-spin">
-      <svg class="rune-svg" viewBox="0 0 500 500">
-        <circle cx="250" cy="250" r="230" fill="none" stroke="#eab308" stroke-width="1.5" stroke-dasharray="8 6"/>
-        <polygon points="250,50 420,350 80,350" fill="none" stroke="#eab308" stroke-width="1.5"/>
-      </svg>
+<div id="stage">
+  <svg id="scene" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <path id="bat" d="M0 0 q10 -14 20 -3 q10 -11 20 3 q-9 -3 -20 8 q-11 -11 -20 -8z"/>
+      <g id="tree" fill="none" stroke="#02040c" stroke-linecap="round">
+        <path d="M70 1080 C80 820 40 640 100 430" stroke-width="26"/>
+        <path d="M100 430 C80 380 40 360 0 330 M90 520 C140 480 190 470 230 420 M75 700 C30 660 10 640 0 600 M100 430 C120 380 110 340 130 290" stroke-width="12"/>
+        <path d="M230 420 C250 400 270 395 290 370 M0 330 C-20 320 -30 310 -40 290" stroke-width="6"/>
+      </g>
+      <g id="pk">
+        <rect x="-5" y="-50" width="10" height="14" fill="#1d2a12"/>
+        <ellipse rx="50" ry="41" fill="#f08a12"/>
+        <path d="M-28 -6 L-16 -24 L-6 -6Z M6 -6 L16 -24 L28 -6Z M-30 8 L-18 26 L-8 12 L0 28 L8 12 L18 26 L30 8 Q0 -2 -30 8Z" fill="#2a1200"/>
+      </g>
+    </defs>
+    <use href="#tree"/><use href="#tree" transform="translate(1920 0) scale(-1 1)"/>
+    <g transform="translate(250 120)" fill="#02040c" stroke="#02040c">
+      <path d="M-30 62 L120 40" stroke-width="6"/><path d="M-30 62 L-62 50 L-58 66 L-64 74Z" stroke-width="2"/>
+      <path d="M60 18 L84 14 L96 44 L58 50Z"/><circle cx="88" cy="8" r="8"/><path d="M76 2 L100 -30 L104 0 L116 3 L78 8Z"/><path d="M96 44 L120 46 L116 54 L92 52Z"/>
+    </g>
+    <g fill="#02040c"><use href="#bat" transform="translate(1520 150) scale(1.4)"/><use href="#bat" transform="translate(1260 330) scale(1)"/><use href="#bat" transform="translate(760 360) scale(1.1)"/></g>
+    <path d="M0 1080 V1010 Q480 930 960 950 T1920 1000 V1080Z" fill="#02040c"/>
+    <path d="M915 962 V925 a45 45 0 0 1 90 0 V962Z" fill="#0f1a38" stroke="#2c3f72" stroke-width="4"/>
+    <text x="960" y="938" text-anchor="middle" font-size="30" font-weight="bold" fill="#5f7bbd" font-family="Georgia,serif">RIP</text>
+    <g class="glow"><use href="#pk" transform="translate(330 962) scale(1.1)"/><use href="#pk" transform="translate(520 970) scale(.9)"/><use href="#pk" transform="translate(1440 978) scale(.95)"/><use href="#pk" transform="translate(1680 990) scale(1.2) rotate(-12)"/></g>
+  </svg>
+  <div id="rain"></div>
+  <div id="ticker"><span>📣 QUEUE STATUS: 4,812 city blocks long · Customer #1 has waited 312 years · The bread vendor is "at lunch" (since 1423) · Please do not feed the queue · Ticket numbers are now measured in centuries ·</span></div>
+  <div id="main">
+    <div class="col" id="left">
+      <div id="qno"></div><h1 id="title"></h1><div><span id="lvl"></span></div>
+      <div id="txt"></div>
+      <div class="io"><div><b>Sample input</b><pre id="sin"></pre></div><div><b>Sample output</b><pre id="sout"></pre></div></div>
+    </div>
+    <div class="col" id="right">
+      <div id="bar">Language: <select id="lang"><option value="cpp">C++</option><option value="c">C</option><option value="java">Java</option></select>
+        <span id="market-counter" style="margin-left:14px;color:var(--gold);font-weight:bold;font-size:24px;">Solved: 0 / 6 (Pool: 10)</span>
+        <span style="flex:1"></span>
+        <button id="skip" style="margin-right:8px">Skip ⏭</button>
+        <button class="go" id="run">Submit code</button>
+        <button id="next" style="display:none">Next question →</button></div>
+      <textarea id="code" spellcheck="false"></textarea>
+      <div id="result"></div>
     </div>
   </div>
+  <div id="start"><div class="date">Market Level</div><h1>Eldritch Bread</h1><p>Solve the coding puzzle to collect the Eldritch Bread for the sandwich!</p><button id="go">Start Challenge</button></div>
+  <div id="fin"><h1 class="okc">Bread Collected!</h1><p>🍞 You collected the Eldritch Bread for the sandwich!</p></div>
+</div>
+<script>
+const QUESTIONS_PER_SESSION = 10; // lower this to draw a random subset of the pool each session
 
-  <div class="chapter-container">
+const Q = [
+ {id:'smallest',t:'Find the Smallest Element',lv:'Basic',inp:'5\n12 45 7 89 23',out:'7',
+  txt:'First line: N. Second line: N integers. Print the <b>smallest</b> element.<br><br>Constraints: 1 ≤ N ≤ 1000, −10⁶ ≤ Aᵢ ≤ 10⁶'},
+ {id:'positives',t:'Count Positive Numbers',lv:'Basic',inp:'6\n-2 5 0 8 -1 3',out:'3',
+  txt:'First line: N. Second line: N integers. Print how many are <b>greater than zero</b>. (Zero is not positive.)<br><br>Constraints: 1 ≤ N ≤ 1000, −10⁶ ≤ Aᵢ ≤ 10⁶'},
+ {id:'average',t:'Calculate the Average',lv:'Basic',inp:'4\n10 20 30 40',out:'25.00',
+  txt:'First line: N. Second line: N integers. Print their <b>average</b> with exactly two decimal places.<br><br>Constraints: 1 ≤ N ≤ 1000, −10⁶ ≤ Aᵢ ≤ 10⁶'},
+ {id:'search',t:'Search an Element',lv:'Basic',inp:'5\n10 20 30 40 50\n30',out:'YES',
+  txt:'Line 1: N. Line 2: N integers. Line 3: a number X. Print <b>YES</b> if X is in the array, otherwise <b>NO</b>.<br><br>Constraints: 1 ≤ N ≤ 1000, −10⁶ ≤ Aᵢ, X ≤ 10⁶'},
+ {id:'occurrences',t:'Count Occurrences',lv:'Basic',inp:'6\n2 4 2 5 2 7\n2',out:'3',
+  txt:'Line 1: N. Line 2: N integers. Line 3: a number X. Print <b>how many times</b> X appears.<br><br>Constraints: 1 ≤ N ≤ 1000, −10⁶ ≤ Aᵢ, X ≤ 10⁶'},
+ {id:'evenodd',t:'Check Even or Odd',lv:'Basic',inp:'17',out:'ODD',
+  txt:'Read one integer N. Print <b>EVEN</b> if it is even, otherwise <b>ODD</b>. (N can be negative or zero.)<br><br>Constraints: −10⁹ ≤ N ≤ 10⁹'},
+ {id:'digitsum',t:'Sum of Digits',lv:'Basic',inp:'1234',out:'10',
+  txt:'Read a non-negative integer N and print the <b>sum of its digits</b>.<br><br>Constraints: 0 ≤ N ≤ 10⁹'},
+ {id:'reversenum',t:'Reverse a Number',lv:'Easy',inp:'12340',out:'4321',
+  txt:'Read a non-negative integer N, reverse its digits, and print the result. <b>Do not print leading zeroes</b> (12340 becomes 4321, not 04321).<br><br>Constraints: 0 ≤ N ≤ 10⁹'},
+ {id:'palindrome',t:'Check a Palindrome Number',lv:'Easy',inp:'121',out:'YES',
+  txt:'Read a non-negative integer N. Print <b>YES</b> if it reads the same forwards and backwards, otherwise <b>NO</b>.<br><br>Constraints: 0 ≤ N ≤ 10⁹'},
+ {id:'factorial',t:'Find the Factorial',lv:'Easy',inp:'5',out:'120',
+  txt:'Read N and print N! (N factorial). The factorial of 0 is 1.<br><br>Constraints: 0 ≤ N ≤ 12'}
+];
+const S = {
+ c:'#include <stdio.h>\n\nint main() {\n    // Read with scanf, print your answer with printf\n    return 0;\n}\n',
+ cpp:'#include <iostream>\nusing namespace std;\n\nint main() {\n    // Read with cin, print your answer with cout\n    return 0;\n}\n',
+ java:'import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        // Read with sc, print your answer with System.out.println\n    }\n}\n'
+};
+const $ = id => document.getElementById(id);
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
-    <!-- Top Status HUD -->
-    <header class="chapter-hud">
-      <div class="hud-left">
-        <a href="/pick" style="text-decoration:none; color:var(--text-muted); font-size:1.2rem;" title="Return to Portal">←</a>
-        <span class="hud-badge room-code" id="hud-room">ROOM: ----</span>
-        <span class="hud-badge player-name" id="hud-player">Chef: Loading...</span>
-      </div>
-      
-      <div class="hud-center">
-        <span class="hud-badge ingredient-target" style="border-color:#eab308; color:#eab308; background:rgba(234,179,8,0.15)">
-          🍞 Target: Eldritch Bread
-        </span>
-      </div>
+const REQUIRED_SOLVES = 6;
+const solvedIds = new Set();
+let order = shuffle([...Q]).slice(0, QUESTIONS_PER_SESSION);   // new random order every page load = every new session
+let i = 0, lang = 'cpp', store = {};
 
-      <div class="hud-right">
-        <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; color:var(--text-muted);">
-          <span class="connection-dot" id="hud-dot"></span>
-          <span id="hud-status">Connected</span>
-        </div>
-        <button class="dev-skip-btn" id="btn-instant-victory" title="Simulate solving all 10 market stalls immediately">
-          ⚡ Instant Victory (Dev)
-        </button>
-      </div>
-    </header>
+function updateCounter(){
+  const c = $('market-counter');
+  if(c) c.textContent = `Solved: ${solvedIds.size} / ${REQUIRED_SOLVES} (Pool: ${order.length})`;
+}
 
-    <!-- ======================================================== -->
-    <!-- DROP-IN REPLACEMENT ZONE FOR TEAMMATES                   -->
-    <!-- Replace this workspace with your custom UI if desired.  -->
-    <!-- When completed, invoke: window.Room.complete('market')   -->
-    <!-- ======================================================== -->
-    <main class="chapter-workspace">
+const key = () => order[i].id + '|' + lang;
+function render(){
+  const q = order[i];
+  $('qno').textContent = `Question ${i+1} of ${order.length}${solvedIds.has(q.id) ? ' [SOLVED ✓]' : ''}`;
+  $('title').textContent = q.t; $('lvl').textContent = q.lv; $('txt').innerHTML = q.txt;
+  $('sin').textContent = q.inp; $('sout').textContent = q.out;
+  $('code').value = store[key()] ?? S[lang];
+  $('result').innerHTML = ''; $('next').style.display = 'none'; $('run').style.display = '';
+  updateCounter();
+}
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080),st=$('stage');
+  st.style.transform=`scale(${s})`;st.style.left=(innerWidth-1920*s)/2+'px';st.style.top=(innerHeight-1080*s)/2+'px';}
+addEventListener('resize',fit);fit();
 
-      <!-- Left Column: Centerpiece & Question Selector -->
-      <aside class="left-panel">
-        
-        <!-- Interactive Centerpiece: Goblin Shadow Vault Safe -->
-        <div class="centerpiece-card">
-          <h3 style="color:#eab308;">💰 Goblin Shadow Vault</h3>
-          <div class="centerpiece-visual">
-            <div class="vault-safe-box" id="safe-visual">
-              <div class="safe-door-frame">
-                <div class="tumbler-dial" id="tumbler-dial">
-                  <span style="position:absolute; top:2px; font-size:0.8rem; color:#eab308;">✦</span>
-                  <span style="position:absolute; bottom:2px; font-size:0.8rem; color:#eab308;">✦</span>
-                </div>
-                <div class="safe-handle" id="safe-handle">⚖️</div>
-              </div>
-              <div class="vault-readout" id="vault-readout">LEDGER: 0 / 10 STALLS AUDITED</div>
-            </div>
-          </div>
-        </div>
+$('go').onclick = () => { $('start').style.display = 'none'; $('stage').classList.add('playing'); if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{}); render(); };
+$('lang').onchange = e => { store[order[i].id+'|'+lang] = $('code').value; lang = e.target.value; $('code').value = store[key()] ?? S[lang]; };
+$('code').onkeydown = e => { if (e.key === 'Tab') { e.preventDefault(); const t=e.target,s=t.selectionStart; t.setRangeText('    ',s,t.selectionEnd,'end'); } };
+$('skip').onclick = () => {
+  store[key()] = $('code').value;
+  i = (i + 1) % order.length;
+  render();
+};
+$('next').onclick = () => {
+  // Find next unsolved question if available
+  for (let offset = 1; offset <= order.length; offset++) {
+    const cand = (i + offset) % order.length;
+    if (!solvedIds.has(order[cand].id)) {
+      i = cand;
+      render();
+      return;
+    }
+  }
+  i = (i + 1) % order.length;
+  render();
+};
 
-        <!-- 10 Gate Selector Grid -->
-        <div class="question-nav-card">
-          <div class="progress-header">
-            <span>Bazaar Barter Verification</span>
-            <span id="progress-text" style="font-weight:700; color:#eab308;">0 / 10 Solved</span>
-          </div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="progress-bar" style="background:linear-gradient(90deg, #eab308, #f97316); box-shadow:0 0 10px rgba(234,179,8,0.7);"></div>
-          </div>
-          <div class="gate-buttons-grid" id="gate-buttons">
-            <!-- Populated via JavaScript -->
-          </div>
-        </div>
+$('run').onclick = async () => {
+  store[key()] = $('code').value;
+  $('run').disabled = true; $('result').innerHTML = '<div class="msg">Testing your code…</div>';
+  let r;
+  try { r = await (await fetch('/api/submit', {method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({problemId: order[i].id, lang, code: $('code').value})})).json(); }
+  catch { r = {status:'error', message:'Cannot reach the judge. Is server.js running?'}; }
+  $('run').disabled = false;
+  if (r.status === 'accepted') {
+    solvedIds.add(order[i].id);
+    updateCounter();
+    const isDone = solvedIds.size >= REQUIRED_SOLVES;
+    if (isDone) {
+      $('result').innerHTML = '<div class="msg okc">✔ Correct! All ' + REQUIRED_SOLVES + ' questions solved! Eldritch Bread collected for your team.</div>';
+      if (window.Room) Room.complete('market');
+      $('fin').style.display = 'flex';
+    } else {
+      $('result').innerHTML = '<div class="msg okc">✔ Correct! Question solved (' + solvedIds.size + '/' + REQUIRED_SOLVES + '). Solve ' + (REQUIRED_SOLVES - solvedIds.size) + ' more to complete the level.</div>';
+      $('run').style.display = 'none';
+      $('next').style.display = '';
+    }
+  } else {
+    const d = r.detail ? `<pre></pre>` : '';
+    $('result').innerHTML = `<div class="msg badc">✘ ${r.message}</div>${d}<div style="color:var(--dim)">Fix it and submit again. No limit on tries.</div>`;
+    if (r.detail) $('result').querySelector('pre').textContent = r.detail;   // textContent: never inject compiler output as HTML
+  }
+};
 
-      </aside>
-
-      <!-- Right Column: Question Workspace & C Code Editor -->
-      <section class="right-panel">
-
-        <!-- Question Info Banner -->
-        <div class="question-banner">
-          <div class="question-title-row">
-            <h2 id="q-title">Stall 1: Sort Vendor Ledger</h2>
-            <span class="difficulty-badge intermediate" id="q-difficulty">INTERMEDIATE</span>
-          </div>
-          <p class="question-desc" id="q-desc">
-            Sort the array of barter prices in ascending order in-place using bubble sort.
-          </p>
-        </div>
-
-        <!-- Code Editor Card -->
-        <div class="editor-card">
-          <div class="editor-header">
-            <div class="editor-lang">
-              <span style="color:#eab308;">⚡ C Programming (C99 / C11)</span>
-            </div>
-            <div class="editor-actions">
-              <button class="btn-secondary" id="btn-reset">↺ Reset Boilerplate</button>
-              <button class="btn-run" id="btn-run" style="background:linear-gradient(135deg, #d97706, #b45309); border-color:#eab308; box-shadow:0 0 15px rgba(234,179,8,0.4);">
-                ▶ Run & Test Code
-              </button>
-            </div>
-          </div>
-          <textarea class="code-textarea" id="code-editor" spellcheck="false"></textarea>
-          <div class="error-banner" id="error-banner"></div>
-        </div>
-
-        <!-- Test Results Card -->
-        <div class="test-results-card">
-          <div class="results-header">
-            <span class="results-summary" id="results-summary">Ready to audit market ledgers in C</span>
-            <span style="font-size:0.8rem; color:var(--text-muted);">Press Ctrl+Enter to Run</span>
-          </div>
-          <div class="test-cards-list" id="test-cards">
-            <!-- Test cases output here -->
-          </div>
-        </div>
-
-      </section>
-
-    </main>
-    <!-- ======================================================== -->
-    <!-- END OF DROP-IN REPLACEMENT ZONE                          -->
-    <!-- ======================================================== -->
-
-  </div>
-
-  <!-- Victory / Waiting Modal -->
-  <div class="victory-modal-overlay" id="victory-modal">
-    <div class="victory-modal-content" style="border-color:#eab308; box-shadow:0 0 50px rgba(234,179,8,0.5);">
-      <h2 style="color:#eab308; text-shadow:0 0 20px rgba(234,179,8,0.8);">INGREDIENT SECURED!</h2>
-      <p class="lore">
-        The Goblin Safe clicks open with a shower of gold sparks! The living, whispering loaf of Eldritch Bread is safely in your hands.
-      </p>
-
-      <div style="font-family:var(--font-code); font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">
-        CHEF ROSTER SYNCHRONIZATION:
-      </div>
-      <div class="chefs-status-grid" id="chefs-roster">
-        <div class="chef-status-pill" id="roster-hell">🧀 Hell...</div>
-        <div class="chef-status-pill" id="roster-alien">🥦 Alien...</div>
-        <div class="chef-status-pill" id="roster-ocean">🌊 Ocean...</div>
-        <div class="chef-status-pill ready">🍞 Market (You)</div>
-      </div>
-
-      <div class="warp-countdown-text" id="warp-status">
-        Waiting for all 4 ingredients to be forged...
-      </div>
-    </div>
-  </div>
-
-  <!-- Client Scripts -->
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/shared/parallax.js"></script>
-  <script src="/shared/spooky-entities.js"></script>
-  <script src="/shared/audio.js"></script>
-  <script src="/shared/room-client.js"></script>
-  <script src="/shared/c-runner.js"></script>
-  <script src="/shared/questions-data.js"></script>
-
-  <script>
-    (function() {
-      'use strict';
-
-      const CHAPTER_ID = 'market';
-      const questions = window.CHAPTER_QUESTIONS ? window.CHAPTER_QUESTIONS[CHAPTER_ID] : [];
-      let currentQuestionIndex = 0;
-      const solvedGates = new Set();
-
-      // DOM Elements
-      const hudRoom = document.getElementById('hud-room');
-      const hudPlayer = document.getElementById('hud-player');
-      const hudDot = document.getElementById('hud-dot');
-      const hudStatus = document.getElementById('hud-status');
-      const gateButtonsContainer = document.getElementById('gate-buttons');
-      const progressBar = document.getElementById('progress-bar');
-      const progressText = document.getElementById('progress-text');
-      const qTitle = document.getElementById('q-title');
-      const qDifficulty = document.getElementById('q-difficulty');
-      const qDesc = document.getElementById('q-desc');
-      const codeEditor = document.getElementById('code-editor');
-      const btnReset = document.getElementById('btn-reset');
-      const btnRun = document.getElementById('btn-run');
-      const btnInstantVictory = document.getElementById('btn-instant-victory');
-      const errorBanner = document.getElementById('error-banner');
-      const testCards = document.getElementById('test-cards');
-      const resultsSummary = document.getElementById('results-summary');
-      const safeVisual = document.getElementById('safe-visual');
-      const tumblerDial = document.getElementById('tumbler-dial');
-      const vaultReadout = document.getElementById('vault-readout');
-      const victoryModal = document.getElementById('victory-modal');
-
-      function initGatesGrid() {
-        gateButtonsContainer.innerHTML = '';
-        questions.forEach((q, idx) => {
-          const btn = document.createElement('button');
-          btn.className = 'gate-btn' + (idx === 0 ? ' active' : '');
-          btn.id = `gate-btn-${idx}`;
-          btn.innerHTML = `<span>${idx + 1}</span><span class="gate-status-icon">🔒</span>`;
-          btn.onclick = () => selectQuestion(idx);
-          gateButtonsContainer.appendChild(btn);
-        });
-        loadQuestion(0);
-      }
-
-      function selectQuestion(idx) {
-        currentQuestionIndex = idx;
-        document.querySelectorAll('.gate-btn').forEach((b, i) => {
-          b.classList.toggle('active', i === idx);
-        });
-        loadQuestion(idx);
-      }
-
-      function loadQuestion(idx) {
-        const q = questions[idx];
-        if (!q) return;
-
-        qTitle.textContent = q.title;
-        qDifficulty.textContent = q.difficulty.toUpperCase();
-        qDifficulty.className = `difficulty-badge ${q.difficulty.toLowerCase()}`;
-        qDesc.textContent = q.desc;
-
-        const savedCode = localStorage.getItem(`code_${CHAPTER_ID}_${q.id}`);
-        codeEditor.value = savedCode || q.boilerplate;
-
-        errorBanner.style.display = 'none';
-        errorBanner.textContent = '';
-        renderInitialTestCards(q.testCases);
-      }
-
-      function renderInitialTestCards(testCases) {
-        resultsSummary.textContent = 'Ready to test in C';
-        resultsSummary.className = 'results-summary';
-        testCards.innerHTML = '';
-
-        testCases.forEach((t, i) => {
-          const card = document.createElement('div');
-          card.className = 'test-card';
-          card.id = `test-card-${i}`;
-          card.innerHTML = `
-            <div class="test-info">
-              <span class="test-input">Test #${t.id}: Input: ${JSON.stringify(t.input)}</span>
-              <div class="test-io">
-                <span>Expected: <strong style="color:#eab308;">${JSON.stringify(t.expectedArray || t.expected)}</strong></span>
-                <span id="actual-val-${i}">Actual: <em>Pending</em></span>
-              </div>
-            </div>
-            <span class="test-status-badge" id="badge-${i}" style="background:rgba(255,255,255,0.06); color:#9ca3af;">READY</span>
-          `;
-          testCards.appendChild(card);
-        });
-      }
-
-      codeEditor.addEventListener('keydown', (e) => {
-        if (e.key === 'Tab') {
-          e.preventDefault();
-          const start = codeEditor.selectionStart;
-          const end = codeEditor.selectionEnd;
-          codeEditor.value = codeEditor.value.substring(0, start) + '    ' + codeEditor.value.substring(end);
-          codeEditor.selectionStart = codeEditor.selectionEnd = start + 4;
-        } else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-          e.preventDefault();
-          runActiveTest();
-        }
-      });
-
-      btnReset.addEventListener('click', () => {
-        const q = questions[currentQuestionIndex];
-        if (q) {
-          codeEditor.value = q.boilerplate;
-          localStorage.removeItem(`code_${CHAPTER_ID}_${q.id}`);
-          renderInitialTestCards(q.testCases);
-          if (window.SoundFX) window.SoundFX.click();
-        }
-      });
-
-      async function runActiveTest() {
-        const q = questions[currentQuestionIndex];
-        if (!q) return;
-
-        const userCode = codeEditor.value;
-        localStorage.setItem(`code_${CHAPTER_ID}_${q.id}`, userCode);
-
-        btnRun.disabled = true;
-        btnRun.textContent = 'Testing...';
-        errorBanner.style.display = 'none';
-
-        if (window.SoundFX) window.SoundFX.click();
-
-        try {
-          const outcome = await window.CRunner.runTests(userCode, q.functionName, q.testCases);
-
-          if (!outcome.success) {
-            errorBanner.style.display = 'block';
-            errorBanner.textContent = 'C Compilation Error:\n' + outcome.compileError;
-            resultsSummary.textContent = 'Compilation Failed';
-            resultsSummary.className = 'results-summary has-fail';
-            if (window.SoundFX) window.SoundFX.error();
-            return;
-          }
-
-          outcome.results.forEach((r, i) => {
-            const card = document.getElementById(`test-card-${i}`);
-            const badge = document.getElementById(`badge-${i}`);
-            const actualVal = document.getElementById(`actual-val-${i}`);
-
-            if (card && badge && actualVal) {
-              card.className = `test-card ${r.passed ? 'passed' : 'failed'}`;
-              badge.className = `test-status-badge ${r.passed ? 'pass' : 'fail'}`;
-              badge.textContent = r.passed ? 'PASS' : 'FAIL';
-              actualVal.innerHTML = `Actual: <strong style="color:${r.passed ? '#eab308' : '#f87171'}">${r.actual}</strong>`;
-            }
-          });
-
-          if (outcome.allPassed) {
-            resultsSummary.textContent = `All ${outcome.totalTests} Tests Passed! Stall Verified.`;
-            resultsSummary.className = 'results-summary all-pass';
-            if (window.SoundFX) window.SoundFX.success();
-            markGateSolved(currentQuestionIndex);
-          } else {
-            resultsSummary.textContent = `${outcome.testsPassed} / ${outcome.totalTests} Passed`;
-            resultsSummary.className = 'results-summary has-fail';
-            if (window.SoundFX) window.SoundFX.error();
-          }
-
-        } catch (err) {
-          errorBanner.style.display = 'block';
-          errorBanner.textContent = 'Runtime Exception:\n' + err.message;
-          if (window.SoundFX) window.SoundFX.error();
-        } finally {
-          btnRun.disabled = false;
-          btnRun.textContent = '▶ Run & Test Code';
-        }
-      }
-
-      btnRun.addEventListener('click', runActiveTest);
-
-      function markGateSolved(idx) {
-        solvedGates.add(idx);
-        const btn = document.getElementById(`gate-btn-${idx}`);
-        if (btn) {
-          btn.classList.add('solved');
-          btn.querySelector('.gate-status-icon').textContent = '✔';
-        }
-
-        const solvedCount = solvedGates.size;
-        progressBar.style.width = `${(solvedCount / questions.length) * 100}%`;
-        progressText.textContent = `${solvedCount} / ${questions.length} Solved`;
-
-        // Tumbler rotation
-        tumblerDial.style.transform = `rotate(${solvedCount * 36}deg)`;
-        vaultReadout.textContent = `LEDGER: ${solvedCount} / 10 STALLS AUDITED`;
-
-        if (solvedCount >= questions.length) {
-          triggerChapterVictory();
-        }
-      }
-
-      function triggerChapterVictory() {
-        safeVisual.classList.add('unlocked');
-        vaultReadout.textContent = 'ALL STALLS AUDITED • ELDRITCH BREAD UNLOCKED';
-        victoryModal.classList.add('visible');
-
-        if (window.SoundFX) window.SoundFX.portalWarp();
-
-        if (window.Room) {
-          window.Room.complete(CHAPTER_ID);
-        }
-      }
-
-      btnInstantVictory.addEventListener('click', () => {
-        for (let i = 0; i < questions.length; i++) {
-          markGateSolved(i);
-        }
-        triggerChapterVictory();
-      });
-
-      function setupNetworking() {
-        if (!window.Room) return;
-
-        hudRoom.textContent = `ROOM: ${window.Room.getRoomCode() || 'DEV-TEST'}`;
-        hudPlayer.textContent = `Chef: ${window.Room.getPlayerName()}`;
-
-        window.Room.on('room_updated', (data) => {
-          updateRosterStatus(data.roomState);
-        });
-
-        window.Room.on('chapter_completed', (data) => {
-          updateRosterStatus(data.roomState);
-          if (data.allCompleted) {
-            document.getElementById('warp-status').textContent = 'All 4 Ingredients Secured! Warping to the Finale...';
-          }
-        });
-
-        window.Room.on('all_chapters_completed', () => {
-          document.getElementById('warp-status').textContent = 'Rift opened! Entering the Finale chamber...';
-        });
-
-        window.Room.on('disconnect', () => {
-          hudDot.classList.add('disconnected');
-          hudStatus.textContent = 'Offline (Retrying...)';
-        });
-
-        window.Room.on('connect', () => {
-          hudDot.classList.remove('disconnected');
-          hudStatus.textContent = 'Connected';
-        });
-      }
-
-      function updateRosterStatus(state) {
-        if (!state || !state.completed) return;
-        const c = state.completed;
-        const hellPill = document.getElementById('roster-hell');
-        const alienPill = document.getElementById('roster-alien');
-        const oceanPill = document.getElementById('roster-ocean');
-
-        if (hellPill && c.hell) { hellPill.className = 'chef-status-pill ready'; hellPill.textContent = '🧀 Hell (Ready)'; }
-        if (alienPill && c.alien) { alienPill.className = 'chef-status-pill ready'; alienPill.textContent = '🥦 Alien (Ready)'; }
-        if (oceanPill && c.ocean) { oceanPill.className = 'chef-status-pill ready'; oceanPill.textContent = '🌊 Ocean (Ready)'; }
-      }
-
-      initGatesGrid();
-      setTimeout(setupNetworking, 300);
-
-    })();
-  </script>
+for (let k = 0; k < 110; k++) { const d = document.createElement('i');
+  d.style.cssText = `left:${Math.random()*2100-100}px;height:${40+Math.random()*60}px;opacity:${.25+Math.random()*.4};animation-duration:${.7+Math.random()*.8}s;animation-delay:-${Math.random()*2}s`;
+  $('rain').appendChild(d); }
+window.onChapterInstantWin = () => {
+  for (let k = 0; k < REQUIRED_SOLVES; k++) solvedIds.add(order[k].id);
+  updateCounter();
+  $('start').style.display = 'none';
+  $('stage').classList.add('playing');
+  $('fin').style.display = 'flex';
+  if (window.Room) Room.complete('market');
+};
+</script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/shared/room-client.js"></script>
+<script src="/shared/chapter-hud.js"></script>
 </body>
 </html>

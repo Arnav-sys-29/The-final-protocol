@@ -23,7 +23,7 @@
   let entities = [];
   let mousePos = { x: -9999, y: -9999, active: false };
 
-  // Audio Synthesizer for Entity Gasps & Banishments
+  // Gothic Audio Synthesizer for Spectral Entities (Chilling Whispers, Crypt Gasps & Hollow Rattles)
   const SpookyAudio = {
     ctx: null,
     init() {
@@ -35,7 +35,36 @@
         this.ctx.resume();
       }
     },
-    playGhostSqueak() {
+    playGhostWail() {
+      try {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const subOsc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        // Chilling dissonant spectral banshee wail
+        osc.type = 'sine';
+        subOsc.type = 'triangle';
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.exponentialRampToValueAtTime(75, now + 0.45);
+        subOsc.frequency.setValueAtTime(175, now);
+        subOsc.frequency.exponentialRampToValueAtTime(70, now + 0.45);
+
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
+
+        osc.connect(gain);
+        subOsc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        subOsc.start(now);
+        osc.stop(now + 0.5);
+        subOsc.stop(now + 0.5);
+      } catch (e) {}
+    },
+    playPumpkinRattle() {
       try {
         this.init();
         if (!this.ctx) return;
@@ -43,21 +72,21 @@
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
 
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, now);
-        osc.frequency.exponentialRampToValueAtTime(1420, now + 0.08);
-        osc.frequency.exponentialRampToValueAtTime(420, now + 0.28);
+        // Guttural subterranean bone rattle
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(95, now);
+        osc.frequency.exponentialRampToValueAtTime(28, now + 0.3);
 
         gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
 
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start(now);
-        osc.stop(now + 0.32);
+        osc.stop(now + 0.35);
       } catch (e) {}
     },
-    playPumpkinCrackle() {
+    playStartledHiss(isPumpkin) {
       try {
         this.init();
         if (!this.ctx) return;
@@ -65,137 +94,145 @@
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
 
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(170, now);
-        osc.frequency.exponentialRampToValueAtTime(45, now + 0.22);
-
-        gain.gain.setValueAtTime(0.25, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.26);
-      } catch (e) {}
-    },
-    playStartledGasp(isPumpkin) {
-      try {
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-
-        osc.type = isPumpkin ? 'triangle' : 'sine';
-        const baseFreq = isPumpkin ? 300 : 620;
+        // Sudden cold crypt inhalation
+        osc.type = isPumpkin ? 'sawtooth' : 'sine';
+        const baseFreq = isPumpkin ? 110 : 160;
         osc.frequency.setValueAtTime(baseFreq, now);
-        osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.5, now + 0.12);
+        osc.frequency.linearRampToValueAtTime(baseFreq * 0.7, now + 0.2);
 
-        gain.gain.setValueAtTime(0.05, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
 
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start(now);
-        osc.stop(now + 0.16);
+        osc.stop(now + 0.24);
       } catch (e) {}
     }
   };
 
-  // SVGs for Entities
+  // Gothic SVGs for Menacing Entities (No cute features, atmospheric somber colors)
   const SVG_TEMPLATES = {
     ghostNormal: `
-      <svg width="74" height="86" viewBox="0 0 100 115" fill="none">
+      <svg width="78" height="92" viewBox="0 0 100 120" fill="none">
         <defs>
-          <radialGradient id="ghNormGrad" cx="50%" cy="40%" r="55%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
-            <stop offset="60%" stop-color="#d8b4fe" stop-opacity="0.75" />
-            <stop offset="100%" stop-color="#a855f7" stop-opacity="0.25" />
+          <radialGradient id="wraithMist" cx="50%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#8c8275" stop-opacity="0.55" />
+            <stop offset="45%" stop-color="#3a323c" stop-opacity="0.45" />
+            <stop offset="85%" stop-color="#19151c" stop-opacity="0.3" />
+            <stop offset="100%" stop-color="#0a080c" stop-opacity="0" />
           </radialGradient>
-          <filter id="ghGlow">
-            <feGaussianBlur stdDeviation="3.5" result="glow" />
-            <feComposite in="SourceGraphic" in2="glow" operator="over" />
+          <filter id="wraithShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feColorMatrix type="matrix" values="0 0 0 0 0.45   0 0 0 0 0.08   0 0 0 0 0.12  0 0 0 0.6 0"/>
+            <feOffset dx="0" dy="4"/>
+            <feBlend in="SourceGraphic" in2="shadow" mode="normal"/>
           </filter>
         </defs>
-        <path d="M50 8C26 8 12 28 12 55C12 78 10 92 18 102C23 108 30 96 38 102C46 108 54 96 62 102C70 108 77 96 82 102C90 92 88 78 88 55C88 28 74 8 50 8Z" fill="url(#ghNormGrad)" filter="url(#ghGlow)"/>
-        <circle cx="28" cy="56" r="4.5" fill="#ec4899" opacity="0.4"/>
-        <circle cx="72" cy="56" r="4.5" fill="#ec4899" opacity="0.4"/>
-        <ellipse cx="36" cy="46" rx="4.5" ry="6.5" fill="#180e29"/>
-        <ellipse cx="64" cy="46" rx="4.5" ry="6.5" fill="#180e29"/>
-        <circle cx="38" cy="44" r="2" fill="#ffffff"/>
-        <circle cx="66" cy="44" r="2" fill="#ffffff"/>
-        <path d="M44 56C47 60 53 60 56 56" stroke="#180e29" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- Tattered Ethereal Shroud -->
+        <path d="M50 6C30 6 16 26 14 54C12 76 8 92 14 104C16 108 22 98 28 106C34 114 40 96 46 108C52 118 58 98 66 110C74 120 78 96 84 108C88 94 86 76 84 54C82 26 70 6 50 6Z" fill="url(#wraithMist)" filter="url(#wraithShadow)"/>
+        <!-- Gaunt Facial Shrouding -->
+        <path d="M42 22C46 16 54 16 58 22C64 30 64 45 50 48C36 45 36 30 42 22Z" fill="#120f14" opacity="0.5"/>
+        <!-- Hollow Black Eye Sockets -->
+        <ellipse cx="37" cy="42" rx="5.5" ry="8" fill="#080609"/>
+        <ellipse cx="63" cy="42" rx="5.5" ry="8" fill="#080609"/>
+        <!-- Menacing Ember Pinprick Gaze -->
+        <circle cx="38" cy="43" r="1.5" fill="#c45e22"/>
+        <circle cx="62" cy="43" r="1.5" fill="#c45e22"/>
+        <!-- Grim Grimacing Mouth -->
+        <path d="M42 58C46 62 54 62 58 58" stroke="#080609" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="46" y1="58" x2="46" y2="62" stroke="#080609" stroke-width="1.5"/>
+        <line x1="50" y1="59" x2="50" y2="63" stroke="#080609" stroke-width="1.5"/>
+        <line x1="54" y1="58" x2="54" y2="62" stroke="#080609" stroke-width="1.5"/>
       </svg>
     `,
     ghostScared: `
-      <svg width="78" height="90" viewBox="0 0 100 115" fill="none">
+      <svg width="84" height="98" viewBox="0 0 100 120" fill="none">
         <defs>
-          <radialGradient id="ghScaredGrad" cx="50%" cy="40%" r="55%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
-            <stop offset="60%" stop-color="#bbf7d0" stop-opacity="0.9" />
-            <stop offset="100%" stop-color="#22c55e" stop-opacity="0.35" />
+          <radialGradient id="wraithStartledMist" cx="50%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#a49ba8" stop-opacity="0.65" />
+            <stop offset="45%" stop-color="#5c1c24" stop-opacity="0.4" />
+            <stop offset="85%" stop-color="#1d1620" stop-opacity="0.35" />
+            <stop offset="100%" stop-color="#0a080c" stop-opacity="0" />
           </radialGradient>
-          <filter id="scaredGlow">
-            <feGaussianBlur stdDeviation="4.5" result="glow" />
-            <feComposite in="SourceGraphic" in2="glow" operator="over" />
-          </filter>
-        </defs>
-        <path d="M50 6C24 6 8 26 8 55C8 82 5 95 16 106C22 112 32 94 40 106C48 114 52 94 60 106C68 114 78 94 84 106C95 95 92 82 92 55C92 26 76 6 50 6Z" fill="url(#ghScaredGrad)" filter="url(#scaredGlow)"/>
-        <path d="M12 55C3 50 2 40 8 36" stroke="#bbf7d0" stroke-width="4" stroke-linecap="round"/>
-        <path d="M88 55C97 50 98 40 92 36" stroke="#bbf7d0" stroke-width="4" stroke-linecap="round"/>
-        <circle cx="34" cy="42" r="8" fill="#120c1e"/>
-        <circle cx="66" cy="42" r="8" fill="#120c1e"/>
-        <circle cx="34" cy="42" r="3.5" fill="#22c55e"/>
-        <circle cx="66" cy="42" r="3.5" fill="#22c55e"/>
-        <circle cx="36" cy="40" r="1.5" fill="#ffffff"/>
-        <circle cx="68" cy="40" r="1.5" fill="#ffffff"/>
-        <ellipse cx="50" cy="62" rx="7.5" ry="12" fill="#120c1e"/>
-        <ellipse cx="50" cy="62" rx="5" ry="8" fill="#ef4444" opacity="0.85"/>
-        <path d="M78 28C81 33 79 38 76 38C73 38 72 34 78 28Z" fill="#38bdf8"/>
-      </svg>
-    `,
-    pumpkinNormal: `
-      <svg width="74" height="74" viewBox="0 0 100 100" fill="none">
-        <defs>
-          <radialGradient id="pkNormGrad" cx="50%" cy="40%" r="55%">
-            <stop offset="0%" stop-color="#fb923c"/>
-            <stop offset="65%" stop-color="#ea580c"/>
-            <stop offset="100%" stop-color="#7c2d12"/>
-          </radialGradient>
-          <filter id="pkGlow">
+          <filter id="wraithBloodAura">
             <feGaussianBlur stdDeviation="3" result="glow"/>
             <feComposite in="SourceGraphic" in2="glow" operator="over"/>
           </filter>
         </defs>
-        <path d="M50 18C48 9 54 4 60 2C57 7 54 12 51 18Z" fill="#65a30d" stroke="#365314" stroke-width="1.5"/>
-        <ellipse cx="50" cy="56" rx="42" ry="34" fill="url(#pkNormGrad)" stroke="#431407" stroke-width="2"/>
-        <ellipse cx="50" cy="56" rx="30" ry="34" fill="url(#pkNormGrad)" stroke="#431407" stroke-width="1.5"/>
-        <polygon points="32,46 42,48 37,38" fill="#fef08a" filter="url(#pkGlow)"/>
-        <polygon points="68,46 58,48 63,38" fill="#fef08a" filter="url(#pkGlow)"/>
-        <polygon points="50,54 46,59 54,59" fill="#fef08a" filter="url(#pkGlow)"/>
-        <path d="M26 66 L34 73 L42 67 L50 74 L58 67 L66 73 L74 66 L68 76 L58 72 L50 78 L42 72 L32 76 Z" fill="#fef08a" filter="url(#pkGlow)"/>
+        <!-- Distorted Writhing Shroud with Flared Spectral Tendrils -->
+        <path d="M50 4C24 4 10 24 8 55C6 82 2 96 10 110C16 116 26 94 34 112C42 122 48 94 54 114C62 124 70 94 78 114C86 122 92 92 92 55C92 24 76 4 50 4Z" fill="url(#wraithStartledMist)" filter="url(#wraithBloodAura)"/>
+        <!-- Tendrils reaching outward in alarm -->
+        <path d="M12 52C2 46 2 34 8 28" stroke="#5c1c24" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M88 52C98 46 98 34 92 28" stroke="#5c1c24" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- Deep Void Eye Cavities with Burning Coagulated Crimson Glow -->
+        <ellipse cx="36" cy="40" rx="8" ry="11" fill="#060507"/>
+        <ellipse cx="64" cy="40" rx="8" ry="11" fill="#060507"/>
+        <circle cx="36" cy="40" r="2.5" fill="#9e2a36"/>
+        <circle cx="64" cy="40" r="2.5" fill="#9e2a36"/>
+        <!-- Agonized Unhinged Screaming Jaw -->
+        <ellipse cx="50" cy="65" rx="8" ry="14" fill="#060507"/>
+        <path d="M46 56L54 56" stroke="#5c1c24" stroke-width="1.5"/>
+        <path d="M47 75L53 75" stroke="#5c1c24" stroke-width="1.5"/>
+      </svg>
+    `,
+    pumpkinNormal: `
+      <svg width="78" height="78" viewBox="0 0 100 100" fill="none">
+        <defs>
+          <radialGradient id="pkGothicNorm" cx="45%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#4a2211"/>
+            <stop offset="50%" stop-color="#2a140a"/>
+            <stop offset="100%" stop-color="#120904"/>
+          </radialGradient>
+          <filter id="pkInnerEmber">
+            <feGaussianBlur stdDeviation="2.5" result="ember"/>
+            <feComposite in="SourceGraphic" in2="ember" operator="over"/>
+          </filter>
+        </defs>
+        <!-- Withered Blackened Stem -->
+        <path d="M50 16C47 8 52 2 58 1C55 5 53 10 51 16Z" fill="#1c1a17" stroke="#0e0d0b" stroke-width="1.5"/>
+        <!-- Rotting Dark Rind Ribs -->
+        <ellipse cx="50" cy="56" rx="42" ry="34" fill="url(#pkGothicNorm)" stroke="#1a0b05" stroke-width="2"/>
+        <ellipse cx="50" cy="56" rx="28" ry="34" fill="url(#pkGothicNorm)" stroke="#1a0b05" stroke-width="1.5" stroke-dasharray="2 3"/>
+        <!-- Sinister Slanted Eye Incisions -->
+        <polygon points="28,44 42,46 34,36" fill="#0d0704" stroke="#73131c" stroke-width="1.5"/>
+        <polygon points="72,44 58,46 66,36" fill="#0d0704" stroke="#73131c" stroke-width="1.5"/>
+        <circle cx="34" cy="42" r="1.5" fill="#c45e22" filter="url(#pkInnerEmber)"/>
+        <circle cx="66" cy="42" r="1.5" fill="#c45e22" filter="url(#pkInnerEmber)"/>
+        <!-- Crude Triangular Nose Slit -->
+        <polygon points="50,51 46,56 54,56" fill="#0d0704" stroke="#73131c" stroke-width="1"/>
+        <!-- Jagged Needle-Toothed Grimace -->
+        <path d="M26 66 L33 72 L38 67 L44 73 L50 67 L56 73 L62 67 L67 72 L74 66 L68 76 L60 72 L50 78 L40 72 L32 76 Z" fill="#0d0704" stroke="#993b12" stroke-width="1.2" filter="url(#pkInnerEmber)"/>
       </svg>
     `,
     pumpkinScared: `
-      <svg width="78" height="78" viewBox="0 0 100 100" fill="none">
+      <svg width="82" height="82" viewBox="0 0 100 100" fill="none">
         <defs>
-          <radialGradient id="pkScaredGrad" cx="50%" cy="40%" r="55%">
-            <stop offset="0%" stop-color="#f97316"/>
-            <stop offset="65%" stop-color="#c2410c"/>
-            <stop offset="100%" stop-color="#451a03"/>
+          <radialGradient id="pkGothicScared" cx="50%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#5a220f"/>
+            <stop offset="55%" stop-color="#341306"/>
+            <stop offset="100%" stop-color="#120602"/>
           </radialGradient>
           <filter id="pkFireFlash">
-            <feGaussianBlur stdDeviation="5" result="glow"/>
+            <feGaussianBlur stdDeviation="3.5" result="glow"/>
             <feComposite in="SourceGraphic" in2="glow" operator="over"/>
           </filter>
         </defs>
-        <path d="M48 16C42 7 50 3 58 1C54 6 51 11 49 16Z" fill="#84cc16" stroke="#365314" stroke-width="1.5"/>
-        <ellipse cx="50" cy="56" rx="43" ry="35" fill="url(#pkScaredGrad)" stroke="#ef4444" stroke-width="2.5"/>
-        <circle cx="34" cy="44" r="8" fill="#fef08a" filter="url(#pkFireFlash)"/>
-        <circle cx="66" cy="44" r="8" fill="#fef08a" filter="url(#pkFireFlash)"/>
-        <circle cx="34" cy="44" r="4" fill="#dc2626"/>
-        <circle cx="66" cy="44" r="4" fill="#dc2626"/>
-        <ellipse cx="50" cy="70" rx="11" ry="15" fill="#210000" stroke="#fef08a" stroke-width="3" filter="url(#pkFireFlash)"/>
+        <!-- Twisted Charred Stem -->
+        <path d="M48 15C42 6 49 2 56 1C53 5 50 10 49 15Z" fill="#141210" stroke="#0e0d0b" stroke-width="1.5"/>
+        <!-- Cursed Decaying Rind with Hellfire Cracks -->
+        <ellipse cx="50" cy="56" rx="43" ry="35" fill="url(#pkGothicScared)" stroke="#73131c" stroke-width="2.5"/>
+        <path d="M22 50 Q30 55 35 52" stroke="#5c1c24" stroke-width="1.5"/>
+        <path d="M78 50 Q70 55 65 52" stroke="#5c1c24" stroke-width="1.5"/>
+        <!-- Flaring Malevolent Eyes -->
+        <polygon points="26,42 43,47 33,34" fill="#0a0402" stroke="#c45e22" stroke-width="2"/>
+        <polygon points="74,42 57,47 67,34" fill="#0a0402" stroke="#c45e22" stroke-width="2"/>
+        <circle cx="34" cy="41" r="3" fill="#c45e22" filter="url(#pkFireFlash)"/>
+        <circle cx="66" cy="41" r="3" fill="#c45e22" filter="url(#pkFireFlash)"/>
+        <!-- Widened Fanged Cursed Maw -->
+        <ellipse cx="50" cy="71" rx="14" ry="14" fill="#0a0402" stroke="#73131c" stroke-width="2.5"/>
+        <path d="M40 64 L42 69 L45 64 L48 70 L51 64 L54 70 L57 64 L60 69" stroke="#c45e22" stroke-width="1.5"/>
+        <path d="M42 78 L45 73 L48 78 L51 73 L54 78 L57 73" stroke="#c45e22" stroke-width="1.5"/>
       </svg>
     `
   };
@@ -259,9 +296,9 @@
       this.dead = true;
 
       if (this.type === 'ghost') {
-        SpookyAudio.playGhostSqueak();
+        SpookyAudio.playGhostWail();
       } else {
-        SpookyAudio.playPumpkinCrackle();
+        SpookyAudio.playPumpkinRattle();
       }
 
       // Spawn burst particles
@@ -307,7 +344,7 @@
         this.startleCooldown = 30;
 
         if (!wasScared) {
-          SpookyAudio.playStartledGasp(this.type === 'pumpkin');
+          SpookyAudio.playStartledHiss(this.type === 'pumpkin');
         }
 
         // Flee vector in opposite direction of mouse
@@ -377,20 +414,26 @@
   }
 
   function spawnBurst(x, y, type) {
-    const count = 24;
+    const count = 26;
     for (let i = 0; i < count; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 6 + 2;
-      const color = type === 'pumpkin'
-        ? (Math.random() > 0.5 ? '#f97316' : '#facc15')
-        : (Math.random() > 0.5 ? '#a855f7' : '#4ade80');
+      const speed = Math.random() * 5 + 1.5;
+      // Gothic Somber Particles: Charcoal, Coagulated Blood, Smoldering Ember & Ash
+      let color;
+      if (type === 'pumpkin') {
+        const r = Math.random();
+        color = r < 0.45 ? '#c45e22' : (r < 0.75 ? '#73131c' : '#2a140a');
+      } else {
+        const r = Math.random();
+        color = r < 0.45 ? '#8c8275' : (r < 0.75 ? '#5c1c24' : '#1d1921');
+      }
 
       particles.push({
         x, y,
         vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 1.5,
+        vy: Math.sin(angle) * speed - 1.2,
         life: 1.0,
-        decay: Math.random() * 0.04 + 0.02,
+        decay: Math.random() * 0.035 + 0.018,
         size: Math.random() * 4 + 2,
         color
       });

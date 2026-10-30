@@ -8,6 +8,7 @@ graph TD
   P2 --> P3[Phase 3: Chapter Templates & Contract Integration]
   P3 --> P4[Phase 4: Assembly Cinematic & Vorbulon Finale]
   P4 --> P5[Phase 5: Multi-Screen Testing & Final Polish]
+  P5 --> P6[Phase 6: Final Gameplay Polish, Tutorials, Combat Balance & Win/Loss Cinematics]
 ```
 
 ---
@@ -31,32 +32,43 @@ graph TD
 
 ---
 
-### Phase 3: Drop-in Chapter Templates & Teammate Integration
-**Goal:** Provide ready-to-drop scaffolds for teammates' chapter pages with verified communication back to the server.
-- [x] Implement `public/hell/index.html` (Cheese / Booleans & Conditions in C) with molten gate calibration and 10 C questions.
-- [x] Implement `public/alien/index.html` (Vegetables / Loops & Arrays in C) with bio-conveyor purge animation and 10 C questions.
-- [x] Implement `public/ocean/index.html` (Sauce / Functions & Recursion in C) with pressure chamber dial and 10 C questions.
-- [x] Implement `public/market/index.html` (Bread / Strings & Arrays in C) with goblin vault safe tumbler and 10 C questions.
-- [x] Implement `public/shared/c-runner.js` and `public/shared/questions-data.js` for in-browser C execution with 40/40 passing test suites.
-- [x] Document drop-in instructions for teammates in each template and `README-TEAMMATES.md`.
+### Phase 3: Drop-in Chapter Templates & Provided Level Integration
+**Goal:** Integrate the 4 complete level challenges from `C:\Users\ARNAV\SANDWICH GAME\LEVELS` into the game, preserving their exact puzzles, code editors, and test cases while binding them to the 4-monitor room engine.
+- [x] Implement `public/hell/index.html` (Infernal Cheese): 10 coding scrolls in C, C++, Java with gutter, diagnostics, and test cases from `Hell-Cheese.html`.
+- [x] Implement `public/alien/index.html` (Cosmic Vegetables): 12 vegetable challenges with in-browser C/C++/Java AST interpreter from `Vegetable-planet.html`.
+- [x] Implement `public/ocean/index.html` (Abyssal Sauce): 10 switch-case potion trials with in-browser AST linter & grader from `Sauce-Ocean.html`.
+- [x] Implement `public/market/index.html` (Eldritch Bread): 10 queue/recipe problems with judge API integration from `bread-marketplace/public/index.html`.
+- [x] Integrate server-side `/api/judge` in `sandwich-hell/server.js` with hybrid compilation and simulation fallback.
+- [x] Verify multiplayer completion synchronization: all 4 levels transmit `Room.complete(...)` and transition to `/finale`.
 
 ---
 
-### Phase 4: Sandwich Assembly Cinematic & Vorbulon Boss Finale
-**Goal:** Deliver the dramatic waiting gate, sandwich assembly animation, twist reveal of Vorbulon, and cooperative 4-player Python debugging fight.
-- [ ] Implement `public/finale/index.html` with 4-ingredient waiting gate HUD.
-- [ ] Create CSS/JS sandwich assembly animation sequence depicting the cursed ingredients fusing together.
-- [ ] Implement the cosmic horror twist reveal of *Vorbulon, the Hungry Between Stars*.
-- [ ] Implement Pyodide Web Worker runner with timeout watchdog (prevents infinite loop crashes).
-- [ ] Design and implement 4 specialized corrupted Python functions (1 per player) with visible and hidden tests.
-- [ ] Implement real-time boss health / hunger bar synchronizing player patch successes via Socket.IO.
-- [ ] Implement victory ending sequence and credits.
+### Phase 4: Sandwich Assembly Cinematic & Leader Boss Battle
+**Goal:** Deliver the dramatic waiting gate, sandwich assembly and Vorbulon video placeholders, leader-exclusive rapid-fire 10s C debugging boss battle, teammate spectator screen, and victory/defeat endings.
+- [x] Implement `public/finale/index.html` with 4-ingredient Gathering Gate and video placeholders (Assembly & Vorbulon appearance).
+- [x] Create 15-question dataset of rapid-fire corrupted C programs (`public/finale/boss-c-questions.js`) with easy syntax/logic bugs.
+- [x] Implement Leader screen switch for Boss Battle: 10s countdown timer per question, code editor, and immediate patch feedback.
+- [x] Implement Teammate static screen: `"You have successfully helped to find ingredients"` with real-time spectator HP bars.
+- [x] Implement real-time combat synchronization in `server.js`: +20% boss damage on correct patch, -20% leader damage on timeout/error.
+- [x] Implement dual endings: Victory (sandwich eaten by Leader, team stats) vs Defeat (sandwich destroyed, retry).
 
 ---
 
 ### Phase 5: Multi-Screen Playtesting, LAN Setup & Final Polish
 **Goal:** Validate complete 4-player flow across 4 simultaneous browser tabs and multi-device LAN testing.
-- [ ] Conduct end-to-end 4-tab simulation of the complete game cycle.
-- [ ] Validate refresh / disconnect recovery at each phase of the game.
-- [ ] Verify LAN binding (`0.0.0.0:3000`) and print helpful local network connection instructions for multi-computer play.
-- [ ] Fine-tune UI styling, animations, contrast, and responsive layout across monitor resolutions.
+- [x] Conduct end-to-end 4-tab simulation of the complete game cycle.
+- [x] Validate refresh / disconnect recovery at each phase of the game.
+- [x] Verify LAN binding (`0.0.0.0:3000`) and print helpful local network connection instructions for multi-computer play.
+- [x] Fine-tune UI styling, animations, contrast, and responsive layout across monitor resolutions.
+
+---
+
+### Phase 6: Final Gameplay Polish, Tutorials, Combat Balance & Win/Loss Cinematics
+**Goal:** Harden the game for multi-PC lab deployment via forwarded ports, guarantee room isolation across concurrent teams, strip all dev cheats/shortcuts, verify all 42 puzzles and 6-solve quotas, balance Boss Battle to a 12s timer / 15% damage, and validate end-to-end simulation with win/loss cinematics.
+- [x] Ensure 0.0.0.0 binding, origin-relative client sockets, CORS, and reverse proxy trust for lab port forwarding.
+- [x] Verify guest PC room joining using only room codes and concurrent multi-room state isolation.
+- [x] Remove all dev cheat buttons (Instant Win, Instant Lose, Bypass Ingredients, Win All) across all levels and Boss arena.
+- [x] Comprehensive test suite for all 42 puzzles (Hell: 10, Alien: 12, Ocean: 10, Market: 10), 6-solve quotas, and skip navigation.
+- [x] Balance Boss Battle to 12-second timer per question and 15% damage per strike/miss across 20 corrupted C questions.
+- [x] Full end-to-end multi-room simulation: Lobby -> Intro -> Picker -> Chapters -> Cutscene -> Boss Battle -> WIN.mp4/LOSE.mp4 -> Stats -> Return to Main Page.
+

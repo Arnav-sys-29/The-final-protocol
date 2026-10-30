@@ -1,0 +1,307 @@
+/* Shared Room HUD Bar for Chapter Levels */
+#room-hud-strip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  background: rgba(10, 6, 18, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 140, 0, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-family: 'Cinzel', 'VT323', system-ui, -apple-system, sans-serif;
+  color: #efe6d8;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+#room-hud-strip * {
+  box-sizing: border-box;
+}
+
+.hud-left, .hud-right, .hud-center {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hud-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.hud-pill.rune {
+  border-color: rgba(245, 166, 35, 0.5);
+  color: #ffb84d;
+}
+
+.hud-pill.chef {
+  border-color: rgba(185, 167, 232, 0.4);
+  color: #d8cbe0;
+}
+
+.hud-pill.status {
+  border-color: rgba(111, 185, 138, 0.4);
+  color: #6fb98a;
+}
+
+.hud-pill.status.secured {
+  background: rgba(45, 122, 77, 0.35);
+  border-color: #6fb98a;
+  color: #89d185;
+}
+
+.hud-btn {
+  background: rgba(232, 130, 46, 0.2);
+  border: 1px solid #e8822e;
+  color: #ffd29d;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hud-btn:hover {
+  background: #e8822e;
+  color: #120a1a;
+  box-shadow: 0 0 10px rgba(232, 130, 46, 0.5);
+}
+
+.hud-btn.win {
+  background: linear-gradient(135deg, rgba(255, 60, 60, 0.25), rgba(255, 166, 0, 0.25));
+  border-color: #ff9a1a;
+  color: #fff;
+}
+
+.hud-btn.win:hover {
+  background: linear-gradient(135deg, #ff4c4c, #ff9a1a);
+  color: #000;
+  box-shadow: 0 0 14px rgba(255, 154, 26, 0.8);
+}
+
+/* Offset body or main containers to prevent overlap */
+body.has-room-hud {
+  padding-top: 48px !important;
+}
+
+/* Instant Win Toast & Modal */
+.hud-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: hudFadeIn 0.3s ease;
+}
+
+.hud-modal-card {
+  background: linear-gradient(160deg, #1e1028, #0d0614);
+  border: 2px solid #e8822e;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 0 50px rgba(232, 130, 46, 0.4), 0 20px 60px rgba(0, 0, 0, 0.9);
+  animation: hudScaleUp 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  color: #efe6d8;
+  font-family: 'Cinzel', system-ui, sans-serif;
+}
+
+.hud-modal-card h2 {
+  font-size: 26px;
+  margin: 12px 0 8px;
+  color: #ffb84d;
+  letter-spacing: 1px;
+}
+
+.hud-modal-card p {
+  color: #d8cbe0;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0 0 24px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.hud-modal-icon {
+  font-size: 56px;
+  line-height: 1;
+  margin-bottom: 8px;
+  animation: hudBounce 1s infinite alternate ease-in-out;
+}
+
+.hud-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hud-modal-actions .hud-btn {
+  padding: 12px 20px;
+  font-size: 13px;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.hud-modal-close {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #9a8aa6;
+}
+
+.hud-modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: #fff;
+}
+
+@keyframes hudFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes hudScaleUp {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes hudBounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-6px); }
+}
+
+@media (max-width: 768px) {
+  #room-hud-strip {
+    font-size: 11px;
+    padding: 0 8px;
+    gap: 6px;
+  }
+  .hud-pill {
+    padding: 3px 6px;
+    font-size: 10px;
+  }
+}
+
+/* Tutorial Modal */
+.hud-tutorial-card {
+  background: radial-gradient(circle at 50% 0%, #2a1145, #110522 65%, #07020d 100%);
+  border: 2px solid rgba(168, 85, 247, 0.6);
+  border-radius: 20px;
+  padding: 30px 32px;
+  max-width: 580px;
+  width: 100%;
+  text-align: left;
+  box-shadow: 0 0 60px rgba(168, 85, 247, 0.4), 0 25px 70px rgba(0, 0, 0, 0.95);
+  animation: hudScaleUp 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  color: #f1f5f9;
+  font-family: system-ui, -apple-system, sans-serif;
+  position: relative;
+}
+
+.hud-tutorial-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+  border-bottom: 1.5px solid rgba(168, 85, 247, 0.3);
+  padding-bottom: 14px;
+}
+
+.hud-tutorial-header h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  margin: 0;
+  color: #fed7aa;
+  text-shadow: 0 0 12px rgba(251, 146, 60, 0.5);
+}
+
+.hud-tutorial-sub {
+  color: #c4b5fd;
+  font-size: 14px;
+  margin: 0 0 16px;
+  font-style: italic;
+}
+
+.hud-tutorial-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hud-tutorial-list li {
+  position: relative;
+  padding-left: 28px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: #e2e8f0;
+}
+
+.hud-tutorial-list li::before {
+  content: '✦';
+  position: absolute;
+  left: 6px;
+  top: 0px;
+  color: #fb923c;
+  font-size: 14px;
+  text-shadow: 0 0 8px #f97316;
+}
+
+.hud-tutorial-tip {
+  background: rgba(139, 92, 246, 0.15);
+  border-left: 3px solid #a855f7;
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  font-size: 13.5px;
+  color: #ddd6fe;
+  margin-bottom: 22px;
+}
+
+.hud-tutorial-btn-start {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 999px;
+  border: 1.5px solid #fb923c;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 0 25px rgba(249, 115, 22, 0.5);
+  transition: all 0.25s ease;
+  text-align: center;
+}
+
+.hud-tutorial-btn-start:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 40px rgba(249, 115, 22, 0.8);
+}

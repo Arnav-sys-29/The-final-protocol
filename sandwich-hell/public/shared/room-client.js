@@ -30,6 +30,9 @@
      * Initialize connection and attempt session restoration
      */
     init(options = {}) {
+      if (typeof window !== 'undefined' && window.location && window.location.search.includes('reset=1')) {
+        this.leaveRoom();
+      }
       if (this.initialized) return Promise.resolve(this);
       if (options.autoRedirect !== undefined) this.autoRedirect = options.autoRedirect;
 
@@ -49,6 +52,7 @@
 
     _connect(resolve, reject) {
       this.socket = io({
+        transports: ['websocket', 'polling'],
         reconnection: true,
         reconnectionAttempts: Infinity,
         reconnectionDelay: 1000
@@ -156,9 +160,33 @@
         }
       });
 
+      this.socket.on('cutscene_phase', (data) => {
+        this._emit('cutscene_phase', data);
+      });
+
       this.socket.on('boss_updated', (data) => {
         this.state = data.roomState;
         this._emit('boss_updated', data);
+      });
+
+      this.socket.on('boss_combat_update', (data) => {
+        this.state = data.roomState;
+        this._emit('boss_combat_update', data);
+      });
+
+      this.socket.on('boss_victory', (data) => {
+        this.state = data.roomState;
+        this._emit('boss_victory', data);
+      });
+
+      this.socket.on('boss_defeat', (data) => {
+        this.state = data.roomState;
+        this._emit('boss_defeat', data);
+      });
+
+      this.socket.on('boss_restarted', (data) => {
+        this.state = data.roomState;
+        this._emit('boss_restarted', data);
       });
 
       this.socket.on('boss_defeated', (data) => {
@@ -167,6 +195,16 @@
         if (this.autoRedirect && data.nextUrl && window.location.pathname !== data.nextUrl) {
           window.location.href = data.nextUrl;
         }
+      });
+
+      this.socket.on('play_prologue', (data) => {
+        this.state = data.roomState;
+        this._emit('play_prologue', data);
+      });
+
+      this.socket.on('cutscene_phase', (data) => {
+        this.state = data.roomState;
+        this._emit('cutscene_phase', data);
       });
 
       this.socket.on('error_message', (data) => {
@@ -213,6 +251,22 @@
       return (sessionStorage.getItem(KEYS.IS_HOST) || localStorage.getItem(KEYS.IS_HOST)) === 'true';
     }
 
+    leaveRoom() {
+      sessionStorage.removeItem(KEYS.ROOM_CODE);
+      sessionStorage.removeItem(KEYS.PLAYER_ID);
+      sessionStorage.removeItem(KEYS.CHAPTER);
+      sessionStorage.removeItem(KEYS.IS_HOST);
+      sessionStorage.removeItem('sandwich_battle_ready');
+
+      localStorage.removeItem(KEYS.ROOM_CODE);
+      localStorage.removeItem(KEYS.PLAYER_ID);
+      localStorage.removeItem(KEYS.CHAPTER);
+      localStorage.removeItem(KEYS.IS_HOST);
+      localStorage.removeItem('sandwich_battle_ready');
+      this.state = null;
+      this.player = null;
+    }
+
     getState() {
       return this.state;
     }
@@ -221,9 +275,9 @@
       return this.player;
     }
 
-    create(playerName) {
+    create(playerName, customRoomCode = '') {
       const name = playerName || this.getPlayerName();
-      this.socket.emit('create_room', { playerName: name });
+      this.socket.emit('create_room', { playerName: name, customRoomCode });
     }
 
     join(roomCode, playerName) {
@@ -245,6 +299,18 @@
       this.socket.emit('advance_phase', { roomCode, playerId, phase });
     }
 
+    startPrologue() {
+      const roomCode = this.getRoomCode();
+      const playerId = this.getPlayerId();
+      this.socket.emit('start_prologue', { roomCode, playerId });
+    }
+
+    startCutscenePhase(phase) {
+      const roomCode = this.getRoomCode();
+      const playerId = this.getPlayerId();
+      this.socket.emit('start_cutscene_phase', { roomCode, playerId, phase });
+    }
+
     claim(chapter) {
       const roomCode = this.getRoomCode();
       const playerId = this.getPlayerId();
@@ -252,10 +318,44 @@
     }
 
     complete(chapter) {
-      const roomCode = this.getRoomCode();
-      const playerId = this.getPlayerId();
-      const ch = chapter || this.getChapter();
-      this.socket.emit('complete_chapter', { roomCode, playerId, chapter: ch });
+      const roomCode = this.getRoomCode() || 'DEMO01';
+      const playerId = this.getPlayerId() || 'player_solo';
+      const ch = chapter || this.getChapter() || 'hell';
+      if (this.socket && this.socket.connected) {
+        this.socket.emit('complete_chapter', { roomCode, playerId, chapter: ch });
+      }
+      // Guaranteed REST fallback
+      fetch('/api/instant-win', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ roomCode, playerId, chapter: ch })
+      }).catch(() => {});
+    }
+
+    completeAll() {
+      const roomCode = this.getRoomCode() || 'DEMO01';
+      const playerId = this.getPlayerId() || 'player_solo';
+      if (this.socket && this.socket.connected) {
+        this.socket.emit('complete_all_chapters', { roomCode, playerId });
+      }
+      fetch('/api/instant-win', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ roomCode, playerId, winAll: true })
+      }).then(r => r.json()).then(data => {
+        if (data.allCompleted) {
+          setTimeout(() => { window.location.href = '/cutscene'; }, 600);
+        }
+      }).catch(() => {
+        window.location.href = '/cutscene';
+      });
+    }
+
+    startCutscenePhase(phase) {
+      const roomCode = this.getRoomCode() || 'DEMO01';
+      if (this.socket && this.socket.connected) {
+        this.socket.emit('cutscene_phase', { roomCode, phase });
+      }
     }
 
     patchBoss(chapter) {
@@ -263,6 +363,33 @@
       const playerId = this.getPlayerId();
       const ch = chapter || this.getChapter();
       this.socket.emit('patch_boss_function', { roomCode, playerId, chapter: ch });
+    }
+
+    sendBossAction(success, timeout, questionId) {
+      const roomCode = this.getRoomCode() || 'DEMO01';
+      const playerId = this.getPlayerId() || 'player_solo';
+      if (this.socket && this.socket.connected) {
+        this.socket.emit('boss_action', { roomCode, playerId, success, timeout, questionId });
+      } else {
+        fetch('/api/boss-combat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ roomCode, playerId, success, timeout, questionId })
+        }).catch(() => {});
+      }
+    }
+
+    restartBoss() {
+      const roomCode = this.getRoomCode() || 'DEMO01';
+      if (this.socket && this.socket.connected) {
+        this.socket.emit('restart_boss_battle', { roomCode });
+      } else {
+        fetch('/api/boss-restart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ roomCode })
+        }).catch(() => {});
+      }
     }
 
     on(event, callback) {

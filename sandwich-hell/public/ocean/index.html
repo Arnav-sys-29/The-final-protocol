@@ -1,548 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chapter III: Abyssal Sauce | The Legendary Sandwich From Hell</title>
-  <meta name="description" content="Descend into the Mariana Trench pressure chamber to distill Abyssal Sauce by implementing recursive alchemy in C.">
-
-  <!-- Spooky Fonts & Styles -->
-  <link rel="stylesheet" href="/shared/theme.css">
-  <link rel="stylesheet" href="/shared/chapter.css">
-
-  <style>
-    /* Ocean-specific atmospheric accents */
-    :root {
-      --chapter-accent: #00f5d4;
-      --chapter-glow: rgba(0, 245, 212, 0.55);
-    }
-
-    body {
-      background-image: 
-        radial-gradient(circle at calc(var(--mouse-x) * 100%) calc(var(--mouse-y) * 100%), rgba(0, 245, 212, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 20% 80%, rgba(0, 160, 255, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at center, #05141e 0%, #03080e 100%);
-    }
-
-    /* Interactive Pressure Chamber Visual */
-    .pressure-chamber-box {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle, #081d28 0%, #030a10 90%);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .bubble-column {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    .bubble {
-      position: absolute;
-      bottom: -15px;
-      background: rgba(0, 245, 212, 0.5);
-      border-radius: 50%;
-      box-shadow: 0 0 8px #00f5d4;
-      animation: bubbleRise 3s infinite ease-in;
-    }
-
-    @keyframes bubbleRise {
-      0% { transform: translateY(0) scale(1); opacity: 0.8; }
-      100% { transform: translateY(-220px) scale(1.4); opacity: 0; }
-    }
-
-    .dial-gauge-wrapper {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      border: 3px solid #00f5d4;
-      background: rgba(0, 15, 25, 0.85);
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 20px rgba(0, 245, 212, 0.4), inset 0 0 15px rgba(0, 245, 212, 0.2);
-      z-index: 2;
-    }
-
-    .needle {
-      position: absolute;
-      bottom: 50%;
-      left: 50%;
-      width: 3px;
-      height: 42px;
-      background: #ff3344;
-      transform-origin: bottom center;
-      transform: rotate(120deg);
-      transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 0 6px #ff3344;
-      border-radius: 2px;
-    }
-
-    .gauge-center-pin {
-      width: 12px;
-      height: 12px;
-      background: #00f5d4;
-      border-radius: 50%;
-      z-index: 3;
-      box-shadow: 0 0 8px #00f5d4;
-    }
-
-    .gauge-readout {
-      position: absolute;
-      bottom: 8px;
-      font-family: var(--font-code);
-      font-size: 0.75rem;
-      color: #00f5d4;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 0.2rem 0.6rem;
-      border-radius: 10px;
-      z-index: 3;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Abyssal Sauce · The Legendary Sandwich From Hell</title>
+<link rel="stylesheet" href="/shared/chapter-hud.css">
+<style>
+:root{--bg:#fff4e2;--card:#fffaf2;--ink:#2a160d;--muted:#7b624f;--line:#efd3ad;--a:#e63a1e;--a2:#ff9f1c;--ok:#1f9d4d;--bad:#d62828;--code:#1b1210;--codeink:#ffe9d0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#150b12;--card:#241420;--ink:#fbeadf;--muted:#c3a595;--line:#47273a}}
+:root[data-theme="dark"]{--bg:#150b12;--card:#241420;--ink:#fbeadf;--muted:#c3a595;--line:#47273a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5;min-height:100vh}
+.app{max-width:1100px;margin:0 auto;padding:16px 16px 48px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}
+.brand{font-size:20px;font-weight:800}.brand b{color:var(--a)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+.narrow{max-width:480px;margin:6vh auto 0;text-align:center}
+h1{font-size:clamp(26px,6vw,36px);margin:4px 0 6px}h2{margin:0 0 6px;font-size:clamp(20px,3.5vw,26px)}
+.muted{color:var(--muted)}.note{color:var(--muted);font-size:13px}
+input#team{width:100%;margin:12px 0;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:16px}
+button{font:inherit;cursor:pointer}
+.go{padding:12px 22px;border:0;border-radius:12px;font-weight:800;color:#fff;background:linear-gradient(90deg,var(--a),var(--a2))}
+.go.full{width:100%}
+.ghost{padding:7px 14px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--muted);font-weight:600}
+.langs{display:flex;gap:8px;justify-content:center;margin:10px 0 14px}
+.lang{padding:8px 18px;border-radius:99px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:700}
+.lang.on{background:var(--a);border-color:var(--a);color:#fff}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px;align-items:start}
+@media (max-width:860px){.split{grid-template-columns:1fr}}
+.box{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:10px 0;font-size:14px}
+.box.warn{border-left:4px solid var(--a)}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:7px 12px;text-align:left;white-space:nowrap}th{background:var(--bg);color:var(--muted)}tr+tr td{border-top:1px solid var(--line)}
+.win{border-radius:14px;overflow:hidden;background:var(--code);margin-top:10px}
+textarea{display:block;width:100%;min-height:320px;resize:vertical;padding:14px;border:0;background:transparent;color:var(--codeink);font:13.5px/1.55 ui-monospace,Menlo,Consolas,monospace;tab-size:4}
+textarea:focus{outline:2px solid var(--a)}
+#fb{margin-top:12px;font-weight:600}.bad{color:var(--bad)}
+.shake{animation:sh .35s}@keyframes sh{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.big{font-size:60px}
+.inv{font-size:clamp(20px,5vw,26px);font-weight:800;color:var(--ok);margin:10px 0 16px}
+:root{--bg:#f6efff;--card:#fffaff;--line:#dcc8f5;--a:#8b2fc9;--a2:#ff8a00;--ok:#16a34a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#120a1f;--card:#1e1233;--line:#3b2764;--muted:#b9a5d6}}
+:root[data-theme="dark"]{--bg:#120a1f;--card:#1e1233;--line:#3b2764;--muted:#b9a5d6}
+body{background:radial-gradient(700px 400px at 90% -5%,#a855f733,transparent),radial-gradient(600px 400px at -5% 100%,#ff8a0026,transparent),var(--bg)}
+.card{box-shadow:0 8px 28px #7c3aed26}
+.fx{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.app{position:relative;z-index:1}
+.fl{position:absolute;bottom:-60px;opacity:.5;animation:rise linear infinite}
+@keyframes rise{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(30px,-55vh) rotate(15deg)}100%{transform:translate(-20px,-120vh) rotate(-10deg);opacity:0}}
+.bat{position:absolute;left:-60px;opacity:.6;animation:fly linear infinite}
+@keyframes fly{0%{transform:translate(0,0)}25%{transform:translate(28vw,-24px)}50%{transform:translate(56vw,10px)}75%{transform:translate(84vw,-20px)}100%{transform:translate(118vw,8px)}}
+.hero{display:flex;justify-content:center;align-items:flex-end;gap:14px;margin-bottom:4px}
+.hat{animation:sway 3s ease-in-out infinite;transform-origin:50% 90%}
+@keyframes sway{50%{transform:rotate(-7deg)}}
+.potion{overflow:visible;animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-5px)}}
+.potion .b{animation:bub 2.4s infinite}.potion .b:nth-of-type(2){animation-delay:.8s}.potion .b:nth-of-type(3){animation-delay:1.5s}
+@keyframes bub{0%{transform:translateY(0);opacity:0}20%{opacity:.95}100%{transform:translateY(-30px);opacity:0}}
+.pot-s{float:right;margin:-4px -2px 0 10px}
+.brand svg{vertical-align:-6px}
+.win-card{animation:pop .5s}@keyframes pop{from{transform:scale(.85);opacity:0}}
+@media (prefers-reduced-motion:reduce){.fx{display:none}.hat,.potion,.potion .b,.win-card{animation:none}}
+:root,:root:not([data-theme="light"]),:root[data-theme="dark"],:root[data-theme="light"]{--bg:#1a0b45;--card:#140a38f2;--ink:#f5ecff;--muted:#c0aee8;--line:#3a2480;--a:#ffd54f;--a2:#ff9800;--ok:#86efac;--bad:#ff8a8a;--code:#0d0524;--codeink:#ffe9d0;color-scheme:dark}
+body{background:#160a3c}
+.fl,.bat{display:none}
+.scene{position:absolute;inset:0;width:100%;height:100%}
+.card{backdrop-filter:blur(4px);box-shadow:0 10px 30px #0006}
+.go{color:#2a1469;background:linear-gradient(90deg,#fff59d,#ffb74d);box-shadow:0 6px 18px #ffb74d44}
+.lang.on{color:#2a1469}
+.brand b{color:#fff59d}
+.ghost{background:#140a38cc;color:var(--ink)}
+.hat{filter:drop-shadow(0 0 5px #c4b5fd)}
+.win{display:flex}
+textarea{flex:1;min-width:0;height:340px;min-height:0;resize:none;line-height:21px;white-space:pre;overflow:auto}
+#gut{margin:0;padding:14px 8px 14px 10px;min-width:40px;height:340px;text-align:right;color:#8c78c8;font:13.5px/21px ui-monospace,Menlo,Consolas,monospace;overflow:hidden;user-select:none;background:#09031a;border-right:1px solid #3a2478}
+#gut span{display:block}#gut .e{color:#fff;background:#e5484d;border-radius:4px;font-weight:700}
+.err{display:block;width:100%;text-align:left;margin-top:8px;padding:8px 12px;border-radius:10px;border:1px solid #ff8a8a66;background:#ff8a8a1a;color:var(--ink);font-weight:500}
+.err b{color:#ff8a8a}.err code{display:block;margin-top:4px;font:12.5px ui-monospace,Menlo,monospace;color:#ffd0d0;white-space:pre-wrap;overflow-wrap:anywhere}
+.gh{animation:gf 5s ease-in-out infinite}@keyframes gf{50%{transform:translateY(-8px)}}
+.mglow{animation:mp 6s ease-in-out infinite}@keyframes mp{50%{opacity:.65}}
+.wn{animation:wf 5s infinite}@keyframes wf{45%{opacity:.7}}
+.witch{animation:wfly 32s linear infinite}@keyframes wfly{from{transform:translate(-90px,0)}to{transform:translate(745px,-30px)}}
+@media (prefers-reduced-motion:reduce){.fx{display:block}.gh,.mglow,.wn,.witch{animation:none}}
+.fx::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,#0a032026 30%,#05010fb8 100%)}
+.st{animation:tw 3s ease-in-out infinite}@keyframes tw{50%{opacity:.2}}
+.bt{animation:bfly linear infinite}@keyframes bfly{from{transform:translate(-40px,0)}to{transform:translate(700px,-40px)}}
+.fp{animation:flap .4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}@keyframes flap{50%{transform:scaleY(.45)}}
+.ms{animation:mist 14s ease-in-out infinite}@keyframes mist{50%{transform:translateX(45px)}}
+.fz{animation:fz 6s ease-in-out infinite}@keyframes fz{0%{transform:translate(0,0);opacity:0}30%{opacity:.9}100%{transform:translate(10px,-42px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.st,.bt,.fp,.ms,.fz{animation:none}}
+</style>
 </head>
 <body>
+<div class="fx" id="fx" aria-hidden="true"></div>
+<div class="app">
+  <div class="top"><div class="brand"><span id="bh"></span> <b>Ocean Level:</b> Abyssal Sauce</div><div id="who"></div></div>
+  <main id="main"></main>
+</div>
+<script>
+const rows=(a)=>a, $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LANGS={c:"C",cpp:"C++",java:"Java"};
+const STARTER={
+ c:"#include <stdio.h>\n\nint main() {\n    \n    return 0;\n}\n",
+ cpp:"#include <iostream>\nusing namespace std;\n\nint main() {\n    \n    return 0;\n}\n",
+ java:"import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        \n    }\n}\n"};
+// Language-specific building blocks
+const IN={c:c=>/\bscanf\s*\(/.test(c),cpp:c=>/\bcin\s*>>/.test(c),java:c=>/new\s+Scanner/.test(c)&&/\.next\w*\s*\(/.test(c)};
+const OUT={c:c=>/\b(printf|puts)\s*\(/.test(c),cpp:c=>/\bcout\s*<</.test(c),java:c=>/System\.out\.print/.test(c)};
+const SKEL={c:c=>/\bmain\s*\(/.test(c),cpp:c=>/\bmain\s*\(/.test(c),java:c=>/class\s+\w+/.test(c)&&/static\s+void\s+main/.test(c)};
+const caseRx=v=>new RegExp("case\\s*"+(typeof v==="number"?v:"'"+v+"'")+"\\s*(:|->)");
+const numRx=n=>new RegExp("(^|[^\\d.])"+n+"([^\\d]|$)");
+const mulRx=n=>new RegExp("\\*\\s*"+n+"\\b|\\b"+n+"\\s*\\*");
+const NEG=/<\s*0|<=\s*0|<\s*1\b|0\s*>/, INV=/invalid/i, CMP=/\w+\s*[<>]=?\s*\w+/;
+const T=(e,t,d,s,task,head,r,con,o)=>({e,t,d,s,task,head,r,con,...o});
+const QS=[
+T("🧪","The Demon’s Potion Calculator","Easy","The Demon offers four magical potions, each with a different price.","Write a program that accepts a potion code and quantity, then calculates the total cost using switch-case.",["Code","Potion","Price"],[["H","Health Potion","₹80"],["I","Invisibility Potion","₹120"],["S","Strength Potion","₹100"],["P","Poison Potion","₹150"]],"Handle invalid codes and quantities less than or equal to zero.",{cs:["H","I","S","P"],n:[80,120,100,150],neg:1,inv:1}),
+T("⚡","The Haunted Electricity Bill","Easy","A haunted castle consumes electricity every night.","Write a program that accepts the type of castle and the number of units consumed, then calculates the bill using switch-case.",["Code","Castle type","Rate per unit"],[["S","Small Castle","₹4"],["M","Medium Castle","₹6"],["L","Large Castle","₹8"]],"Reject negative units and invalid castle types.",{cs:["S","M","L"],n:[4,6,8],neg:1,inv:1}),
+T("🌀","The Monster’s Travel Portal","Easy","A monster must choose a magical portal to travel between haunted locations.","Write a program that accepts a portal choice and distance, then calculates the travel cost using switch-case.",["Choice","Portal","Cost per km"],[["1","Ghost Portal","₹5"],["2","Vampire Portal","₹8"],["3","Witch Portal","₹10"],["4","Demon Portal","₹15"]],"Reject invalid choices and non-positive distances.",{cs:[1,2,3,4],n:[5,8,10,15],neg:1,inv:1}),
+T("🌕","The Werewolf’s Shape-Shifting Spell","Medium","A werewolf can transform into different creatures, but each transformation consumes a different amount of energy.","Write a program that accepts the creature code and the werewolf’s initial energy, then calculates the remaining energy using switch-case.",["Code","Transformation","Energy consumed"],[["B","Bat","10"],["G","Ghost","20"],["C","Cat","15"],["D","Dragon","40"]],"If the energy is insufficient, display Transformation Failed!; reject invalid codes and negative energy.",{cs:["B","G","C","D"],n:[10,20,15,40],neg:1,inv:1,x:[/Transformation Failed!/]}),
+T("🎮","The Haunted Arcade","Easy","A ghost is playing a haunted arcade game.","Write a program that accepts a game mode and the score earned, then calculates the final score using switch-case.",["Choice","Game mode","Score multiplier"],[["1","Ghost Run","×2"],["2","Zombie Attack","×3"],["3","Vampire Hunt","×4"],["4","Demon Battle","×5"]],"Reject invalid choices and negative scores.",{cs:[1,2,3,4],m:[2,3,4,5],neg:1,inv:1}),
+T("🌡️","The Witch’s Temperature Chamber","Medium","A witch must adjust the temperature of her magical chamber.","Write a program that accepts a conversion choice and a temperature, then uses switch-case to perform the selected conversion.",["Choice","Conversion"],[["1","Celsius to Fahrenheit"],["2","Fahrenheit to Celsius"],["3","Celsius to Kelvin"]],"Reject invalid choices and temperatures below absolute zero for the relevant scale.",{html:"<ul><li>Fahrenheit = (Celsius × 9/5) + 32</li><li>Celsius = (Fahrenheit − 32) × 5/9</li><li>Kelvin = Celsius + 273.15</li></ul>",cs:[1,2,3],inv:1,x:[/\b(float|double)\b/,/(9(\.0)?\s*\/\s*5|1\.8)/,/\b32\b/,/5(\.0)?\s*\/\s*9/,/273\.15/,/-\s*273\.15/,/459\.67/]}),
+T("🩸","The Vampire’s Blood Bank","Hard","A vampire maintains a blood bank with a fixed initial supply of 100 units.","Write a menu-driven program using switch-case to perform these operations.",["Option","Operation"],[["1","Display available blood"],["2","Add blood units"],["3","Consume blood units"],["4","Exit"]],"Added and consumed quantities must be positive, and the vampire cannot consume more blood than is available.",{cs:[1,2,3,4],n:[100],neg:1,x:[/\b(while|do|for)\b/,CMP]}),
+T("🔢","The Demon’s Number Decoder","Easy","The Demon has encoded messages as numbers from 0 to 15.","Write a program that accepts an integer and uses switch-case to display its hexadecimal digit.",["Value","Digit"],[["0 – 9","0 – 9"],["10","A"],["11","B"],["12","C"],["13","D"],["14","E"],["15","F"]],"Display Invalid code for values outside the range 0–15.",{cs:[10,11,12,13,14,15],x:[/['"]A['"]/,/['"]B['"]/,/['"]C['"]/,/['"]D['"]/,/['"]E['"]/,/['"]F['"]/,/<=?\s*9|<\s*10|case\s*[0-9]\s*(:|->)|'0'|%d/,/Invalid code/]}),
+T("🚗","The Haunted Parking Lot","Easy","Monsters park different vehicles outside the haunted mansion.","Write a program that accepts a vehicle code and the number of parking hours, then calculates the parking fee using switch-case.",["Code","Vehicle","Fee per hour"],[["B","Bicycle","₹10"],["M","Motorcycle","₹20"],["C","Car","₹40"],["T","Truck","₹60"]],"Reject invalid vehicle codes and non-positive parking hours.",{cs:["B","M","C","T"],n:[10,20,40,60],neg:1,inv:1}),
+T("🏆","The Final Demon’s Reward System","Easy","After defeating a monster, a player receives reward points based on the monster’s rank.","Write a program that accepts the monster rank and the number of monsters defeated, then calculates the total reward using switch-case.",["Rank","Monster","Points per monster"],[["E","Easy","10"],["M","Medium","25"],["H","Hard","50"],["D","Demon Boss","100"]],"Reject invalid ranks and negative monster counts.",{cs:["E","M","H","D"],n:[10,25,50,100],neg:1,inv:1})
+];
+const strip=c=>c.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm,"");
+function grade(q,lang,raw){
+  const c=strip(raw),r=[SKEL[lang](c),IN[lang](c),OUT[lang](c),/\bswitch\b/.test(c),/\bdefault\s*(:|->)/.test(c)];
+  (q.cs||[]).forEach(v=>r.push(caseRx(v).test(c)));
+  (q.n||[]).forEach(n=>r.push(numRx(n).test(c)));
+  (q.m||[]).forEach(n=>r.push(mulRx(n).test(c)));
+  if(q.neg)r.push(NEG.test(c));if(q.inv)r.push(INV.test(c));
+  (q.x||[]).forEach(re=>r.push(re.test(c)));
+  return{pass:r.filter(Boolean).length,total:r.length};
+}
+const hat=w=>`<svg class="hat" width="${w}" height="${w}" viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="82" rx="46" ry="10" fill="#3b1a66"/><path d="M30 80 Q44 46 46 16 Q58 6 64 22 Q68 52 72 80Z" fill="#6d28d9"/><path d="M31 74 L71 74 L72 80 L30 80Z" fill="#f59e0b"/><rect x="46" y="72" width="9" height="9" rx="1.5" fill="none" stroke="#3b1a66" stroke-width="2"/><circle cx="58" cy="26" r="2.2" fill="#fde68a"/></svg>`;
+const potion=w=>`<svg class="potion" width="${w||64}" height="${(w||64)*1.3}" viewBox="0 0 60 80" aria-hidden="true"><rect x="24" y="2" width="12" height="8" rx="2" fill="#a0522d"/><rect x="25" y="10" width="10" height="14" fill="#c4b5fd55" stroke="#a78bfa" stroke-width="1.5"/><path d="M25 24 L10 56 Q6 74 22 76 L38 76 Q54 74 50 56 L35 24Z" fill="#c4b5fd33" stroke="#a78bfa" stroke-width="2"/><path d="M13 50 Q30 42 47 50 L50 56 Q54 74 38 76 L22 76 Q6 74 10 56Z" fill="#34d399"/><circle class="b" cx="24" cy="62" r="3" fill="#d1fae5"/><circle class="b" cx="34" cy="64" r="2.4" fill="#d1fae5"/><circle class="b" cx="29" cy="66" r="3.4" fill="#d1fae5"/></svg>`;
+function fxInit(){
+  const f=$("fx"),R=(a,b)=>a+Math.random()*(b-a),E=["✨","🧪","🎃","👻","🕸️","🌙","⭐"];
+  for(let i=0;i<14;i++){const s=document.createElement("span");s.className="fl";s.textContent=E[i%E.length];
+    s.style.cssText=`left:${R(2,96)}%;font-size:${R(16,32)}px;animation-duration:${R(16,30)}s;animation-delay:-${R(0,30)}s`;f.appendChild(s)}
+  for(let i=0;i<4;i++){const s=document.createElement("span");s.className="bat";s.textContent="🦇";
+    s.style.cssText=`top:${R(4,55)}%;font-size:${R(22,34)}px;animation-duration:${R(14,24)}s;animation-delay:-${R(0,20)}s`;f.appendChild(s)}
+  $("bh").innerHTML=hat(30);
+}
+const SCENE=`<svg class='scene' viewBox='0 0 655 368' preserveAspectRatio='xMaxYMax slice' aria-hidden='true'><defs><linearGradient id='sk' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#271063'/><stop offset='1' stop-color='#1a0b4a'/></linearGradient><radialGradient id='mg'><stop offset='.6' stop-color='#f6f7a0' stop-opacity='.45'/><stop offset='1' stop-color='#f6f7a0' stop-opacity='0'/></radialGradient><g id='gh'><path d='M0-11Q9-11 9 0V11L6 8 3 11 0 8-3 11-6 8-9 11V0Q-9-11 0-11Z' fill='#c9b8f0'/><circle cx='-3' cy='-3' r='1.3' fill='#3a1b8c'/><circle cx='3' cy='-3' r='1.3' fill='#3a1b8c'/></g></defs><rect width='655' height='368' fill='url(#sk)'/><path d='M0 70Q150 20 330 80T655 55V125Q480 150 330 115T0 130Z' fill='#2a1270' opacity='.7'/><path d='M0 195Q200 160 400 215T655 195V255Q400 262 200 238T0 250Z' fill='#210f5c' opacity='.8'/><circle class='mglow' cx='548' cy='85' r='125' fill='url(#mg)'/><circle cx='548' cy='85' r='90' fill='#e6e783' stroke='#d6d870' stroke-width='5'/><ellipse cx='605' cy='118' rx='9' ry='5' fill='#e3e47a' opacity='.6'/><ellipse cx='590' cy='60' rx='6' ry='4' fill='#e3e47a' opacity='.5'/><g class='witch'><g transform='translate(0 120)' fill='#0f0630' stroke='#0f0630'><path d='M-28 7L26-2' stroke-width='2.5'/><path d='M-28 7L-42 2 -42 13Z' stroke-width='1'/><ellipse cx='-4' cy='-3' rx='8' ry='6' stroke='none'/><circle cx='6' cy='-12' r='4' stroke='none'/><path d='M1-14L9-28 15-14Z' stroke='none'/><ellipse cx='8' cy='-14' rx='9' ry='2' stroke='none'/></g></g><g fill='none' stroke='#0f0630' stroke-linecap='round'><path d='M20 335Q8 270 22 205Q14 150 0 118' stroke-width='9'/><path d='M22 205Q60 185 100 152L165 128' stroke-width='5'/><path d='M62 178Q70 160 92 150' stroke-width='3'/><path d='M0 36Q40 8 100 20L132 42' stroke-width='4'/><path d='M18 60Q30 40 44 12' stroke-width='3'/></g><g fill='#0f0630'><path d='M372 248L402 208 430 248Z'/><rect x='380' y='246' width='48' height='60'/><path d='M428 198L452 168 476 198Z'/><rect x='432' y='196' width='44' height='110'/><path d='M476 306V125H490V96L510 58 530 96V125H562V306Z'/><path d='M532 138L549 112 568 138Z'/><path d='M566 166L586 140 606 166Z'/><rect x='570' y='164' width='34' height='84'/></g><g class='wn' fill='#ffd35c'><rect x='505' y='94' width='8' height='11' rx='4'/><rect x='503' y='133' width='14' height='19' rx='6'/><rect x='505' y='200' width='16' height='20' rx='7'/><rect x='503' y='250' width='20' height='22' rx='8'/><rect x='445' y='203' width='12' height='14' rx='5'/><rect x='397' y='254' width='13' height='15' rx='5'/><rect x='542' y='140' width='10' height='14' rx='4'/><rect x='546' y='250' width='14' height='15' rx='5'/><rect x='581' y='168' width='10' height='13' rx='4'/></g><path d='M0 368V322Q120 305 260 312T400 302L470 292Q560 284 655 300V368Z' fill='#0a0424'/><g fill='#120733'><path d='M148 322V302Q148 294 156 294Q164 294 164 302V322Z'/><path d='M244 318V300Q244 292 252 292Q260 292 260 300V318Z'/><path d='M288 316V292Q288 282 299 282Q310 282 310 292V316Z'/><path d='M212 320V306Q212 300 217 300Q222 300 222 306V320Z'/></g><path d='M326 320V288M317 297H335M182 316L186 300M178 306H192' stroke='#120733' stroke-width='4' fill='none'/><g fill='#fff8d6'><circle class='st' cx='60' cy='30' r='1.3'/><circle class='st' cx='120' cy='62' r='1' style='animation-delay:-1s'/><circle class='st' cx='210' cy='24' r='1.4' style='animation-delay:-2s'/><circle class='st' cx='262' cy='72' r='1' style='animation-delay:-.5s'/><circle class='st' cx='320' cy='38' r='1.3' style='animation-delay:-1.5s'/><circle class='st' cx='385' cy='20' r='1' style='animation-delay:-2.5s'/><circle class='st' cx='34' cy='98' r='1' style='animation-delay:-.8s'/><circle class='st' cx='170' cy='108' r='1.2' style='animation-delay:-1.8s'/><circle class='st' cx='305' cy='112' r='1' style='animation-delay:-2.2s'/><circle class='st' cx='420' cy='72' r='1.2' style='animation-delay:-.2s'/><circle class='st' cx='250' cy='150' r='.9' style='animation-delay:-1.2s'/></g><g stroke='#cbb8f0' stroke-opacity='.22' fill='none' stroke-width='.8'><path d='M0 0L74 0M0 0L64 32M0 0L42 58M0 0L0 74'/><path d='M24 0Q22 20 0 24M46 0Q40 40 0 46M70 0Q58 58 0 70'/></g><ellipse class='ms' cx='210' cy='314' rx='170' ry='13' fill='#9b7fe6' opacity='.13' filter='url(#bl)'/><ellipse class='ms' cx='470' cy='300' rx='140' ry='11' fill='#9b7fe6' opacity='.1' filter='url(#bl)' style='animation-delay:-6s'/><filter id='bl'><feGaussianBlur stdDeviation='6'/></filter><g transform='translate(142 136)' fill='#0b0422'><ellipse rx='7' ry='4.5'/><circle cx='6' cy='-4' r='3'/><path d='M8.5-4.5L13-3 8.5-2.5Z'/><path d='M-6 1L-14 5-5 4Z'/></g><g transform='translate(98 321)'><circle r='22' fill='#ff9a2e' opacity='.16' class='wn'/><ellipse rx='14' ry='11' fill='#a8400b'/><ellipse rx='6' ry='11' fill='#c9561a'/><rect x='-1.5' y='-15' width='3' height='5' fill='#2c5e1a'/><path class='wn' d='M-8-3L-4-7-1-3ZM1-3L4-7 8-3ZM-6 3Q0 8 6 3L3 6-3 6Z' fill='#ffd35c'/></g><g transform='translate(388 314) scale(1.15)'><circle r='22' fill='#ff9a2e' opacity='.16' class='wn' style='animation-delay:-2s'/><ellipse rx='14' ry='11' fill='#a8400b'/><ellipse rx='6' ry='11' fill='#c9561a'/><rect x='-1.5' y='-15' width='3' height='5' fill='#2c5e1a'/><path class='wn' style='animation-delay:-2s' d='M-8-3L-4-7-1-3ZM1-3L4-7 8-3ZM-6 3Q0 8 6 3L3 6-3 6Z' fill='#ffd35c'/></g><g fill='#ffd35c'><circle class='fz' cx='170' cy='302' r='1.5'/><circle class='fz' cx='232' cy='306' r='1.3' style='animation-delay:-2s'/><circle class='fz' cx='335' cy='300' r='1.5' style='animation-delay:-4s'/><circle class='fz' cx='62' cy='310' r='1.3' style='animation-delay:-1s'/><circle class='fz' cx='425' cy='292' r='1.4' style='animation-delay:-3s'/><circle class='fz' cx='282' cy='296' r='1.2' style='animation-delay:-5s'/></g><g transform='translate(0 60) scale(1.3)'><g class='bt' style='animation-duration:24s'><path class='fp' d='M0 0Q-6-8-14-6Q-10-2-12 3Q-6 0-3 4L0 1 3 4Q6 0 12 3Q10-2 14-6Q6-8 0 0Z' fill='#0b0422'/></g></g><g transform='translate(0 105) scale(1)'><g class='bt' style='animation-duration:32s;animation-delay:-14s'><path class='fp' d='M0 0Q-6-8-14-6Q-10-2-12 3Q-6 0-3 4L0 1 3 4Q6 0 12 3Q10-2 14-6Q6-8 0 0Z' fill='#0b0422'/></g></g><g transform='translate(0 36) scale(.9)'><g class='bt' style='animation-duration:28s;animation-delay:-7s'><path class='fp' d='M0 0Q-6-8-14-6Q-10-2-12 3Q-6 0-3 4L0 1 3 4Q6 0 12 3Q10-2 14-6Q6-8 0 0Z' fill='#0b0422'/></g></g></svg>`;
+function sceneInit(){$('fx').insertAdjacentHTML('afterbegin',SCENE)}
+function scan(src){
+  let o='',E=[],st=0,q='';const ln=()=>o.split('\n').length;
+  const un=()=>({line:ln(),msg:'Unterminated '+(q==='"'?'string':'character')+' literal (missing closing '+q+')'});
+  for(let i=0;i<src.length;i++){const c=src[i],d=src[i+1];
+    if(st===0){
+      if(c==='/'&&d==='/'){st=1;o+='  ';i++}
+      else if(c==='/'&&d==='*'){st=2;o+='  ';i++}
+      else{if(c==='"'||c==="'"){st=3;q=c}o+=c}
+    }else if(st===1){o+=c==='\n'?c:' ';if(c==='\n')st=0}
+    else if(st===2){if(c==='*'&&d==='/'){st=0;o+='  ';i++}else o+=c==='\n'?c:' '}
+    else{
+      if(c==='\\'){o+=d==='\n'?' \n':'  ';i++}
+      else if(c===q){st=0;o+=c}
+      else if(c==='\n'){st=0;E.push(un());o+=c}
+      else o+=' '}
+  }
+  if(st===3)E.push(un());
+  return{t:o,E}
+}
+function lint(lang,src){
+  const {t,E}=scan(src),L=t.split('\n'),add=(line,msg)=>E.push({line,msg});
+  const stk=[],pr={')':'(',']':'[','}':'{'};let ln=1;
+  for(const c of t){
+    if(c==='\n')ln++;
+    else if('([{'.includes(c))stk.push({c,ln});
+    else if(pr[c]){const o=stk.pop();
+      if(!o)add(ln,`Unexpected '${c}' with no matching '${pr[c]}'`);
+      else if(o.c!==pr[c])add(ln,`'${c}' does not match the '${o.c}' opened on line ${o.ln}`)}
+  }
+  stk.forEach(o=>add(o.ln,`'${o.c}' is never closed`));
+  const first=re=>L.findIndex(l=>re.test(l))+1;
+  if(lang==='c'){const w=first(/\b(cout|cin|Scanner)\b|System\.out/);if(w)add(w,'This looks like C++/Java, but C is selected. Use printf and scanf.');
+    const u=first(/\b(printf|scanf|puts)\s*\(/);if(u&&!/#\s*include\s*<stdio\.h>/.test(t))add(u,'printf/scanf used without #include <stdio.h>')}
+  else if(lang==='cpp'){const w=first(/System\.out|\bScanner\b/);if(w)add(w,'This looks like Java, but C++ is selected. Use cout and cin.');
+    const u=first(/\b(cout|cin)\b/);if(u){if(!/#\s*include\s*<iostream>/.test(t))add(u,'cout/cin used without #include <iostream>');
+      else if(!/using\s+namespace\s+std/.test(t)&&!/std::(cout|cin)/.test(t))add(u,'cout/cin not declared: add using namespace std; or write std::cout')}}
+  else{const w=first(/^\s*#\s*include|using\s+namespace|\b(cout|cin)\b|(^|[^.\w])(printf|scanf)\s*\(/);if(w)add(w,'This looks like C/C++, but Java is selected. Use System.out.println and Scanner.');
+    const u=first(/\bScanner\b/);if(u&&!/java\.util\.(\*|Scanner)/.test(t))add(u,'Scanner used without import java.util.*;')}
+  L.forEach((l,i)=>{if(/^\s*case\b/.test(l)&&!/:|->/.test(l))add(i+1,"A case label needs a ':' after the value")});
+  const ST=/^\s*(printf|scanf|puts|cout|cin|System\.out\.\w+|return|break|continue|int|float|double|char|long|String|Scanner)\b/;
+  L.forEach((l,i)=>{
+    const s=l.trim();if(!s||s[0]==='#'||!ST.test(s))return;
+    if(/[;{}:,(]$|<<$|>>$|[+\-*\/=&|]$/.test(s))return;
+    if((s.match(/\(/g)||[]).length!==(s.match(/\)/g)||[]).length)return;
+    if(/^(int|float|double|char|long|String)\b/.test(s)&&/\(/.test(s)&&!/=/.test(s))return;
+    const nx=(L.slice(i+1).find(x=>x.trim())||'').trim();
+    if(/^(<<|>>|\+|\.|,|\)|&&|\|\||\?|:)/.test(nx))return;
+    add(i+1,"Missing ';' at the end of this statement");
+  });
+  let cur=null,dp=0;
+  L.forEach((l,i)=>{
+    const net=(l.match(/\{/g)||[]).length-(l.match(/\}/g)||[]).length;
+    if(/^\s*case\b[^:]*->/.test(l)){cur=null;dp+=net;return}
+    const m=l.match(/^\s*(?:case\b[^:]*|default\s*):(.*)$/);
+    if(m){
+      if(cur&&cur.body&&!cur.end)add(cur.line,'This case has no break, so it falls through into the next case');
+      const r=m[1];cur={line:i+1,d:dp,body:false,end:false};
+      if(/\S/.test(r)&&!/^\s*\{?\s*$/.test(r)&&!/^\s*(case\b|default\b)/.test(r))cur.body=true;
+      if(/\b(break|return|continue|exit)\b/.test(r))cur.end=true;
+    }else if(cur){
+      if(/\b(break|return|continue|exit)\b/.test(l))cur.end=true;
+      if(/\S/.test(l)&&!/^\s*[{}]\s*$/.test(l))cur.body=true;
+    }
+    dp+=net;if(cur&&dp<cur.d)cur=null;
+  });
+  const seen=new Set();
+  return E.filter(e=>{const k=e.line+e.msg;if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>a.line-b.line).slice(0,6)
+}
+function gut(bad){const t=$('code');if(!t)return;$('gut').innerHTML=t.value.split('\n').map((_,i)=>`<span class='${(bad||[]).includes(i+1)?'e':''}'>${i+1}</span>`).join('');$('gut').scrollTop=t.scrollTop}
+function jump(ln){const t=$('code'),L=t.value.split('\n');let s=0;for(let i=0;i<ln-1;i++)s+=L[i].length+1;t.focus();t.setSelectionRange(s,s+(L[ln-1]||'').length);t.scrollTop=Math.max(0,(ln-4)*21)}
+let S=null;
+const REQUIRED_SOLVES = 6;
+const solvedSet = new Set();
 
-  <!-- Spooky Atmosphere Background -->
-  <div class="spooky-atmosphere-wrapper">
-    <div class="occult-rune-layer small animate-rune-spin">
-      <svg class="rune-svg" viewBox="0 0 500 500">
-        <circle cx="250" cy="250" r="230" fill="none" stroke="#00f5d4" stroke-width="1.5" stroke-dasharray="8 6"/>
-        <polygon points="250,50 420,350 80,350" fill="none" stroke="#00f5d4" stroke-width="1.5"/>
-      </svg>
-    </div>
-  </div>
+function updateOceanCounter(){
+  const who = $("who");
+  if(!who || !S) return;
+  who.innerHTML = `<span style="font-weight:700;color:var(--a);margin-right:8px;padding:6px 12px;border:1px solid var(--line);border-radius:99px;background:var(--card)">Questions Solved: ${solvedSet.size} / ${REQUIRED_SOLVES} (Pool: ${QS.length})</span>
+  <button class="ghost" id="skipq" style="margin-right:6px">Skip Question ⏭</button>
+  <button class="ghost" id="newsess">Change Question</button>`;
+}
 
-  <div class="chapter-container">
+function nextQuestion(){
+  if(!S) return;
+  // find next unsolved if possible
+  for(let offset=1; offset<=QS.length; offset++){
+    const cand = (S.q + offset) % QS.length;
+    if(!solvedSet.has(cand)){
+      S.q = cand;
+      play();
+      return;
+    }
+  }
+  S.q = (S.q + 1) % QS.length;
+  play();
+}
 
-    <!-- Top Status HUD -->
-    <header class="chapter-hud">
-      <div class="hud-left">
-        <a href="/pick" style="text-decoration:none; color:var(--text-muted); font-size:1.2rem;" title="Return to Portal">←</a>
-        <span class="hud-badge room-code" id="hud-room">ROOM: ----</span>
-        <span class="hud-badge player-name" id="hud-player">Chef: Loading...</span>
-      </div>
-      
-      <div class="hud-center">
-        <span class="hud-badge ingredient-target" style="border-color:#00f5d4; color:#00f5d4; background:rgba(0,245,212,0.15)">
-          🌊 Target: Abyssal Sauce
-        </span>
-      </div>
-
-      <div class="hud-right">
-        <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; color:var(--text-muted);">
-          <span class="connection-dot" id="hud-dot"></span>
-          <span id="hud-status">Connected</span>
-        </div>
-        <button class="dev-skip-btn" id="btn-instant-victory" title="Simulate solving all 10 trench gates immediately">
-          ⚡ Instant Victory (Dev)
-        </button>
-      </div>
-    </header>
-
-    <!-- ======================================================== -->
-    <!-- DROP-IN REPLACEMENT ZONE FOR TEAMMATES                   -->
-    <!-- Replace this workspace with your custom UI if desired.  -->
-    <!-- When completed, invoke: window.Room.complete('ocean')    -->
-    <!-- ======================================================== -->
-    <main class="chapter-workspace">
-
-      <!-- Left Column: Centerpiece & Question Selector -->
-      <aside class="left-panel">
-        
-        <!-- Interactive Centerpiece: Trench Pressure Chamber -->
-        <div class="centerpiece-card">
-          <h3 style="color:#00f5d4;">🌊 Mariana Pressure Chamber</h3>
-          <div class="centerpiece-visual">
-            <div class="pressure-chamber-box" id="chamber-visual">
-              <div class="bubble-column" id="bubble-container">
-                <div class="bubble" style="left:20%; width:8px; height:8px; animation-delay:0.2s;"></div>
-                <div class="bubble" style="left:50%; width:14px; height:14px; animation-delay:1.1s;"></div>
-                <div class="bubble" style="left:80%; width:10px; height:10px; animation-delay:0.7s;"></div>
-              </div>
-              <div class="dial-gauge-wrapper">
-                <div class="needle" id="gauge-needle"></div>
-                <div class="gauge-center-pin"></div>
-              </div>
-              <div class="gauge-readout" id="pressure-readout">PRESSURE: 1,090 ATM (CRITICAL)</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 10 Gate Selector Grid -->
-        <div class="question-nav-card">
-          <div class="progress-header">
-            <span>Pressure De-Acidification</span>
-            <span id="progress-text" style="font-weight:700; color:#00f5d4;">0 / 10 Solved</span>
-          </div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="progress-bar" style="background:linear-gradient(90deg, #00f5d4, #3b82f6); box-shadow:0 0 10px rgba(0,245,212,0.7);"></div>
-          </div>
-          <div class="gate-buttons-grid" id="gate-buttons">
-            <!-- Populated via JavaScript -->
-          </div>
-        </div>
-
-      </aside>
-
-      <!-- Right Column: Question Workspace & C Code Editor -->
-      <section class="right-panel">
-
-        <!-- Question Info Banner -->
-        <div class="question-banner">
-          <div class="question-title-row">
-            <h2 id="q-title">Trench 1: Recursive Power Generator</h2>
-            <span class="difficulty-badge basic" id="q-difficulty">BASIC</span>
-          </div>
-          <p class="question-desc" id="q-desc">
-            Calculate base^exp recursively. Assume exp >= 0.
-          </p>
-        </div>
-
-        <!-- Code Editor Card -->
-        <div class="editor-card">
-          <div class="editor-header">
-            <div class="editor-lang">
-              <span style="color:#00f5d4;">⚡ C Programming (C99 / C11)</span>
-            </div>
-            <div class="editor-actions">
-              <button class="btn-secondary" id="btn-reset">↺ Reset Boilerplate</button>
-              <button class="btn-run" id="btn-run" style="background:linear-gradient(135deg, #00b4d8, #0077b6); border-color:#00f5d4; box-shadow:0 0 15px rgba(0,245,212,0.4);">
-                ▶ Run & Test Code
-              </button>
-            </div>
-          </div>
-          <textarea class="code-textarea" id="code-editor" spellcheck="false"></textarea>
-          <div class="error-banner" id="error-banner"></div>
-        </div>
-
-        <!-- Test Results Card -->
-        <div class="test-results-card">
-          <div class="results-header">
-            <span class="results-summary" id="results-summary">Ready to test recursion in C</span>
-            <span style="font-size:0.8rem; color:var(--text-muted);">Press Ctrl+Enter to Run</span>
-          </div>
-          <div class="test-cards-list" id="test-cards">
-            <!-- Test cases output here -->
-          </div>
-        </div>
-
-      </section>
-
-    </main>
-    <!-- ======================================================== -->
-    <!-- END OF DROP-IN REPLACEMENT ZONE                          -->
-    <!-- ======================================================== -->
-
-  </div>
-
-  <!-- Victory / Waiting Modal -->
-  <div class="victory-modal-overlay" id="victory-modal">
-    <div class="victory-modal-content" style="border-color:#00f5d4; box-shadow:0 0 50px rgba(0,245,212,0.5);">
-      <h2 style="color:#00f5d4; text-shadow:0 0 20px rgba(0,245,212,0.8);">INGREDIENT SECURED!</h2>
-      <p class="lore">
-        Pressure normalized to 1 ATM! The iridescent Abyssal Sauce drips into your alchemical flask, radiating unholy culinary power.
-      </p>
-
-      <div style="font-family:var(--font-code); font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">
-        CHEF ROSTER SYNCHRONIZATION:
-      </div>
-      <div class="chefs-status-grid" id="chefs-roster">
-        <div class="chef-status-pill" id="roster-hell">🧀 Hell...</div>
-        <div class="chef-status-pill" id="roster-alien">🥦 Alien...</div>
-        <div class="chef-status-pill ready">🌊 Ocean (You)</div>
-        <div class="chef-status-pill" id="roster-market">🍞 Market...</div>
-      </div>
-
-      <div class="warp-countdown-text" id="warp-status">
-        Waiting for all 4 ingredients to be forged...
-      </div>
-    </div>
-  </div>
-
-  <!-- Client Scripts -->
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/shared/parallax.js"></script>
-  <script src="/shared/spooky-entities.js"></script>
-  <script src="/shared/audio.js"></script>
-  <script src="/shared/room-client.js"></script>
-  <script src="/shared/c-runner.js"></script>
-  <script src="/shared/questions-data.js"></script>
-
-  <script>
-    (function() {
-      'use strict';
-
-      const CHAPTER_ID = 'ocean';
-      const questions = window.CHAPTER_QUESTIONS ? window.CHAPTER_QUESTIONS[CHAPTER_ID] : [];
-      let currentQuestionIndex = 0;
-      const solvedGates = new Set();
-
-      // DOM Elements
-      const hudRoom = document.getElementById('hud-room');
-      const hudPlayer = document.getElementById('hud-player');
-      const hudDot = document.getElementById('hud-dot');
-      const hudStatus = document.getElementById('hud-status');
-      const gateButtonsContainer = document.getElementById('gate-buttons');
-      const progressBar = document.getElementById('progress-bar');
-      const progressText = document.getElementById('progress-text');
-      const qTitle = document.getElementById('q-title');
-      const qDifficulty = document.getElementById('q-difficulty');
-      const qDesc = document.getElementById('q-desc');
-      const codeEditor = document.getElementById('code-editor');
-      const btnReset = document.getElementById('btn-reset');
-      const btnRun = document.getElementById('btn-run');
-      const btnInstantVictory = document.getElementById('btn-instant-victory');
-      const errorBanner = document.getElementById('error-banner');
-      const testCards = document.getElementById('test-cards');
-      const resultsSummary = document.getElementById('results-summary');
-      const gaugeNeedle = document.getElementById('gauge-needle');
-      const pressureReadout = document.getElementById('pressure-readout');
-      const victoryModal = document.getElementById('victory-modal');
-
-      function initGatesGrid() {
-        gateButtonsContainer.innerHTML = '';
-        questions.forEach((q, idx) => {
-          const btn = document.createElement('button');
-          btn.className = 'gate-btn' + (idx === 0 ? ' active' : '');
-          btn.id = `gate-btn-${idx}`;
-          btn.innerHTML = `<span>${idx + 1}</span><span class="gate-status-icon">🔒</span>`;
-          btn.onclick = () => selectQuestion(idx);
-          gateButtonsContainer.appendChild(btn);
-        });
-        loadQuestion(0);
-      }
-
-      function selectQuestion(idx) {
-        currentQuestionIndex = idx;
-        document.querySelectorAll('.gate-btn').forEach((b, i) => {
-          b.classList.toggle('active', i === idx);
-        });
-        loadQuestion(idx);
-      }
-
-      function loadQuestion(idx) {
-        const q = questions[idx];
-        if (!q) return;
-
-        qTitle.textContent = q.title;
-        qDifficulty.textContent = q.difficulty.toUpperCase();
-        qDifficulty.className = `difficulty-badge ${q.difficulty.toLowerCase()}`;
-        qDesc.textContent = q.desc;
-
-        const savedCode = localStorage.getItem(`code_${CHAPTER_ID}_${q.id}`);
-        codeEditor.value = savedCode || q.boilerplate;
-
-        errorBanner.style.display = 'none';
-        errorBanner.textContent = '';
-        renderInitialTestCards(q.testCases);
-      }
-
-      function renderInitialTestCards(testCases) {
-        resultsSummary.textContent = 'Ready to test in C';
-        resultsSummary.className = 'results-summary';
-        testCards.innerHTML = '';
-
-        testCases.forEach((t, i) => {
-          const card = document.createElement('div');
-          card.className = 'test-card';
-          card.id = `test-card-${i}`;
-          card.innerHTML = `
-            <div class="test-info">
-              <span class="test-input">Test #${t.id}: Input: ${JSON.stringify(t.input)}</span>
-              <div class="test-io">
-                <span>Expected: <strong style="color:#00f5d4;">${JSON.stringify(t.expectedArray || t.expected)}</strong></span>
-                <span id="actual-val-${i}">Actual: <em>Pending</em></span>
-              </div>
-            </div>
-            <span class="test-status-badge" id="badge-${i}" style="background:rgba(255,255,255,0.06); color:#9ca3af;">READY</span>
-          `;
-          testCards.appendChild(card);
-        });
-      }
-
-      codeEditor.addEventListener('keydown', (e) => {
-        if (e.key === 'Tab') {
-          e.preventDefault();
-          const start = codeEditor.selectionStart;
-          const end = codeEditor.selectionEnd;
-          codeEditor.value = codeEditor.value.substring(0, start) + '    ' + codeEditor.value.substring(end);
-          codeEditor.selectionStart = codeEditor.selectionEnd = start + 4;
-        } else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-          e.preventDefault();
-          runActiveTest();
-        }
-      });
-
-      btnReset.addEventListener('click', () => {
-        const q = questions[currentQuestionIndex];
-        if (q) {
-          codeEditor.value = q.boilerplate;
-          localStorage.removeItem(`code_${CHAPTER_ID}_${q.id}`);
-          renderInitialTestCards(q.testCases);
-          if (window.SoundFX) window.SoundFX.click();
-        }
-      });
-
-      async function runActiveTest() {
-        const q = questions[currentQuestionIndex];
-        if (!q) return;
-
-        const userCode = codeEditor.value;
-        localStorage.setItem(`code_${CHAPTER_ID}_${q.id}`, userCode);
-
-        btnRun.disabled = true;
-        btnRun.textContent = 'Testing...';
-        errorBanner.style.display = 'none';
-
-        if (window.SoundFX) window.SoundFX.click();
-
-        try {
-          const outcome = await window.CRunner.runTests(userCode, q.functionName, q.testCases);
-
-          if (!outcome.success) {
-            errorBanner.style.display = 'block';
-            errorBanner.textContent = 'C Compilation Error:\n' + outcome.compileError;
-            resultsSummary.textContent = 'Compilation Failed';
-            resultsSummary.className = 'results-summary has-fail';
-            if (window.SoundFX) window.SoundFX.error();
-            return;
-          }
-
-          outcome.results.forEach((r, i) => {
-            const card = document.getElementById(`test-card-${i}`);
-            const badge = document.getElementById(`badge-${i}`);
-            const actualVal = document.getElementById(`actual-val-${i}`);
-
-            if (card && badge && actualVal) {
-              card.className = `test-card ${r.passed ? 'passed' : 'failed'}`;
-              badge.className = `test-status-badge ${r.passed ? 'pass' : 'fail'}`;
-              badge.textContent = r.passed ? 'PASS' : 'FAIL';
-              actualVal.innerHTML = `Actual: <strong style="color:${r.passed ? '#00f5d4' : '#f87171'}">${r.actual}</strong>`;
-            }
-          });
-
-          if (outcome.allPassed) {
-            resultsSummary.textContent = `All ${outcome.totalTests} Tests Passed! Valve Depressurized.`;
-            resultsSummary.className = 'results-summary all-pass';
-            if (window.SoundFX) window.SoundFX.success();
-            markGateSolved(currentQuestionIndex);
-          } else {
-            resultsSummary.textContent = `${outcome.testsPassed} / ${outcome.totalTests} Passed`;
-            resultsSummary.className = 'results-summary has-fail';
-            if (window.SoundFX) window.SoundFX.error();
-          }
-
-        } catch (err) {
-          errorBanner.style.display = 'block';
-          errorBanner.textContent = 'Runtime Exception:\n' + err.message;
-          if (window.SoundFX) window.SoundFX.error();
-        } finally {
-          btnRun.disabled = false;
-          btnRun.textContent = '▶ Run & Test Code';
-        }
-      }
-
-      btnRun.addEventListener('click', runActiveTest);
-
-      function markGateSolved(idx) {
-        solvedGates.add(idx);
-        const btn = document.getElementById(`gate-btn-${idx}`);
-        if (btn) {
-          btn.classList.add('solved');
-          btn.querySelector('.gate-status-icon').textContent = '✔';
-        }
-
-        const solvedCount = solvedGates.size;
-        progressBar.style.width = `${(solvedCount / questions.length) * 100}%`;
-        progressText.textContent = `${solvedCount} / ${questions.length} Solved`;
-
-        // Rotate Gauge needle: from 120deg (critical) down to -60deg (safe)
-        const newAngle = 120 - ((solvedCount / questions.length) * 180);
-        gaugeNeedle.style.transform = `rotate(${newAngle}deg)`;
-
-        const currentAtm = Math.max(1, 1090 - Math.floor((solvedCount / questions.length) * 1089));
-        pressureReadout.textContent = `PRESSURE: ${currentAtm} ATM ${solvedCount >= questions.length ? '(OPTIMAL)' : '(VENTING)'}`;
-
-        if (solvedCount >= questions.length) {
-          triggerChapterVictory();
-        }
-      }
-
-      function triggerChapterVictory() {
-        pressureReadout.textContent = 'PRESSURE: 1 ATM (OPTIMAL) • DISTILLATION COMPLETE';
-        victoryModal.classList.add('visible');
-
-        if (window.SoundFX) window.SoundFX.portalWarp();
-
-        if (window.Room) {
-          window.Room.complete(CHAPTER_ID);
-        }
-      }
-
-      btnInstantVictory.addEventListener('click', () => {
-        for (let i = 0; i < questions.length; i++) {
-          markGateSolved(i);
-        }
-        triggerChapterVictory();
-      });
-
-      function setupNetworking() {
-        if (!window.Room) return;
-
-        hudRoom.textContent = `ROOM: ${window.Room.getRoomCode() || 'DEV-TEST'}`;
-        hudPlayer.textContent = `Chef: ${window.Room.getPlayerName()}`;
-
-        window.Room.on('room_updated', (data) => {
-          updateRosterStatus(data.roomState);
-        });
-
-        window.Room.on('chapter_completed', (data) => {
-          updateRosterStatus(data.roomState);
-          if (data.allCompleted) {
-            document.getElementById('warp-status').textContent = 'All 4 Ingredients Secured! Warping to the Finale...';
-          }
-        });
-
-        window.Room.on('all_chapters_completed', () => {
-          document.getElementById('warp-status').textContent = 'Rift opened! Entering the Finale chamber...';
-        });
-
-        window.Room.on('disconnect', () => {
-          hudDot.classList.add('disconnected');
-          hudStatus.textContent = 'Offline (Retrying...)';
-        });
-
-        window.Room.on('connect', () => {
-          hudDot.classList.remove('disconnected');
-          hudStatus.textContent = 'Connected';
-        });
-      }
-
-      function updateRosterStatus(state) {
-        if (!state || !state.completed) return;
-        const c = state.completed;
-        const hellPill = document.getElementById('roster-hell');
-        const alienPill = document.getElementById('roster-alien');
-        const marketPill = document.getElementById('roster-market');
-
-        if (hellPill && c.hell) { hellPill.className = 'chef-status-pill ready'; hellPill.textContent = '🧀 Hell (Ready)'; }
-        if (alienPill && c.alien) { alienPill.className = 'chef-status-pill ready'; alienPill.textContent = '🥦 Alien (Ready)'; }
-        if (marketPill && c.market) { marketPill.className = 'chef-status-pill ready'; marketPill.textContent = '🍞 Market (Ready)'; }
-      }
-
-      initGatesGrid();
-      setTimeout(setupNetworking, 300);
-
-    })();
-  </script>
+function submit(){
+  const code=$('code').value;S.code[S.lang]=code;
+  const errs=lint(S.lang,code),g=grade(QS[S.q],S.lang,code),raw=code.split('\n');
+  gut(errs.map(e=>e.line));
+  if(!errs.length&&g.pass===g.total){
+    solvedSet.add(S.q);
+    const isDone = solvedSet.size >= REQUIRED_SOLVES;
+    if(isDone){
+      S.solved=true;
+      if(window.Room) Room.complete('ocean');
+      play();
+    }else{
+      updateOceanCounter();
+      $('fb').innerHTML=`<div style="color:var(--ok);font-size:17px;font-weight:700">✔ Recipe ${S.q+1} Brewed Successfully! (${solvedSet.size}/${REQUIRED_SOLVES} completed)</div><div style="margin-top:8px"><button class="go" id="nextq" style="padding:8px 18px;font-size:14px">Next Recipe (${REQUIRED_SOLVES - solvedSet.size} remaining) →</button></div>`;
+      const nxt = $('nextq');
+      if(nxt) nxt.onclick = nextQuestion;
+    }
+    return;
+  }
+  $('fb').innerHTML=errs.length?`<div class='bad'>✗ ${errs.length} error${errs.length>1?'s':''} found. Tap an error to jump to its line, fix it, then submit again.</div>`+errs.map(e=>`<button class='err' data-ln='${e.line}'><b>Line ${e.line}:</b> ${esc(e.msg)}<code>${esc((raw[e.line-1]||'').trim())}</code></button>`).join(''):`<span class='bad'>✗ No syntax errors, but the solution isn’t correct yet.</span> <span class='note'>${g.pass} of ${g.total} checks passed.</span>`;
+  const p=$('pane');p.classList.remove('shake');void p.offsetWidth;p.classList.add('shake');
+}
+document.addEventListener('input',e=>{if(e.target.id==='code')gut()});
+document.addEventListener('scroll',e=>{if(e.target.id==='code')$('gut').scrollTop=e.target.scrollTop},true);
+function pick(){ // new random question every session, never the same one twice in a row
+  let last=-1;try{last=+localStorage.getItem("sauce-last")}catch(e){}
+  let i;do{i=Math.random()*QS.length|0}while(i===last&&QS.length>1);
+  try{localStorage.setItem("sauce-last",i)}catch(e){}
+  return i;
+}
+let pendingLang="c";
+function home(){
+  S=null;$("who").innerHTML="";
+  $("main").innerHTML=`<div class="card narrow"><div class="hero">${hat(92)}${potion(60)}</div><h1>Ocean Level: <span class="brand"><b>Abyssal Sauce</b></span></h1>
+  <p class="muted">Solve the coding puzzle to collect the Abyssal Sauce for the sandwich. Choose your programming language to begin.</p>
+  
+  <div class="langs">${Object.keys(LANGS).map(k=>`<button class="lang ${k===pendingLang?"on":""}" data-l="${k}">${LANGS[k]}</button>`).join("")}</div>
+  <button class="go full" id="start">Start Challenge</button></div>`;
+}
+function start(){
+  S={q:pick(),lang:pendingLang,code:{c:STARTER.c,cpp:STARTER.cpp,java:STARTER.java},solved:false};
+  play();
+}
+function play(){
+  const Q=QS[S.q];
+  updateOceanCounter();
+  if(S.solved){
+    $("main").innerHTML=`<div class="card narrow win-card"><div class="hero">${potion(104)}</div><div class="inv">Sauce Collected!</div><p class="muted">All ${REQUIRED_SOLVES} recipes brewed! Abyssal Sauce collected for the sandwich!</p><button class="go full" id="newsess2">Try Another Session</button></div>`;
+    return;
+  }
+  $("main").innerHTML=`<div class="split"><div class="card"><div class="pot-s">${potion(42)}</div><h2>Question ${S.q+1} of ${QS.length}: ${Q.e} ${Q.t}${solvedSet.has(S.q)?' <span style="color:var(--ok)">✓ BREWED</span>':''}</h2><p class="muted">${Q.s}</p>
+  <div class="box"><b>Problem:</b> ${Q.task}</div>
+  <div class="tw"><table><tr>${Q.head.map(h=>`<th>${h}</th>`).join("")}</tr>${Q.r.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</table></div>
+  ${Q.html?`<div class="box">${Q.html}</div>`:""}<div class="box warn"><b>Constraint:</b> ${Q.con}</div></div>
+  <div class="card" id="pane"><div class="langs" style="justify-content:flex-start;margin-top:0">${Object.keys(LANGS).map(k=>`<button class="lang ${k===S.lang?"on":""}" data-t="${k}">${LANGS[k]}</button>`).join("")}</div>
+  <div class="win"><pre id="gut" aria-hidden="true"></pre><textarea id="code" wrap="off" spellcheck="false" aria-label="Code editor"></textarea></div>
+  <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+    <button class="go" id="check">Submit Code</button>
+    <button class="ghost" id="skipq-inline">Skip Recipe ⏭</button>
+  </div><div id="fb" aria-live="polite"></div></div></div>`;
+  $("code").value=S.code[S.lang];gut();
+  const skipInline = $("skipq-inline");
+  if(skipInline) skipInline.onclick = nextQuestion;
+}
+function check(){
+  submit();
+}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.l){pendingLang=b.dataset.l;home()}
+  if(b.dataset.t&&S){S.code[S.lang]=$("code").value;S.lang=b.dataset.t;play()}
+  if(b.id==="start")start();
+  if(b.id==="check")submit();
+  if(b.id==="skipq"||b.id==="skipq-inline")nextQuestion();
+  if(b.dataset.ln&&S)jump(+b.dataset.ln);
+  if(b.id==="newsess"||b.id==="newsess2")home();
+});
+document.addEventListener("keydown",e=>{
+  if(e.target.id==="code"&&e.key==="Tab"){e.preventDefault();e.target.setRangeText("    ",e.target.selectionStart,e.target.selectionEnd,"end")}
+});
+fxInit();sceneInit();home();
+window.onChapterInstantWin=()=>{
+  if(!S) start();
+  for(let k=0;k<REQUIRED_SOLVES;k++)solvedSet.add(k);
+  S.solved=true;
+  play();
+  if(window.Room) Room.complete('ocean');
+};
+</script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/shared/room-client.js"></script>
+<script src="/shared/chapter-hud.js"></script>
 </body>
 </html>

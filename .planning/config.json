@@ -7,7 +7,7 @@
     "backend": "express",
     "realtime": "socket.io",
     "frontend": "vanilla-html-css-js",
-    "code_runner": "pyodide-webworker"
+    "code_runner": "c-judge-engine"
   },
   "chapters": {
     "hell": {

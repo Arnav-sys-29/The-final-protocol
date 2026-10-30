@@ -1,539 +1,440 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chapter II: Cosmic Vegetables | The Legendary Sandwich From Hell</title>
-  <meta name="description" content="Enter the bioluminescent hydroponic greenhouse to harvest Cosmic Vegetables by calibrating robotic conveyor filters in C.">
-
-  <!-- Spooky Fonts & Styles -->
-  <link rel="stylesheet" href="/shared/theme.css">
-  <link rel="stylesheet" href="/shared/chapter.css">
-
-  <style>
-    /* Alien-specific atmospheric accents */
-    :root {
-      --chapter-accent: #00ff66;
-      --chapter-glow: rgba(0, 255, 102, 0.55);
-    }
-
-    body {
-      background-image: 
-        radial-gradient(circle at calc(var(--mouse-x) * 100%) calc(var(--mouse-y) * 100%), rgba(0, 255, 102, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 80% 20%, rgba(0, 255, 128, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at center, #07140e 0%, #030805 100%);
-    }
-
-    /* Interactive Bio-Conveyor Visual */
-    .conveyor-visual-box {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle, #092116 0%, #030a07 90%);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .laser-scan-line {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 3px;
-      background: #00ff66;
-      box-shadow: 0 0 15px #00ff66, 0 0 30px #00ff66;
-      opacity: 0.7;
-      animation: laserSweep 4s ease-in-out infinite alternate;
-      z-index: 2;
-    }
-
-    @keyframes laserSweep {
-      0% { left: 10%; opacity: 0.3; }
-      50% { opacity: 0.9; }
-      100% { left: 90%; opacity: 0.3; }
-    }
-
-    .pods-strip {
-      display: flex;
-      gap: 12px;
-      z-index: 1;
-      padding: 0 1rem;
-    }
-
-    .specimen-pod {
-      width: 44px;
-      height: 70px;
-      background: rgba(0, 20, 10, 0.8);
-      border: 1px solid rgba(0, 255, 102, 0.3);
-      border-radius: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      transition: all 0.4s ease;
-    }
-
-    .specimen-pod.purged {
-      border-color: #00ff66;
-      box-shadow: 0 0 15px rgba(0, 255, 102, 0.6);
-      background: rgba(0, 255, 102, 0.15);
-    }
-
-    .pod-icon {
-      font-size: 1.3rem;
-      user-select: none;
-      filter: drop-shadow(0 0 5px rgba(0, 255, 102, 0.4));
-    }
-
-    .conveyor-readout {
-      position: absolute;
-      bottom: 8px;
-      font-family: var(--font-code);
-      font-size: 0.75rem;
-      color: #00ff66;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 0.2rem 0.6rem;
-      border-radius: 10px;
-      z-index: 3;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Cosmic Vegetables · The Legendary Sandwich From Hell</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shared/chapter-hud.css">
+<style>
+:root{--night:#120f26;--moon:#f7e9b0;--peach:#f0c89a;--ghost:#b9a7e8;--stone:#4a4570;--stone2:#2c2846;--bone:#ece6d2;--acid:#7dff6a;--blood:#b3262e;--err:#ff8d92;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px);color-scheme:dark}
+body{margin:0;min-height:100%;background:radial-gradient(ellipse at 50% 10%,#262358 0,var(--night) 65%,#07050f 100%) fixed;color:var(--bone);font-family:'VT323',monospace;font-size:22px;line-height:1.25;overflow-x:hidden}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px);z-index:50}
+h1,h2,h3{font-family:'Press Start 2P',monospace;font-weight:400}
+svg{display:block}
+#sky{position:fixed;inset:0;overflow:hidden;z-index:0;pointer-events:none}
+#moon{position:absolute;top:3vh;left:50%;width:min(70vw,360px);aspect-ratio:1;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 28% 24%,#fff6cf,var(--moon) 50%,var(--peach));box-shadow:0 0 90px 24px rgba(247,233,176,.2),inset -18px -14px 0 rgba(200,150,110,.35);opacity:.5}
+.st{position:absolute;width:4px;height:4px;background:#fff;opacity:.6;animation:tw 3s steps(2) infinite}
+@keyframes tw{50%{opacity:.1}}
+.fly{position:absolute;left:-90px;fill:#07050f;animation:cross linear infinite}
+.fly svg{animation:flap .45s steps(2) infinite}
+@keyframes cross{to{transform:translateX(calc(100vw + 180px))}}
+@keyframes flap{50%{transform:scaleY(.55)}}
+#witch{position:absolute;top:16vh;left:-140px;width:110px;fill:#04030a;animation:cross 40s linear infinite 5s}
+.gh{position:absolute;width:52px;opacity:.7;animation:drift 11s steps(22) infinite alternate}
+.gh .b{fill:#f4efff}.gh .e{fill:#120f26}.gh.lo .b{fill:var(--ghost)}
+@keyframes drift{to{transform:translate(40px,-34px)}}
+#fog{position:fixed;left:0;right:0;bottom:0;height:30vh;z-index:1;pointer-events:none;background:linear-gradient(0deg,rgba(80,70,130,.45),transparent)}
+#graves{position:fixed;left:0;right:0;bottom:0;height:80px;z-index:1;pointer-events:none;display:flex;align-items:flex-end;justify-content:space-around;opacity:.7}
+.gv{width:46px;background:var(--stone);border:4px solid #1c1836;border-bottom:0;border-radius:18px 18px 0 0;position:relative}
+.gv::before{content:"";position:absolute;left:50%;top:-28px;width:8px;height:28px;background:var(--stone);transform:translateX(-50%);box-shadow:-8px 8px 0 var(--stone),8px 8px 0 var(--stone)}
+main{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:16px 14px 120px}
+.hd{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
+h1{font-size:clamp(14px,3.2vw,24px);line-height:1.6;margin:0;text-shadow:3px 3px 0 #07050f,0 0 22px rgba(247,233,176,.35)}
+.sb{color:var(--ghost);font-size:21px;margin:4px 0 0}
+.btn{font-family:'Press Start 2P',monospace;font-size:11px;background:var(--stone2);color:var(--bone);border:4px solid var(--bone);padding:12px 14px;cursor:pointer;box-shadow:5px 5px 0 #07050f}
+.btn:hover:not(:disabled){background:var(--blood)}
+.btn:active:not(:disabled){transform:translate(3px,3px);box-shadow:2px 2px 0 #07050f}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.sm{font-size:9px;padding:9px 10px}
+.btn:focus-visible,textarea:focus-visible,input:focus-visible,.qi:focus-visible{outline:3px solid var(--acid);outline-offset:2px}
+.panel{background:linear-gradient(180deg,rgba(50,45,88,.96),rgba(37,33,63,.96));border:4px solid #6a6396;border-top-color:#8f88bd;box-shadow:6px 6px 0 #07050f;padding:14px 16px;margin-bottom:16px}
+.panel h3{font-size:10px;margin:0 0 10px;color:var(--ghost);line-height:1.6}
+#inv{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+#inv .cnt{font-family:'Press Start 2P';font-size:10px;color:var(--peach);margin-right:6px}
+.slot{width:26px;height:30px;background:var(--stone2);border:3px solid var(--stone);border-radius:10px 10px 0 0;display:grid;place-items:center;color:#4a4570}
+.slot svg{width:16px}
+.slot.on{border-color:var(--acid);color:var(--acid);box-shadow:0 0 10px rgba(125,255,106,.5)}
+.slot.on svg{filter:drop-shadow(0 0 4px var(--acid))}
+.lay{display:block;max-width:860px;margin:0 auto}
+#list{padding:12px;max-height:80vh;overflow:auto}
+.qi{display:flex;gap:8px;align-items:center;width:100%;text-align:left;background:var(--stone2);border:3px solid var(--stone);color:var(--bone);font-family:'VT323',monospace;font-size:20px;padding:6px 8px;margin-bottom:6px;cursor:pointer}
+.qi.cur{border-color:var(--moon);background:#3a3568}
+.qi.done{border-color:var(--acid);color:var(--acid)}
+.qi b{font-family:'Press Start 2P';font-size:9px;font-weight:400;color:var(--peach);min-width:22px}
+.qi.done b{color:var(--acid)}
+#q h2{font-size:clamp(11px,2.6vw,15px);line-height:1.7;margin:0 0 10px;color:var(--peach)}
+#q p{margin:0 0 8px;font-size:23px}
+#q .k{color:var(--ghost)}
+pre{margin:0;font-family:'VT323',monospace;white-space:pre}
+#q pre{background:#0b0918;border:3px solid #1c1836;padding:8px 10px;margin:0 0 8px;font-size:22px;color:#d8d2f0;overflow-x:auto}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.lg{font-family:'Press Start 2P';font-size:10px;padding:10px 14px;background:var(--stone2);border:3px solid var(--stone);color:#9a92c4;cursor:pointer}
+.lg.on{border-color:var(--moon);color:var(--moon);background:#3a3568}
+#ed{position:relative;display:flex;height:350px;background:#0b0918;border:3px solid #1c1836;font:20px/24px 'VT323',monospace}
+#gut{width:46px;overflow:hidden;background:#15112d;color:#6a6396;text-align:right;padding:8px 6px 0 0;flex:none}
+#gut div{height:24px}
+#gut .er{background:var(--blood);color:#fff}
+#hl{position:absolute;left:46px;right:0;height:24px;background:rgba(179,38,46,.4);display:none;pointer-events:none}
+#ta{flex:1;min-width:0;padding:8px 10px;line-height:24px;font:inherit;background:transparent;color:#e4dcff;border:0;resize:none;white-space:pre;overflow:auto;tab-size:4;caret-color:var(--acid)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.row label{color:var(--ghost);font-size:20px}
+#ci{flex:1;min-width:140px;font-family:'VT323',monospace;font-size:21px;background:#0b0918;color:var(--acid);border:3px solid #1c1836;padding:6px 8px}
+#con{min-height:90px}
+#con pre{background:#0b0918;border:3px solid #1c1836;padding:8px 10px;margin:8px 0;font-size:21px;color:#d8d2f0;overflow-x:auto}
+.eh{font-family:'Press Start 2P';font-size:10px;color:var(--err);line-height:1.7}
+.em{color:var(--err);font-size:23px;margin:6px 0}
+.el b{color:var(--err);font-weight:400}
+.pass{color:var(--acid)}.fail{color:var(--err)}
+.ok{display:flex;gap:12px;align-items:center;border:4px solid var(--acid);padding:12px 14px;background:rgba(125,255,106,.08);box-shadow:0 0 24px rgba(125,255,106,.3);animation:pop .8s steps(6)}
+.ok svg{width:38px;color:var(--acid);filter:drop-shadow(0 0 8px var(--acid));flex:none}
+.ok span{font-family:'Press Start 2P';font-size:clamp(10px,2.6vw,14px);line-height:1.7;color:var(--acid)}
+@keyframes pop{0%{transform:scale(.7);opacity:0}100%{transform:none;opacity:1}}
+.dim{color:#8f86b8;font-size:20px}
+@media (max-width:860px){.lay{grid-template-columns:1fr}#list{max-height:none;display:flex;gap:6px;overflow-x:auto}.qi{width:auto;flex:none;margin:0;white-space:nowrap}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important}.fly,#witch{display:none}}
+</style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="bat" viewBox="0 0 16 8"><polygon points="0,1 3,3 5,2 6,4 7,3 8,4 9,3 10,4 11,2 13,3 16,1 15,5 12,4 10,7 8,5 6,7 4,4 1,5"/></symbol>
+<symbol id="sp" viewBox="0 0 12 12"><g fill="currentColor"><rect x="5" y="4" width="2" height="8"/><rect x="1" y="2" width="4" height="2"/><rect x="0" y="4" width="3" height="2"/><rect x="7" y="1" width="4" height="2"/><rect x="8" y="3" width="3" height="2"/><rect x="4" y="0" width="4" height="2"/></g></symbol>
+<symbol id="gh" viewBox="0 0 12 14"><path class="b" d="M3 0h6v1h2v2h1v11h-2v-2h-2v2h-2v-2h-2v2h-2v-2h-1v-11h1v-2h2z"/><rect class="e" x="3" y="4" width="2" height="3"/><rect class="e" x="7" y="4" width="2" height="3"/></symbol>
+</svg>
+<div id="sky" aria-hidden="true"><div id="moon"></div><div id="stars"></div>
+<div class="fly" style="top:12vh;width:56px;animation-duration:17s"><svg viewBox="0 0 16 8"><use href="#bat"/></svg></div>
+<div class="fly" style="top:24vh;width:40px;animation-duration:24s;animation-delay:3s"><svg viewBox="0 0 16 8"><use href="#bat"/></svg></div>
+<div id="witch"><svg viewBox="0 0 60 30"><polygon points="32,0 38,13 26,13"/><rect x="22" y="12" width="20" height="3"/><rect x="28" y="15" width="8" height="8"/><rect x="2" y="21" width="52" height="2"/><polygon points="2,19 -6,22 2,26"/><rect x="42" y="15" width="12" height="2"/></svg></div>
+<div class="gh" style="left:4%;top:50vh"><svg viewBox="0 0 12 14"><use href="#gh"/></svg></div>
+<div class="gh lo" style="right:5%;top:34vh;animation-delay:-4s"><svg viewBox="0 0 12 14"><use href="#gh"/></svg></div></div>
+<div id="fog"></div><div id="graves" aria-hidden="true"></div>
 
-  <!-- Spooky Atmosphere Background -->
-  <div class="spooky-atmosphere-wrapper">
-    <div class="occult-rune-layer small animate-rune-spin">
-      <svg class="rune-svg" viewBox="0 0 500 500">
-        <circle cx="250" cy="250" r="230" fill="none" stroke="#00ff66" stroke-width="1.5" stroke-dasharray="8 6"/>
-        <polygon points="250,40 430,360 70,360" fill="none" stroke="#00ff66" stroke-width="1.5"/>
-      </svg>
-    </div>
+<main>
+<div class="hd">
+  <div>
+    <h1>Space Level:<br>Cosmic Vegetables</h1>
+    <p class="sb">Solve 6 coding questions to collect the Cosmic Vegetables for the sandwich.</p>
   </div>
-
-  <div class="chapter-container">
-
-    <!-- Top Status HUD -->
-    <header class="chapter-hud">
-      <div class="hud-left">
-        <a href="/pick" style="text-decoration:none; color:var(--text-muted); font-size:1.2rem;" title="Return to Portal">←</a>
-        <span class="hud-badge room-code" id="hud-room">ROOM: ----</span>
-        <span class="hud-badge player-name" id="hud-player">Chef: Loading...</span>
-      </div>
-      
-      <div class="hud-center">
-        <span class="hud-badge ingredient-target" style="border-color:#00ff66; color:#00ff66; background:rgba(0,255,102,0.15)">
-          🥦 Target: Cosmic Vegetables
-        </span>
-      </div>
-
-      <div class="hud-right">
-        <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; color:var(--text-muted);">
-          <span class="connection-dot" id="hud-dot"></span>
-          <span id="hud-status">Connected</span>
-        </div>
-        <button class="dev-skip-btn" id="btn-instant-victory" title="Simulate solving all 10 conveyors immediately">
-          ⚡ Instant Victory (Dev)
-        </button>
-      </div>
-    </header>
-
-    <!-- ======================================================== -->
-    <!-- DROP-IN REPLACEMENT ZONE FOR TEAMMATES                   -->
-    <!-- Replace this workspace with your custom UI if desired.  -->
-    <!-- When completed, invoke: window.Room.complete('alien')    -->
-    <!-- ======================================================== -->
-    <main class="chapter-workspace">
-
-      <!-- Left Column: Centerpiece & Question Selector -->
-      <aside class="left-panel">
-        
-        <!-- Interactive Centerpiece: Hydroponic Bio-Conveyor -->
-        <div class="centerpiece-card">
-          <h3 style="color:#00ff66;">🛸 Hydroponic Bio-Conveyor</h3>
-          <div class="centerpiece-visual">
-            <div class="conveyor-visual-box" id="conveyor-visual">
-              <div class="laser-scan-line"></div>
-              <div class="pods-strip" id="pods-strip">
-                <div class="specimen-pod" id="pod-0"><span class="pod-icon">🥦</span></div>
-                <div class="specimen-pod" id="pod-1"><span class="pod-icon">🌿</span></div>
-                <div class="specimen-pod" id="pod-2"><span class="pod-icon">🥒</span></div>
-                <div class="specimen-pod" id="pod-3"><span class="pod-icon">🥬</span></div>
-                <div class="specimen-pod" id="pod-4"><span class="pod-icon">🌶️</span></div>
-              </div>
-              <div class="conveyor-readout" id="conveyor-readout">BIO-PURGE: 0 / 10 PODS CLEANSED</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 10 Gate Selector Grid -->
-        <div class="question-nav-card">
-          <div class="progress-header">
-            <span>Conveyor Decontamination</span>
-            <span id="progress-text" style="font-weight:700; color:#00ff66;">0 / 10 Solved</span>
-          </div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="progress-bar" style="background:linear-gradient(90deg, #00ff66, #00f5d4); box-shadow:0 0 10px rgba(0,255,102,0.7);"></div>
-          </div>
-          <div class="gate-buttons-grid" id="gate-buttons">
-            <!-- Populated via JavaScript -->
-          </div>
-        </div>
-
-      </aside>
-
-      <!-- Right Column: Question Workspace & C Code Editor -->
-      <section class="right-panel">
-
-        <!-- Question Info Banner -->
-        <div class="question-banner">
-          <div class="question-title-row">
-            <h2 id="q-title">Conveyor 1: Count Infected Spores</h2>
-            <span class="difficulty-badge basic" id="q-difficulty">BASIC</span>
-          </div>
-          <p class="question-desc" id="q-desc">
-            Iterate through the array of pods (length n) and return how many pods have spore count > 50.
-          </p>
-        </div>
-
-        <!-- Code Editor Card -->
-        <div class="editor-card">
-          <div class="editor-header">
-            <div class="editor-lang">
-              <span style="color:#00ff66;">⚡ C Programming (C99 / C11)</span>
-            </div>
-            <div class="editor-actions">
-              <button class="btn-secondary" id="btn-reset">↺ Reset Boilerplate</button>
-              <button class="btn-run" id="btn-run" style="background:linear-gradient(135deg, #00cc55, #008833); border-color:#00ff66; box-shadow:0 0 15px rgba(0,255,102,0.4);">
-                ▶ Run & Test Code
-              </button>
-            </div>
-          </div>
-          <textarea class="code-textarea" id="code-editor" spellcheck="false"></textarea>
-          <div class="error-banner" id="error-banner"></div>
-        </div>
-
-        <!-- Test Results Card -->
-        <div class="test-results-card">
-          <div class="results-header">
-            <span class="results-summary" id="results-summary">Ready to test conveyor algorithms in C</span>
-            <span style="font-size:0.8rem; color:var(--text-muted);">Press Ctrl+Enter to Run</span>
-          </div>
-          <div class="test-cards-list" id="test-cards">
-            <!-- Test cases output here -->
-          </div>
-        </div>
-
-      </section>
-
-    </main>
-    <!-- ======================================================== -->
-    <!-- END OF DROP-IN REPLACEMENT ZONE                          -->
-    <!-- ======================================================== -->
-
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <div id="q-counter" class="btn sm" style="cursor:default;border-color:var(--acid);color:var(--acid);font-size:11px;">Solved: 0 / 6 (Pool: 10)</div>
+    <button class="btn sm" id="btn-skip-top" style="border-color:var(--peach);color:var(--peach);" type="button">Skip Vegetable ⏭</button>
   </div>
+</div>
+<div class="lay">
+<section>
+<div class="panel" id="q"></div>
+<div class="panel"><div class="tabs" id="lgs"></div>
+<div id="ed"><div id="gut"><div id="gin"></div></div><div id="hl"></div><textarea id="ta" spellcheck="false" wrap="off" aria-label="Code editor"></textarea></div>
+<div class="row">
+  <button class="btn" id="sub">Submit</button>
+  <button class="btn sm" id="run">Run Code</button>
+  <button class="btn sm" id="btn-skip" style="border-color:var(--peach);color:var(--peach);" type="button">Skip ⏭</button>
+  <label for="ci">Input:</label><input id="ci" placeholder="e.g. 12 or 12232 2" autocomplete="off">
+</div></div>
+<div class="panel" id="con"><h3>Console</h3><div class="dim">Write your code, then click Submit. Test results will appear here.</div></div>
+</section></div>
+</main>
 
-  <!-- Victory / Waiting Modal -->
-  <div class="victory-modal-overlay" id="victory-modal">
-    <div class="victory-modal-content" style="border-color:#00ff66; box-shadow:0 0 50px rgba(0,255,102,0.5);">
-      <h2 style="color:#00ff66; text-shadow:0 0 20px rgba(0,255,102,0.8);">INGREDIENT SECURED!</h2>
-      <p class="lore">
-        All parasitic tendrils have been vaporized! The Cosmic Vegetables glow with eerie bioluminescence and are sealed within your stasis cooler.
-      </p>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+for(let i=0;i<36;i++){const s=document.createElement('i');s.className='st';s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*70}%;animation-delay:${Math.random()*3}s`;$('#stars').appendChild(s)}
+for(let i=0;i<8;i++){const g=document.createElement('i');g.className='gv';g.style.height=(30+Math.random()*40)+'px';$('#graves').appendChild(g)}
 
-      <div style="font-family:var(--font-code); font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">
-        CHEF ROSTER SYNCHRONIZATION:
-      </div>
-      <div class="chefs-status-grid" id="chefs-roster">
-        <div class="chef-status-pill" id="roster-hell">🧀 Hell...</div>
-        <div class="chef-status-pill ready">🥦 Alien (You)</div>
-        <div class="chef-status-pill" id="roster-ocean">🌊 Ocean...</div>
-        <div class="chef-status-pill" id="roster-market">🍞 Market...</div>
-      </div>
+/* ===== mini C / C++ / Java interpreter (subset) ===== */
+const TY=new Set(['int','long','short','double','float','char','bool','boolean','unsigned','signed','String','const','final','static','Scanner']);
+function tokenize(src){const T=[];let i=0,l=1;const n=src.length;
+ const ops=['<<=','>>=','&&','||','==','!=','<=','>=','++','--','+=','-=','*=','/=','%=','<<','>>','::'];
+ while(i<n){const c=src[i];
+  if(c=='\n'){l++;i++;continue}
+  if(/\s/.test(c)){i++;continue}
+  if(c=='/'&&src[i+1]=='/'){while(i<n&&src[i]!='\n')i++;continue}
+  if(c=='/'&&src[i+1]=='*'){i+=2;while(i<n&&!(src[i]=='*'&&src[i+1]=='/')){if(src[i]=='\n')l++;i++}i+=2;continue}
+  if(c=='#'){while(i<n&&src[i]!='\n')i++;continue}
+  if(/[A-Za-z_]/.test(c)){let j=i;while(j<n&&/\w/.test(src[j]))j++;T.push({t:'id',v:src.slice(i,j),l});i=j;continue}
+  if(/\d/.test(c)){let j=i;while(j<n&&/[\d.]/.test(src[j]))j++;const v=+src.slice(i,j);while(/[lLuUfF]/.test(src[j]||''))j++;T.push({t:'num',v,l});i=j;continue}
+  if(c=='"'){let j=i+1,s='';while(j<n&&src[j]!='"'){if(src[j]=='\n')throw{l,m:'missing terminating " character'};if(src[j]=='\\'){const e=src[j+1];s+=e=='n'?'\n':e=='t'?'\t':e;j+=2}else s+=src[j++]}
+   if(j>=n)throw{l,m:'missing terminating " character'};T.push({t:'str',v:s,l});i=j+1;continue}
+  if(c=="'"){let j=i+1,ch;if(src[j]=='\\'){const e=src[j+1];ch=e=='n'?10:e=='t'?9:e=='0'?0:e.charCodeAt(0);j+=2}else ch=src.charCodeAt(j++);
+   if(src[j]!="'")throw{l,m:'missing terminating \' character'};T.push({t:'num',v:ch,ch:1,l});i=j+1;continue}
+  const o=ops.find(x=>src.startsWith(x,i));if(o){T.push({t:'op',v:o,l});i+=o.length;continue}
+  T.push({t:'op',v:c,l});i++}
+ const R=[];for(let k=0;k<T.length;k++){if(T[k].v=='std'&&T[k+1]&&T[k+1].v=='::'&&T[k+2]){T[k+2].std=1;k++;continue}R.push(T[k])}
+ return R}
 
-      <div class="warp-countdown-text" id="warp-status">
-        Waiting for all 4 ingredients to be forged...
-      </div>
-    </div>
-  </div>
+function parse(T,lang,src){
+ let p=0;const last=T.length?T[T.length-1].l:1;
+ const peek=(k=0)=>T[p+k]||{t:'eof',v:'end of file',l:last};
+ const prevL=()=>(T[p-1]||{l:1}).l;
+ const isOp=v=>peek().t=='op'&&peek().v==v;
+ const eat=v=>isOp(v)?(p++,true):false;
+ const need=v=>{if(!eat(v))throw{l:(v==';'||v==')')?prevL():peek().l,m:`expected '${v}' before '${peek().v}'`}};
+ const hasUsing=/using\s+namespace\s+std\s*;/.test(src);
+ // brace balance
+ const st=[];for(const t of T){if(t.t!='op')continue;if(t.v=='{')st.push(t);else if(t.v=='}'){if(!st.length)throw{l:t.l,m:"unexpected '}' (extra closing brace)"};st.pop()}}
+ if(st.length)throw{l:last,m:`expected '}' at end of input (the '{' on line ${st[st.length-1].l} is never closed)`};
+ if(lang=='java'&&!T.some(t=>t.v=='class'))throw{l:1,m:'class, interface, or enum expected: wrap your code in a class'};
+ const BIN=[['||'],['&&'],['==','!='],['<','>','<=','>='],['+','-'],['*','/','%']];
+ function expr(){return assign()}
+ function assign(){const l=cond(),t=peek();
+  if(t.t=='op'&&['=','+=','-=','*=','/=','%='].includes(t.v)){if(l.k!='var')throw{l:t.l,m:'lvalue required as left operand of assignment'};p++;return{k:'asg',op:t.v,name:l.name,r:assign(),l:t.l}}
+  return l}
+ function cond(){const c=bin(0);if(eat('?')){const a=assign();need(':');return{k:'tern',c,a,b:assign()}}return c}
+ function bin(lv){if(lv==BIN.length)return unary();let l=bin(lv+1);
+  while(peek().t=='op'&&BIN[lv].includes(peek().v)){const o=peek();p++;l={k:'bin',op:o.v,l,r:bin(lv+1),ln:o.l}}return l}
+ function unary(){const t=peek();
+  if(t.t=='op'){
+   if(t.v=='!'||t.v=='-'||t.v=='+'){p++;return{k:'un',op:t.v,e:unary(),l:t.l}}
+   if(t.v=='++'||t.v=='--'){p++;const v=peek();if(v.t!='id')throw{l:v.l,m:`expected identifier before '${v.v}'`};p++;return{k:'inc',name:v.v,d:t.v=='++'?1:-1,pre:1,l:t.l}}
+   if(t.v=='&'){p++;const v=peek();p++;return{k:'addr',name:v.v,l:t.l}}
+   if(t.v=='('&&peek(1).t=='id'&&TY.has(peek(1).v)){let q=1;while(peek(q).t=='id'&&TY.has(peek(q).v))q++;if(peek(q).v==')'){const dbl=/double|float/.test(peek(1).v);p+=q+1;return{k:'cast',d:dbl,e:unary(),l:t.l}}}}
+  return post()}
+ function post(){const e=prim(),t=peek();
+  if(t.t=='op'&&(t.v=='++'||t.v=='--')&&e.k=='var'){p++;return{k:'inc',name:e.name,d:t.v=='++'?1:-1,l:t.l}}return e}
+ function prim(){const t=peek();
+  if(t.t=='num'){p++;return{k:'num',v:t.v,ch:t.ch,l:t.l}}
+  if(t.t=='str'){p++;return{k:'str',v:t.v,l:t.l}}
+  if(t.t=='op'&&t.v=='('){p++;const e=expr();need(')');return e}
+  if(t.t=='id'){p++;
+   if(t.v=='true'||t.v=='false')return{k:'num',v:t.v=='true'?1:0,l:t.l};
+   if(t.v=='new'){p++;need('(');if(!isOp(')'))do{assign()}while(eat(','));need(')');return{k:'num',v:0,l:t.l}}
+   let nm=t.v;while(isOp('.')&&peek(1).t=='id'){p++;nm+='.'+peek().v;p++}
+   if(isOp('(')){p++;const a=[];if(!isOp(')'))do{a.push(assign())}while(eat(','));need(')');return{k:'call',name:nm,args:a,l:t.l}}
+   return{k:'var',name:nm,l:t.l,std:t.std}}
+  throw{l:t.t=='eof'?last:t.l,m:`expected expression before '${t.v}'`}}
+ function decl(noSemi){const l=peek().l;let ty='';while(peek().t=='id'&&TY.has(peek().v)){ty+=peek().v+' ';p++}
+  const base=/double|float/.test(ty)?'double':/long/.test(ty)?'long':/char/.test(ty)?'char':/bool/.test(ty)?'bool':/String/.test(ty)?'String':/Scanner/.test(ty)?'sc':'int';
+  const d=[];do{const n=peek();if(n.t!='id')throw{l:n.l,m:`expected identifier before '${n.v}'`};p++;
+   if(isOp('['))throw{l:n.l,m:'arrays are not supported by this checker'};
+   let e=null;if(eat('='))e=assign();d.push({n:n.v,e})}while(eat(','));
+  if(!noSemi)need(';');return{k:'decl',ty:base,d,l}}
+ function block(){const l=peek().l;need('{');const b=[];
+  while(!isOp('}')){if(peek().t=='eof')throw{l:last,m:"expected '}' at end of input"};b.push(stmt())}
+  need('}');return{k:'blk',b,l}}
+ function stmt(){const t=peek();
+  if(isOp('{'))return block();
+  if(isOp(';')){p++;return{k:'nop',l:t.l}}
+  if(t.t=='id'){
+   switch(t.v){
+    case'if':{p++;need('(');const c=expr();need(')');const a=stmt();let b=null;if(peek().v=='else'){p++;b=stmt()}return{k:'if',c,a,b,l:t.l}}
+    case'while':{p++;need('(');const c=expr();need(')');return{k:'while',c,s:stmt(),l:t.l}}
+    case'do':{p++;const s=stmt();if(peek().v!='while')throw{l:peek().l,m:"expected 'while' after do body"};p++;need('(');const c=expr();need(')');need(';');return{k:'do',c,s,l:t.l}}
+    case'for':{p++;need('(');let i=null,c=null,u=null;
+     if(!isOp(';')){if(peek().t=='id'&&TY.has(peek().v))i=decl(1);else i={k:'ex',e:expr(),l:t.l}}need(';');
+     if(!isOp(';'))c=expr();need(';');
+     if(!isOp(')'))u=expr();need(')');return{k:'for',i,c,u,s:stmt(),l:t.l}}
+    case'break':p++;need(';');return{k:'brk',l:t.l};
+    case'continue':p++;need(';');return{k:'cnt',l:t.l};
+    case'return':{p++;if(!isOp(';'))expr();need(';');return{k:'ret',l:t.l}}
+    case'cout':case'cin':{
+     if(lang!='cpp')throw{l:t.l,m:lang=='java'?`cannot find symbol: variable ${t.v}`:`'${t.v}' undeclared (first use in this function); ${t.v} is C++. In C use ${t.v=='cout'?'printf':'scanf'}`};
+     if(!hasUsing&&!t.std)throw{l:t.l,m:`'${t.v}' was not declared in this scope; add 'using namespace std;' or write std::${t.v}`};
+     p++;if(t.v=='cout'){const it=[];while(eat('<<'))it.push(bin(4));if(!it.length)throw{l:t.l,m:"expected '<<' after cout"};need(';');return{k:'cout',it,l:t.l}}
+     const ns=[];while(eat('>>')){const v=peek();if(v.t!='id')throw{l:v.l,m:`expected variable after '>>' before '${v.v}'`};p++;ns.push(v.v)}
+     if(!ns.length)throw{l:t.l,m:"expected '>>' after cin"};need(';');return{k:'cin',ns,l:t.l}}}
+   if(TY.has(t.v)&&!(peek(1).t=='op'&&peek(1).v=='('))return decl();}
+  const e=expr();need(';');return{k:'ex',e,l:t.l}}
+ let mi=-1;for(let i=0;i<T.length-1;i++)if(T[i].v=='main'&&T[i+1].v=='('){mi=i;break}
+ if(mi<0)throw{l:1,m:"no 'main' function found"};
+ p=mi+2;let dp=1;while(dp>0){const t=peek();if(t.t=='eof')throw{l:T[mi].l,m:"expected ')' in main declaration"};if(t.v=='(')dp++;if(t.v==')')dp--;p++}
+ while(!isOp('{')){if(peek().t=='eof')throw{l:T[mi].l,m:"expected '{' after main()"};p++}
+ return block()}
 
-  <!-- Client Scripts -->
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/shared/parallax.js"></script>
-  <script src="/shared/spooky-entities.js"></script>
-  <script src="/shared/audio.js"></script>
-  <script src="/shared/room-client.js"></script>
-  <script src="/shared/c-runner.js"></script>
-  <script src="/shared/questions-data.js"></script>
+function execute(ast,lang,inputs){
+ let out='',steps=0,ip=0;const sc=[new Map()];
+ const find=n=>{for(let i=sc.length-1;i>=0;i--)if(sc[i].has(n))return sc[i].get(n);return null};
+ const und=(n,l)=>({l,m:lang=='java'?`cannot find symbol: variable ${n}`:`'${n}' undeclared (first use in this function)`});
+ const uni=(n,l)=>({l,m:`variable '${n}' is used before it has a value`});
+ const tick=l=>{if(++steps>2e6)throw{l,m:'Time limit exceeded: your loop never ends (infinite loop)'};if(out.length>20000)throw{l,m:'Output limit exceeded'}};
+ const wrap=(ty,v)=>{if(typeof v!='number')return v;if(ty=='int')return Math.trunc(v)|0;if(ty=='long')return Math.trunc(v);if(ty=='bool')return v?1:0;return v};
+ const rd=l=>{if(ip>=inputs.length)throw{l,m:'The program tried to read more input than the question gives (check how many scanf / cin / nextInt calls you make)'};return inputs[ip++]};
+ const arith=(o,x,y,l)=>{
+  if(o=='+'&&(typeof x=='string'||typeof y=='string'))return String(x)+String(y);
+  switch(o){case'+':return x+y;case'-':return x-y;case'*':return x*y;
+   case'/':if(y===0)throw{l,m:'Division by zero'};return Number.isInteger(x)&&Number.isInteger(y)?Math.trunc(x/y):x/y;
+   case'%':if(y===0)throw{l,m:'Modulo by zero'};return x%y;
+   case'<':return+(x<y);case'>':return+(x>y);case'<=':return+(x<=y);case'>=':return+(x>=y);case'==':return+(x==y);case'!=':return+(x!=y)}};
+ const os=(n,v)=>{if(n.k=='num'&&n.ch)return String.fromCharCode(v);if(n.k=='var'){const e=find(n.name);if(e&&e.ty=='char'&&typeof v=='number')return String.fromCharCode(v)}return String(v)};
+ const fmt=(f,a,l)=>{let k=0;return String(f).replace(/%([-+0 ]*)(\d*)(?:\.(\d+))?(ll|l|h)?([diufcsxX%n])/g,(m,fl,w,pr,_,c)=>{
+  if(c=='%')return'%';if(c=='n')return'\n';const v=a[k++];if(v===undefined)throw{l,m:'too few arguments for the format string'};
+  let s;if('diu'.includes(c))s=String(Math.trunc(v));else if(c=='f')s=(+v).toFixed(pr===undefined?6:+pr);else if(c=='c')s=typeof v=='number'?String.fromCharCode(v):String(v);else if(c=='s')s=String(v);else s=Math.trunc(v).toString(16);
+  return w?(fl.includes('-')?s.padEnd(+w):s.padStart(+w,fl.includes('0')?'0':' ')):s})};
+ function ev(n){switch(n.k){
+  case'num':case'str':return n.v;
+  case'var':{if(n.name=='endl')return'\n';if(n.name=='System.in')return 0;const e=find(n.name);if(!e)throw und(n.name,n.l);if(e.v===undefined)throw uni(n.name,n.l);return e.v}
+  case'un':{const v=ev(n.e);return n.op=='!'?+!v:n.op=='-'?-v:v}
+  case'cast':{const v=ev(n.e);return n.d?v:Math.trunc(v)}
+  case'bin':{if(n.op=='&&')return+!!(ev(n.l)&&ev(n.r));if(n.op=='||')return+!!(ev(n.l)||ev(n.r));return arith(n.op,ev(n.l),ev(n.r),n.ln)}
+  case'tern':return ev(n.c)?ev(n.a):ev(n.b);
+  case'asg':{const e=find(n.name);if(!e)throw und(n.name,n.l);let r=ev(n.r);if(n.op!='='){if(e.v===undefined)throw uni(n.name,n.l);r=arith(n.op[0],e.v,r,n.l)}e.v=wrap(e.ty,r);return e.v}
+  case'inc':{const e=find(n.name);if(!e)throw und(n.name,n.l);if(e.v===undefined)throw uni(n.name,n.l);const o=e.v;e.v=wrap(e.ty,o+n.d);return n.pre?e.v:o}
+  case'addr':return 0;
+  case'call':{const nm=n.name,a=n.args,l=n.l;
+   const J=/^(System|Math)\./.test(nm)||/\.next/.test(nm);
+   if(lang=='java'?!J:J)throw{l,m:lang=='java'?`cannot find symbol: method ${nm}`:`'${nm.split('.')[0]}' undeclared (first use in this function)`};
+   if(nm=='printf'||nm=='System.out.printf'||nm=='System.out.format'){if(!a.length)throw{l,m:'printf needs a format string'};out+=fmt(ev(a[0]),a.slice(1).map(ev),l);return 0}
+   if(nm=='System.out.println'){out+=(a.length?os(a[0],ev(a[0])):'')+'\n';return 0}
+   if(nm=='System.out.print'){out+=os(a[0],ev(a[0]));return 0}
+   if(nm=='puts'){out+=ev(a[0])+'\n';return 0}
+   if(nm=='putchar'){out+=String.fromCharCode(ev(a[0]));return 0}
+   if(nm=='scanf'){let c=0;for(const x of a.slice(1)){if(x.k!='addr')throw{l,m:"scanf needs '&' before the variable name"};const e=find(x.name);if(!e)throw und(x.name,l);e.v=wrap(e.ty,rd(l));c++}return c}
+   if(/\.next(Int|Long|Double|Float)?$/.test(nm))return rd(l);
+   if(/sqrt$/.test(nm))return Math.sqrt(ev(a[0]));
+   if(/pow$/.test(nm))return Math.pow(ev(a[0]),ev(a[1]));
+   if(/abs$/.test(nm))return Math.abs(ev(a[0]));
+   throw{l,m:lang=='java'?`cannot find symbol: method ${nm}`:`implicit declaration of function '${nm}' (not supported by this checker)`}}}
+  return 0}
+ function ex(n){tick(n.l);switch(n.k){
+  case'blk':{sc.push(new Map());try{for(const s of n.b){const r=ex(s);if(r)return r}}finally{sc.pop()}return}
+  case'decl':for(const d of n.d)sc[sc.length-1].set(d.n,{ty:n.ty,v:d.e?wrap(n.ty,ev(d.e)):undefined});return;
+  case'ex':ev(n.e);return;
+  case'if':if(ev(n.c))return ex(n.a);if(n.b)return ex(n.b);return;
+  case'for':{sc.push(new Map());try{if(n.i)ex(n.i);while(n.c?ev(n.c):1){const r=ex(n.s);if(r=='brk')break;if(r=='ret')return r;if(n.u)ev(n.u)}}finally{sc.pop()}return}
+  case'while':while(ev(n.c)){const r=ex(n.s);if(r=='brk')break;if(r=='ret')return r}return;
+  case'do':do{const r=ex(n.s);if(r=='brk')break;if(r=='ret')return r}while(ev(n.c));return;
+  case'brk':return'brk';case'cnt':return'cnt';case'ret':return'ret';
+  case'cout':for(const x of n.it)out+=os(x,ev(x));return;
+  case'cin':for(const nm of n.ns){const e=find(nm);if(!e)throw und(nm,n.l);e.v=wrap(e.ty,rd(n.l))}return}}
+ ex(ast);return out}
 
-  <script>
-    (function() {
-      'use strict';
+/* ===== questions ===== */
+const range=(a,b)=>{const r=[];for(let i=a;i<=b;i++)r.push(i);return r};
+const divs=n=>range(1,n).filter(i=>n%i==0);
+const Q=[
+{id:1,t:'Haunted Carrot Counter',d:'A haunted garden contains N carrots. Print all even-numbered carrots from 1 to N using a for loop.',inp:'An integer N.',con:'N must be positive.',ex:'N = 10  ->  2 4 6 8 10',
+ ref:([n])=>range(1,n).filter(i=>i%2==0),T:[[10],[7],[1],[-3,1]]},
+{id:2,t:'Zombie Tomato Harvest',d:'A zombie collects tomatoes numbered from 1 to N. Each tomato gives its number as points. Use a for loop to calculate the total points collected.',inp:'An integer N.',con:'Reject non-positive values of N.',ex:'N = 5  ->  15',
+ ref:([n])=>[n*(n+1)/2],T:[[5],[10],[1],[100],[0,1],[-2,1]]},
+{id:3,t:'Ghost Pepper Power',d:'Each ghost pepper doubles the previous pepper’s power, starting with power 1. Print the power of each of the first N peppers using a for loop.',inp:'An integer N.',con:'N must be positive and small enough to avoid integer overflow (use N up to 30).',ex:'N = 5  ->  1 2 4 8 16',
+ ref:([n])=>range(0,n-1).map(i=>2**i),T:[[5],[1],[12],[20],[0,1],[-4,1]]},
+{id:4,t:'Vampire Lettuce Factorial',d:'A vampire needs the factorial of a number to unlock a secret recipe. Calculate N! using a for loop.',inp:'An integer N.',con:'Accept N from 0 to 12.',ex:'N = 5  ->  120',
+ ref:([n])=>{let f=1;for(let i=2;i<=n;i++)f*=i;return[f]},T:[[5],[0],[1],[12],[-1,1],[13,1]]},
+{id:5,t:'Cursed Pumpkin Multiplication Table',d:'A cursed pumpkin reveals its multiplication table. Print the multiplication table of a given number from 1 to 10 using a for loop.',inp:'An integer N.',con:'Reject negative values of N.',ex:'N = 3  ->  3 x 1 = 3 ... 3 x 10 = 30',
+ alts:([n])=>[range(1,10).map(i=>n*i),range(1,10).flatMap(i=>[n,i,n*i])],T:[[5],[1],[12],[0],[-2,1]]},
+{id:6,t:'Witch’s Vegetable Sum',d:'A witch has a number N. Calculate the sum of all digits of N using a for loop.',inp:'An integer N.',con:'Accept non-negative integers.',ex:'N = 482  ->  14',
+ ref:([n])=>[String(n).split('').reduce((a,c)=>a+ +c,0)],T:[[482],[0],[9],[1005],[-7,1]]},
+{id:7,t:'Monster’s Reverse Spell',d:'A monster wants to reverse a vegetable’s identification number. Reverse the digits of a given integer using a for loop.',inp:'An integer N.',con:'Accept non-negative integers.',ex:'N = 4726  ->  6274',
+ ref:([n])=>[+String(n).split('').reverse().join('')],T:[[4726],[100],[0],[9],[-12,1]]},
+{id:8,t:'Demon Seed Detector',d:'A demon wants to know whether a number is prime before planting its seed. Check whether the given number is prime using a for loop. Print a clear message such as "Prime" or "Not prime".',inp:'An integer N.',con:'Reject integers less than 2.',ex:'17 is prime; 18 is not prime.',mode:'prime',
+ ref:([n])=>{for(let i=2;i*i<=n;i++)if(n%i==0)return'no';return'yes'},T:[[17],[18],[2],[97],[100],[1,1]]},
+{id:9,t:'Haunted Garden Pattern',d:'A haunted garden grows in a triangular pattern. Print the pattern for N rows using nested for loops.',inp:'An integer N.',con:'N must be positive.',ex:'N = 4\n*\n* *\n* * *\n* * * *',mode:'star',
+ ref:([n])=>range(1,n).map(i=>'*'.repeat(i)),T:[[4],[1],[3],[0,1]]},
+{id:10,t:'Forbidden Vegetable Divisors',d:'A wizard wants to find all divisors of a cursed number. Print all positive divisors of N, then the count of divisors, using a for loop.',inp:'An integer N.',con:'N must be positive.',ex:'N = 12  ->  1 2 3 4 6 12 and count 6',
+ ref:([n])=>[...divs(n),divs(n).length],T:[[12],[1],[7],[36],[0,1]]},
+{id:11,t:'Werewolf’s Number Hunt',d:'A werewolf can only eat numbers divisible by 3 or 5. Print all numbers from 1 to N divisible by 3 or 5, then their sum, using a for loop.',inp:'An integer N.',con:'N must be positive.',ex:'N = 10  ->  3 5 6 9 10 and sum 33',
+ ref:([n])=>{const a=range(1,n).filter(i=>i%3==0||i%5==0);return[...a,a.reduce((x,y)=>x+y,0)]},T:[[10],[1],[15],[-3,1]]},
+{id:12,t:'Potion Garden Digit Frequency',d:'A witch wants to count how many times a particular digit appears in a vegetable’s identification number. Count the occurrences of digit D in number N using a for loop.',inp:'Two integers: N, then D (separated by a space or new line).',con:'N must be non-negative and D must be between 0 and 9.',ex:'N = 12232, D = 2  ->  3',
+ ref:([n,d])=>[String(n).split('').filter(c=>+c==d).length],T:[[12232,2],[1000,0],[555,3],[7,7],[-5,2,1],[123,10,1]]}
+];
+Q.forEach(q=>{q.tests=q.T.map(t=>{const need=q.id==12?2:1;return t.length>need?{in:t.slice(0,need),bad:1}:{in:t}})});
+const BAD=/invalid|reject|error|positive|negative|not\s*valid|wrong|must|cannot|can't|out of range|between|range|only|less than|greater/i;
+function judge(q,t,out){
+ if(t.bad)return BAD.test(out);
+ if(q.mode=='prime'){const o=out.toLowerCase();const g=/not|composite|non/.test(o)?'no':/prime/.test(o)?'yes':'';return g==q.ref(t.in)}
+ if(q.mode=='star'){const g=out.split('\n').map(s=>s.replace(/\s/g,'')).filter(Boolean),e=q.ref(t.in);return g.length==e.length&&g.every((s,i)=>s==e[i])}
+ const g=(out.match(/-?\d+/g)||[]).map(Number),alts=q.alts?q.alts(t.in):[q.ref(t.in)];
+ return alts.some(a=>a.length==g.length&&a.every((x,i)=>x==g[i]))}
+const expText=(q,t)=>t.bad?'(a message rejecting this input)':q.mode=='prime'?(q.ref(t.in)=='yes'?'Prime':'Not prime'):q.mode=='star'?q.ref(t.in).map(s=>s.split('').join(' ')).join('\n'):(q.alts?q.alts(t.in)[0]:q.ref(t.in)).join(' ');
 
-      const CHAPTER_ID = 'alien';
-      const questions = window.CHAPTER_QUESTIONS ? window.CHAPTER_QUESTIONS[CHAPTER_ID] : [];
-      let currentQuestionIndex = 0;
-      const solvedGates = new Set();
+/* ===== app state ===== */
+const REQUIRED_SOLVES = 6;
+const TOTAL_QUESTIONS = Q.length;
+const TPL={c:'#include <stdio.h>\n\nint main() {\n    // write your code here\n\n    return 0;\n}\n',cpp:'#include <iostream>\nusing namespace std;\n\nint main() {\n    // write your code here\n\n    return 0;\n}\n',java:'import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        // write your code here\n    }\n}\n'};
+const LN={c:'C',cpp:'C++',java:'Java'};
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const sget=k=>{try{return JSON.parse(sessionStorage.getItem(k))}catch(e){return null}};
+const sset=(k,v)=>{try{sessionStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let order=sget('dsv_o');if(!Array.isArray(order)||order.length!=TOTAL_QUESTIONS)order=shuffle(Q.map(q=>q.id)).slice(0, TOTAL_QUESTIONS),sset('dsv_o',order);
+let solved=new Set(sget('dsv_s')||[]);
+let cur=order[0],lang='c';const codes={};
+const qOf=id=>Q.find(q=>q.id==id);
+const ta=$('#ta');
 
-      // DOM Elements
-      const hudRoom = document.getElementById('hud-room');
-      const hudPlayer = document.getElementById('hud-player');
-      const hudDot = document.getElementById('hud-dot');
-      const hudStatus = document.getElementById('hud-status');
-      const gateButtonsContainer = document.getElementById('gate-buttons');
-      const progressBar = document.getElementById('progress-bar');
-      const progressText = document.getElementById('progress-text');
-      const qTitle = document.getElementById('q-title');
-      const qDifficulty = document.getElementById('q-difficulty');
-      const qDesc = document.getElementById('q-desc');
-      const codeEditor = document.getElementById('code-editor');
-      const btnReset = document.getElementById('btn-reset');
-      const btnRun = document.getElementById('btn-run');
-      const btnInstantVictory = document.getElementById('btn-instant-victory');
-      const errorBanner = document.getElementById('error-banner');
-      const testCards = document.getElementById('test-cards');
-      const resultsSummary = document.getElementById('results-summary');
-      const conveyorReadout = document.getElementById('conveyor-readout');
-      const victoryModal = document.getElementById('victory-modal');
+function updateCounter(){
+  const c=$('#q-counter');
+  if(c)c.textContent=`Solved: ${solved.size} / ${REQUIRED_SOLVES} (Pool: ${order.length})`;
+}
 
-      function initGatesGrid() {
-        gateButtonsContainer.innerHTML = '';
-        questions.forEach((q, idx) => {
-          const btn = document.createElement('button');
-          btn.className = 'gate-btn' + (idx === 0 ? ' active' : '');
-          btn.id = `gate-btn-${idx}`;
-          btn.innerHTML = `<span>${idx + 1}</span><span class="gate-status-icon">🔒</span>`;
-          btn.onclick = () => selectQuestion(idx);
-          gateButtonsContainer.appendChild(btn);
-        });
-        loadQuestion(0);
-      }
+function skipNext(){
+  saveCode();
+  const curPos=order.indexOf(cur);
+  const nextPos=(curPos+1)%order.length;
+  sel(order[nextPos]);
+}
 
-      function selectQuestion(idx) {
-        currentQuestionIndex = idx;
-        document.querySelectorAll('.gate-btn').forEach((b, i) => {
-          b.classList.toggle('active', i === idx);
-        });
-        loadQuestion(idx);
-      }
+$('#btn-skip').onclick=skipNext;
+$('#btn-skip-top').onclick=skipNext;
 
-      function loadQuestion(idx) {
-        const q = questions[idx];
-        if (!q) return;
+function drawList(){
+  updateCounter();
+}
+function drawQ(){const q=qOf(cur),i=order.indexOf(cur)+1;if(window._lq!==cur){window._lq=cur;$('#ci').value=q.tests[0].in.join(' ')}
+ $('#q').innerHTML=`<h2>Question ${i} of ${order.length}: ${esc(q.t)}${solved.has(cur)?' <span style="color:var(--acid)">✓ SOLVED</span>':''}</h2><p>${esc(q.d)}</p><p><span class="k">Input:</span> ${esc(q.inp)}</p><p><span class="k">Constraint:</span> ${esc(q.con)} If the input breaks the constraint, print a short message such as “Invalid input”.</p><p class="k">Example:</p><pre>${esc(q.ex)}</pre>`;
+ $('#lgs').innerHTML=Object.keys(LN).map(k=>`<button class="lg ${k==lang?'on':''}" data-l="${k}">${LN[k]}</button>`).join('')}
+function gutter(err){const n=ta.value.split('\n').length;$('#gin').innerHTML=Array.from({length:n},(_,i)=>`<div class="${err==i+1?'er':''}">${i+1}</div>`).join('');$('#gin').style.transform=`translateY(${-ta.scrollTop}px)`}
+function mark(l){$('#hl').style.display='none';gutter(l);if(l){const h=$('#hl');h.style.display='block';h.style.top=(8+(l-1)*24-ta.scrollTop)+'px';
+ const y=8+(l-1)*24;if(y<ta.scrollTop||y>ta.scrollTop+ta.clientHeight-30){ta.scrollTop=Math.max(0,y-100);h.style.top=(y-ta.scrollTop)+'px';gutter(l)}}}
+function loadCode(){ta.value=codes[cur+lang]??TPL[lang];mark(0)}
+function saveCode(){codes[cur+lang]=ta.value}
+function sel(id){saveCode();cur=id;drawList();drawQ();loadCode();$('#con').innerHTML='<h3>Console</h3><div class="dim">Write your code, then press Submit. Errors will show here with the line number.</div>'}
+ta.addEventListener('input',()=>{$('#hl').style.display='none';gutter(0)});
+ta.addEventListener('scroll',()=>{$('#gin').style.transform=`translateY(${-ta.scrollTop}px)`;const h=$('#hl');if(h.style.display=='block'&&h.dataset.l)h.style.top=(8+(h.dataset.l-1)*24-ta.scrollTop)+'px'});
+ta.addEventListener('keydown',e=>{if(e.key=='Tab'){e.preventDefault();const s=ta.selectionStart;ta.setRangeText('    ',s,ta.selectionEnd,'end');gutter(0)}});
+$('#lgs').addEventListener('click',e=>{const b=e.target.closest('.lg');if(!b)return;saveCode();lang=b.dataset.l;drawQ();loadCode()});
+(window._x={}).f=()=>{order=shuffle(Q.map(q=>q.id));solved=new Set();sset('dsv_o',order);sset('dsv_s',[]);for(const k in codes)delete codes[k];cur=order[0];drawList();drawQ();loadCode();$('#con').innerHTML='<h3>Console</h3><div class="dim">New session started. The questions were shuffled.</div>'};
 
-        qTitle.textContent = q.title;
-        qDifficulty.textContent = q.difficulty.toUpperCase();
-        qDifficulty.className = `difficulty-badge ${q.difficulty.toLowerCase()}`;
-        qDesc.textContent = q.desc;
-
-        const savedCode = localStorage.getItem(`code_${CHAPTER_ID}_${q.id}`);
-        codeEditor.value = savedCode || q.boilerplate;
-
-        errorBanner.style.display = 'none';
-        errorBanner.textContent = '';
-        renderInitialTestCards(q.testCases);
-      }
-
-      function renderInitialTestCards(testCases) {
-        resultsSummary.textContent = 'Ready to test in C';
-        resultsSummary.className = 'results-summary';
-        testCards.innerHTML = '';
-
-        testCases.forEach((t, i) => {
-          const card = document.createElement('div');
-          card.className = 'test-card';
-          card.id = `test-card-${i}`;
-          card.innerHTML = `
-            <div class="test-info">
-              <span class="test-input">Test #${t.id}: Input: ${JSON.stringify(t.input)}</span>
-              <div class="test-io">
-                <span>Expected: <strong style="color:#00ff66;">${JSON.stringify(t.expectedArray || t.expected)}</strong></span>
-                <span id="actual-val-${i}">Actual: <em>Pending</em></span>
-              </div>
-            </div>
-            <span class="test-status-badge" id="badge-${i}" style="background:rgba(255,255,255,0.06); color:#9ca3af;">READY</span>
-          `;
-          testCards.appendChild(card);
-        });
-      }
-
-      codeEditor.addEventListener('keydown', (e) => {
-        if (e.key === 'Tab') {
-          e.preventDefault();
-          const start = codeEditor.selectionStart;
-          const end = codeEditor.selectionEnd;
-          codeEditor.value = codeEditor.value.substring(0, start) + '    ' + codeEditor.value.substring(end);
-          codeEditor.selectionStart = codeEditor.selectionEnd = start + 4;
-        } else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-          e.preventDefault();
-          runActiveTest();
-        }
-      });
-
-      btnReset.addEventListener('click', () => {
-        const q = questions[currentQuestionIndex];
-        if (q) {
-          codeEditor.value = q.boilerplate;
-          localStorage.removeItem(`code_${CHAPTER_ID}_${q.id}`);
-          renderInitialTestCards(q.testCases);
-          if (window.SoundFX) window.SoundFX.click();
-        }
-      });
-
-      async function runActiveTest() {
-        const q = questions[currentQuestionIndex];
-        if (!q) return;
-
-        const userCode = codeEditor.value;
-        localStorage.setItem(`code_${CHAPTER_ID}_${q.id}`, userCode);
-
-        btnRun.disabled = true;
-        btnRun.textContent = 'Testing...';
-        errorBanner.style.display = 'none';
-
-        if (window.SoundFX) window.SoundFX.click();
-
-        try {
-          const outcome = await window.CRunner.runTests(userCode, q.functionName, q.testCases);
-
-          if (!outcome.success) {
-            errorBanner.style.display = 'block';
-            errorBanner.textContent = 'C Compilation Error:\n' + outcome.compileError;
-            resultsSummary.textContent = 'Compilation Failed';
-            resultsSummary.className = 'results-summary has-fail';
-            if (window.SoundFX) window.SoundFX.error();
-            return;
-          }
-
-          outcome.results.forEach((r, i) => {
-            const card = document.getElementById(`test-card-${i}`);
-            const badge = document.getElementById(`badge-${i}`);
-            const actualVal = document.getElementById(`actual-val-${i}`);
-
-            if (card && badge && actualVal) {
-              card.className = `test-card ${r.passed ? 'passed' : 'failed'}`;
-              badge.className = `test-status-badge ${r.passed ? 'pass' : 'fail'}`;
-              badge.textContent = r.passed ? 'PASS' : 'FAIL';
-              actualVal.innerHTML = `Actual: <strong style="color:${r.passed ? '#00ff66' : '#f87171'}">${r.actual}</strong>`;
-            }
-          });
-
-          if (outcome.allPassed) {
-            resultsSummary.textContent = `All ${outcome.totalTests} Tests Passed! Conveyor Purged.`;
-            resultsSummary.className = 'results-summary all-pass';
-            if (window.SoundFX) window.SoundFX.success();
-            markGateSolved(currentQuestionIndex);
-          } else {
-            resultsSummary.textContent = `${outcome.testsPassed} / ${outcome.totalTests} Passed`;
-            resultsSummary.className = 'results-summary has-fail';
-            if (window.SoundFX) window.SoundFX.error();
-          }
-
-        } catch (err) {
-          errorBanner.style.display = 'block';
-          errorBanner.textContent = 'Runtime Exception:\n' + err.message;
-          if (window.SoundFX) window.SoundFX.error();
-        } finally {
-          btnRun.disabled = false;
-          btnRun.textContent = '▶ Run & Test Code';
-        }
-      }
-
-      btnRun.addEventListener('click', runActiveTest);
-
-      function markGateSolved(idx) {
-        solvedGates.add(idx);
-        const btn = document.getElementById(`gate-btn-${idx}`);
-        if (btn) {
-          btn.classList.add('solved');
-          btn.querySelector('.gate-status-icon').textContent = '✔';
-        }
-
-        const solvedCount = solvedGates.size;
-        progressBar.style.width = `${(solvedCount / questions.length) * 100}%`;
-        progressText.textContent = `${solvedCount} / ${questions.length} Solved`;
-
-        // Update Pod Visuals
-        const podIdx = idx % 5;
-        const pod = document.getElementById(`pod-${podIdx}`);
-        if (pod) pod.classList.add('purged');
-
-        conveyorReadout.textContent = `BIO-PURGE: ${solvedCount} / 10 PODS CLEANSED`;
-
-        if (solvedCount >= questions.length) {
-          triggerChapterVictory();
-        }
-      }
-
-      function triggerChapterVictory() {
-        conveyorReadout.textContent = 'ALL SPECIMENS PURGED • HARVEST COMPLETE';
-        victoryModal.classList.add('visible');
-
-        if (window.SoundFX) window.SoundFX.portalWarp();
-
-        if (window.Room) {
-          window.Room.complete(CHAPTER_ID);
-        }
-      }
-
-      btnInstantVictory.addEventListener('click', () => {
-        for (let i = 0; i < questions.length; i++) {
-          markGateSolved(i);
-        }
-        triggerChapterVictory();
-      });
-
-      function setupNetworking() {
-        if (!window.Room) return;
-
-        hudRoom.textContent = `ROOM: ${window.Room.getRoomCode() || 'DEV-TEST'}`;
-        hudPlayer.textContent = `Chef: ${window.Room.getPlayerName()}`;
-
-        window.Room.on('room_updated', (data) => {
-          updateRosterStatus(data.roomState);
-        });
-
-        window.Room.on('chapter_completed', (data) => {
-          updateRosterStatus(data.roomState);
-          if (data.allCompleted) {
-            document.getElementById('warp-status').textContent = 'All 4 Ingredients Secured! Warping to the Finale...';
-          }
-        });
-
-        window.Room.on('all_chapters_completed', () => {
-          document.getElementById('warp-status').textContent = 'Rift opened! Entering the Finale chamber...';
-        });
-
-        window.Room.on('disconnect', () => {
-          hudDot.classList.add('disconnected');
-          hudStatus.textContent = 'Offline (Retrying...)';
-        });
-
-        window.Room.on('connect', () => {
-          hudDot.classList.remove('disconnected');
-          hudStatus.textContent = 'Connected';
-        });
-      }
-
-      function updateRosterStatus(state) {
-        if (!state || !state.completed) return;
-        const c = state.completed;
-        const hellPill = document.getElementById('roster-hell');
-        const oceanPill = document.getElementById('roster-ocean');
-        const marketPill = document.getElementById('roster-market');
-
-        if (hellPill && c.hell) { hellPill.className = 'chef-status-pill ready'; hellPill.textContent = '🧀 Hell (Ready)'; }
-        if (oceanPill && c.ocean) { oceanPill.className = 'chef-status-pill ready'; oceanPill.textContent = '🌊 Ocean (Ready)'; }
-        if (marketPill && c.market) { marketPill.className = 'chef-status-pill ready'; marketPill.textContent = '🍞 Market (Ready)'; }
-      }
-
-      initGatesGrid();
-      setTimeout(setupNetworking, 300);
-
-    })();
-  </script>
+function errHTML(e,phase,inp){const lines=ta.value.split('\n');const src=lines[e.l-1]??'';
+ mark(e.l);$('#hl').dataset.l=e.l;
+ return `<div class="eh">${phase} · line ${e.l}</div><div class="em">${esc(e.m)}</div><pre class="el"><b>${e.l} |</b> ${esc(src)}</pre>`+(inp?`<div class="dim">Input used: ${esc(inp)}</div>`:'')}
+function build(){const src=ta.value;if(!src.trim())throw{l:1,m:'Your code is empty'};return parse(tokenize(src),lang,src)}
+$('#run').onclick=()=>{const c=$('#con');let ast;
+ try{ast=build()}catch(e){c.innerHTML='<h3>Console</h3>'+errHTML(e,'Compile error');return}
+ const raw=$('#ci').value.trim();const inp=raw?raw.split(/\s+/).map(Number):[];
+ if(inp.some(isNaN)){c.innerHTML='<h3>Console</h3><div class="em">Input must be numbers separated by spaces.</div>';return}
+ try{const o=execute(ast,lang,inp);mark(0);c.innerHTML=`<h3>Console</h3><div class="dim">Program output (compiled without errors):</div><pre>${esc(o)||'(no output)'}</pre>`}
+ catch(e){c.innerHTML='<h3>Console</h3>'+(!raw&&/more input/.test(e.m)?'<div class="em">Your program is waiting for input. Type it in the Input box, then press Test run again.</div>':errHTML(e,'Runtime error',raw))}};
+$('#sub').onclick=()=>{const c=$('#con'),q=qOf(cur);let ast;
+ try{ast=build()}catch(e){c.innerHTML='<h3>Console</h3>'+errHTML(e,'Compile error');return}
+ mark(0);let html='<h3>Console</h3><div class="dim">Compiled without errors. Running tests…</div>',pass=0,failShown=false;
+ q.tests.forEach((t,i)=>{let out,err=null;try{out=execute(ast,lang,t.in)}catch(e){err=e}
+  const ok=!err&&judge(q,t,out);if(ok){pass++;html+=`<div class="pass">✓ Test ${i+1} passed</div>`;return}
+  html+=`<div class="fail">✗ Test ${i+1} failed</div>`;
+  if(!failShown){failShown=true;
+   if(err)html+=errHTML(err,'Runtime error',t.in.join(' '));
+   else{html+=`<div class="dim">Input: ${esc(t.in.join(' '))}</div>`;
+    if(i<2||t.bad)html+=`<div class="dim">Expected:</div><pre>${esc(expText(q,t))}</pre>`;else html+='<div class="dim">This is a hidden test, so the expected output is not shown.</div>';
+    html+=`<div class="dim">Your output:</div><pre>${esc(out)||'(no output)'}</pre>`}}});
+ if(pass==q.tests.length){
+  solved.add(cur);sset('dsv_s',[...solved]);drawList();
+  const isDone = solved.size >= REQUIRED_SOLVES;
+  if(isDone && window.Room) Room.complete('alien');
+  
+  let nextUnsolved = null;
+  const curPos = order.indexOf(cur);
+  for(let offset = 1; offset <= order.length; offset++) {
+    const cand = order[(curPos + offset) % order.length];
+    if(!solved.has(cand)) { nextUnsolved = cand; break; }
+  }
+  
+  if(isDone) {
+    html=`<h3>Console</h3><div class="ok"><svg viewBox="0 0 12 12"><use href="#sp"/></svg><span>Cosmic Vegetables collected! (${solved.size}/${REQUIRED_SOLVES} Complete)</span></div><div class="pass" style="margin-top:8px;font-size:24px">All ${REQUIRED_SOLVES} required vegetables collected. The cosmic vegetable layer is secured!</div>`;
+  } else {
+    html=`<h3>Console</h3><div class="ok"><svg viewBox="0 0 12 12"><use href="#sp"/></svg><span>Vegetable Solved! (${solved.size}/${REQUIRED_SOLVES})</span></div><div class="dim" style="margin-top:10px">${pass}/${q.tests.length} tests passed. Solve ${REQUIRED_SOLVES - solved.size} more to collect the Cosmic Vegetables.</div>`;
+    if(nextUnsolved !== null) {
+      html+=`<div class="row" style="margin-top:10px"><button class="btn sm" id="nq" data-id="${nextUnsolved}">Next Vegetable →</button></div>`;
+    }
+  }
+ }
+ else html+=`<div class="dim" style="margin-top:6px">${pass}/${q.tests.length} tests passed. Fix your code and submit again.</div>`;
+ c.innerHTML=html;const nq=$('#nq');if(nq)nq.onclick=()=>sel(+nq.dataset.id)};
+drawList();drawQ();loadCode();
+window.onChapterInstantWin=()=>{
+  order.slice(0, REQUIRED_SOLVES).forEach(id=>solved.add(id));
+  drawList();
+  const c=$('#con');
+  if(c){
+    c.innerHTML='<h3>Console</h3><div class="ok"><svg viewBox="0 0 12 12"><use href="#sp"/></svg><span>Cosmic Vegetables collected! ('+solved.size+'/'+REQUIRED_SOLVES+' Complete)</span></div>';
+    try { c.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch(e){}
+  }
+  if(window.Room) Room.complete('alien');
+};
+</script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/shared/room-client.js"></script>
+<script src="/shared/chapter-hud.js"></script>
 </body>
 </html>

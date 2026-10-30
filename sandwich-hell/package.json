@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node server.js --open",
     "start": "node server.js",
-    "test": "node test-socket-flow.js && node test-c-questions.js"
+    "test": "node test-socket-flow.js && node test-levels-integration.js && node test-boss-battle.js"
   },
   "dependencies": {
     "express": "^4.19.2",

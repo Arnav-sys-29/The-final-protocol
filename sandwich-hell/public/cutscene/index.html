@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Legendary Sandwich From Hell — Cutscene</title>
+  <link rel="stylesheet" href="/shared/theme.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #000;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* ── Fullscreen Video Layer ── */
+    .cutscene-video {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+      background: #000;
+      z-index: 500;
+      display: none;
+    }
+
+    /* ── Screen Overlay Panels ── */
+    .screen-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 400;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    /* ── PHASE 1: Sandwich Reassembles (auto-play on load) ── */
+
+    /* ── PHASE 2: "Finish Game" Screen ── */
+    #finish-screen {
+      background: radial-gradient(ellipse at center, #110522 0%, #05020a 60%, #000 100%);
+    }
+
+    .finish-title {
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-family: var(--font-display);
+      font-weight: 900;
+      background: linear-gradient(135deg, #fff 0%, #a5f3fc 30%, #38bdf8 60%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 35px rgba(56, 189, 248, 0.6));
+      margin-bottom: 1.5rem;
+    }
+
+    .finish-subtitle {
+      font-size: 1.3rem;
+      color: #c4b5fd;
+      font-family: var(--font-code);
+      letter-spacing: 0.1em;
+      margin-bottom: 3rem;
+      text-shadow: 0 0 15px rgba(192, 132, 252, 0.5);
+    }
+
+    .finish-btn {
+      font-size: 1.4rem;
+      padding: 1.3rem 4rem;
+      border-radius: 999px;
+      border: 2.5px solid rgba(56, 189, 248, 0.7);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(139, 92, 246, 0.2));
+      color: #a5f3fc;
+      font-family: var(--font-display);
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.35), 0 0 60px rgba(139, 92, 246, 0.2);
+      animation: finish-pulse 2.5s ease-in-out infinite;
+    }
+
+    .finish-btn:hover {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.45), rgba(139, 92, 246, 0.45));
+      transform: scale(1.08);
+      box-shadow: 0 0 50px rgba(56, 189, 248, 0.7), 0 0 80px rgba(139, 92, 246, 0.4);
+    }
+
+    @keyframes finish-pulse {
+      0%, 100% { box-shadow: 0 0 30px rgba(56, 189, 248, 0.35), 0 0 60px rgba(139, 92, 246, 0.2); }
+      50% { box-shadow: 0 0 55px rgba(56, 189, 248, 0.65), 0 0 90px rgba(139, 92, 246, 0.45); }
+    }
+
+    .waiting-text {
+      font-size: 1.1rem;
+      color: #a78bfa;
+      font-family: var(--font-code);
+      letter-spacing: 0.08em;
+      animation: wait-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes wait-pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* ── "Wait, something's happening..." Interruption ── */
+    #interrupt-screen {
+      background: #000;
+    }
+
+    .interrupt-text {
+      font-size: clamp(1.6rem, 4vw, 3rem);
+      font-family: var(--font-display);
+      font-weight: 800;
+      color: #fbbf24;
+      text-shadow: 0 0 30px rgba(251, 191, 36, 0.7), 0 0 60px rgba(249, 115, 22, 0.4);
+      animation: shake-text 0.15s ease-in-out infinite alternate, interrupt-glow 1.5s ease-in-out infinite;
+      letter-spacing: 0.05em;
+    }
+
+    @keyframes shake-text {
+      from { transform: translateX(-3px) rotate(-0.5deg); }
+      to { transform: translateX(3px) rotate(0.5deg); }
+    }
+
+    @keyframes interrupt-glow {
+      0%, 100% { text-shadow: 0 0 30px rgba(251, 191, 36, 0.7), 0 0 60px rgba(249, 115, 22, 0.4); }
+      50% { text-shadow: 0 0 50px rgba(251, 191, 36, 1), 0 0 100px rgba(249, 115, 22, 0.8), 0 0 150px rgba(220, 38, 38, 0.4); }
+    }
+
+    /* ── PHASE 4: "Protect the Sandwich" Battle Cry ── */
+    #battlecry-screen {
+      background: radial-gradient(ellipse at center, #1a0a0a 0%, #0a0000 50%, #000 100%);
+    }
+
+    .battlecry-text {
+      font-size: clamp(2rem, 5vw, 4.5rem);
+      font-family: var(--font-display);
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 40px rgba(239, 68, 68, 0.9), 0 0 80px rgba(249, 115, 22, 0.6), 0 0 120px rgba(220, 38, 38, 0.4);
+      line-height: 1.3;
+      max-width: 900px;
+      animation: battlecry-entrance 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards, battlecry-throb 2s ease-in-out 1.2s infinite;
+      opacity: 0;
+      transform: scale(0.3);
+    }
+
+    @keyframes battlecry-entrance {
+      0% { opacity: 0; transform: scale(0.3) rotate(-5deg); }
+      60% { opacity: 1; transform: scale(1.15) rotate(2deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    @keyframes battlecry-throb {
+      0%, 100% { 
+        text-shadow: 0 0 40px rgba(239, 68, 68, 0.9), 0 0 80px rgba(249, 115, 22, 0.6); 
+        transform: scale(1);
+      }
+      50% { 
+        text-shadow: 0 0 70px rgba(239, 68, 68, 1), 0 0 130px rgba(249, 115, 22, 0.9), 0 0 200px rgba(220, 38, 38, 0.6); 
+        transform: scale(1.04);
+      }
+    }
+
+    .battlecry-sub {
+      margin-top: 2rem;
+      font-size: 1.2rem;
+      color: #fca5a5;
+      font-family: var(--font-code);
+      letter-spacing: 0.15em;
+      opacity: 0;
+      animation: sub-fade 0.8s ease-out 2s forwards;
+    }
+
+    @keyframes sub-fade {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Cosmic floating orbs ── */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      pointer-events: none;
+      animation: orb-drift 8s ease-in-out infinite alternate;
+    }
+
+    .orb-1 { width: 400px; height: 400px; background: #8b5cf6; top: -10%; left: -5%; }
+    .orb-2 { width: 350px; height: 350px; background: #f97316; bottom: -8%; right: -5%; animation-delay: 2s; }
+    .orb-3 { width: 250px; height: 250px; background: #38bdf8; top: 50%; left: 60%; animation-delay: 4s; }
+
+    @keyframes orb-drift {
+      from { transform: translate(0, 0) scale(1); }
+      to { transform: translate(30px, -20px) scale(1.1); }
+    }
+
+    /* ── Red alarm flash for battle cry ── */
+    .red-flash {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(220, 38, 38, 0.3), transparent 70%);
+      z-index: 399;
+      pointer-events: none;
+      animation: alarm-flash 1s ease-in-out infinite;
+      display: none;
+    }
+
+    @keyframes alarm-flash {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    /* ── Skip Button (Host only) ── */
+    .skip-btn {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 600;
+      background: rgba(18, 9, 32, 0.85);
+      border: 1.5px solid rgba(139, 92, 246, 0.5);
+      color: #fed7aa;
+      font-family: var(--font-code);
+      font-weight: 700;
+      padding: 0.65rem 1.6rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 15px rgba(124, 58, 237, 0.35);
+      display: none;
+    }
+
+    .skip-btn:hover {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      color: #fff;
+      border-color: #c084fc;
+      box-shadow: 0 0 25px rgba(168, 85, 247, 0.7);
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ VIDEO ELEMENTS ═══ -->
+  <video id="sandwich-video" class="cutscene-video" preload="auto" playsinline>
+    <source src="/cutscene/assets/sandwich-reassembles.mp4" type="video/mp4">
+  </video>
+
+  <video id="monster-video" class="cutscene-video" preload="auto" playsinline>
+    <source src="/cutscene/assets/monster-appears.mp4" type="video/mp4">
+  </video>
+
+  <!-- ═══ PHASE 2: FINISH GAME SCREEN ═══ -->
+  <div id="finish-screen" class="screen-panel">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <h1 class="finish-title">🎉 YOU DID IT! 🎉</h1>
+    <p class="finish-subtitle">All 4 ingredients have been collected!</p>
+
+    <!-- Host sees button, teammates see waiting text -->
+    <button class="finish-btn" id="finish-btn" style="display: none;" onclick="hostClicksFinish()">
+      🏆 FINISH GAME 🏆
+    </button>
+    <p class="waiting-text" id="finish-waiting" style="display: none;">
+      Waiting for the host to finish the game...
+    </p>
+  </div>
+
+  <!-- ═══ PHASE 3A: INTERRUPT SCREEN ═══ -->
+  <div id="interrupt-screen" class="screen-panel">
+    <p class="interrupt-text">⚠️ Wait... something's happening... ⚠️</p>
+  </div>
+
+  <!-- ═══ PHASE 4: BATTLE CRY SCREEN ═══ -->
+  <div id="battlecry-screen" class="screen-panel">
+    <div class="red-flash" id="red-flash"></div>
+    <h1 class="battlecry-text">🛡️ WE HAVE TO PROTECT THE GODDAMN SANDWICH!!!!! 🛡️</h1>
+    <p class="battlecry-sub">PREPARING FOR BOSS BATTLE...</p>
+  </div>
+
+  <!-- ═══ SKIP BUTTON ═══ -->
+  <button id="skip-btn" class="skip-btn" onclick="skipToFinale()">
+    Skip ⏩
+  </button>
+
+  <script src="/shared/audio.js"></script>
+  <script src="/shared/room-client.js"></script>
+  <script>
+    /* ═══ ELEMENTS ═══ */
+    const sandwichVideo  = document.getElementById('sandwich-video');
+    const monsterVideo   = document.getElementById('monster-video');
+    const finishScreen   = document.getElementById('finish-screen');
+    const finishBtn      = document.getElementById('finish-btn');
+    const finishWaiting  = document.getElementById('finish-waiting');
+    const interruptScreen = document.getElementById('interrupt-screen');
+    const battlecryScreen = document.getElementById('battlecry-screen');
+    const redFlash       = document.getElementById('red-flash');
+    const skipBtn        = document.getElementById('skip-btn');
+
+    let currentPhase = 'init';
+
+    /* ═══ PHASE FLOW ═══
+     *  1. sandwich-video   → Sandwich reassembles (auto-plays on page load)
+     *  2. finish-screen    → "You Did It! Finish Game" (host clicks button)
+     *  3. interrupt-screen → "Wait, something's happening..." (2.5s)
+     *  4. monster-video    → Monster appears
+     *  5. battlecry-screen → "We have to protect the goddamn sandwich!!!!!" (4s)
+     *  6. → /finale (boss battle)
+     */
+
+    /* ── Hide everything, play sandwich video on load ── */
+    function startCutscene() {
+      currentPhase = 'sandwich-video';
+      hideAll();
+      sandwichVideo.style.display = 'block';
+      sandwichVideo.currentTime = 0;
+      sandwichVideo.play().catch(() => {
+        // Autoplay blocked - add controls fallback
+        sandwichVideo.setAttribute('controls', 'true');
+        sandwichVideo.addEventListener('click', () => {
+          sandwichVideo.play();
+          sandwichVideo.removeAttribute('controls');
+        }, { once: true });
+      });
+
+      if (Room.isHost()) {
+        skipBtn.style.display = 'block';
+      }
+    }
+
+    /* ── When sandwich video ends → finish screen ── */
+    sandwichVideo.addEventListener('ended', () => {
+      showFinishScreen();
+    });
+
+    function showFinishScreen() {
+      currentPhase = 'finish-screen';
+      hideAll();
+      finishScreen.style.display = 'flex';
+
+      if (Room.isHost()) {
+        finishBtn.style.display = 'inline-block';
+        finishWaiting.style.display = 'none';
+        skipBtn.style.display = 'block';
+      } else {
+        finishBtn.style.display = 'none';
+        finishWaiting.style.display = 'block';
+        skipBtn.style.display = 'none';
+      }
+    }
+
+    /* ── Host clicks "Finish Game" ── */
+    function hostClicksFinish() {
+      SoundFX.play('click');
+      finishBtn.disabled = true;
+      finishBtn.textContent = '⏳ FINISHING...';
+
+      // Broadcast to all screens
+      Room.startCutscenePhase('interrupt');
+
+      // Fallback: if no socket event in 2s, proceed locally
+      setTimeout(() => {
+        if (currentPhase === 'finish-screen') {
+          showInterrupt();
+        }
+      }, 2000);
+    }
+
+    /* ── "Wait, something's happening..." screen ── */
+    function showInterrupt() {
+      currentPhase = 'interrupt';
+      hideAll();
+      interruptScreen.style.display = 'flex';
+      skipBtn.style.display = 'none';
+
+      SoundFX.play('teleport');
+
+      // After 2.5s → play monster video
+      setTimeout(() => {
+        playMonsterVideo();
+      }, 2500);
+    }
+
+    /* ── Monster Appears video ── */
+    function playMonsterVideo() {
+      currentPhase = 'monster-video';
+      hideAll();
+      monsterVideo.style.display = 'block';
+      monsterVideo.currentTime = 0;
+      monsterVideo.play().catch(() => {
+        monsterVideo.setAttribute('controls', 'true');
+        monsterVideo.addEventListener('click', () => {
+          monsterVideo.play();
+          monsterVideo.removeAttribute('controls');
+        }, { once: true });
+      });
+
+      if (Room.isHost()) {
+        skipBtn.style.display = 'block';
+      }
+    }
+
+    /* ── When monster video ends → battle cry ── */
+    monsterVideo.addEventListener('ended', () => {
+      showBattlecry();
+    });
+
+    /* ── "We have to protect the goddamn sandwich!!!!!" ── */
+    function showBattlecry() {
+      currentPhase = 'battlecry';
+      hideAll();
+      battlecryScreen.style.display = 'flex';
+      redFlash.style.display = 'block';
+
+      SoundFX.play('damage');
+
+      if (Room.isHost()) {
+        skipBtn.style.display = 'block';
+      }
+
+      // After 4 seconds → go to boss battle
+      setTimeout(() => {
+        goToFinale();
+      }, 4000);
+    }
+
+    /* ── Navigate to boss battle ── */
+    function goToFinale() {
+      if (currentPhase === 'done') return;
+      currentPhase = 'done';
+      SoundFX.play('success');
+      try { sessionStorage.setItem('sandwich_battle_ready', 'true'); } catch(e) {}
+
+      if (Room.isHost()) {
+        Room.advance('finale');
+      } else {
+        setTimeout(() => {
+          if (!window.location.pathname.startsWith('/finale')) {
+            window.location.href = '/finale?battle=1';
+          }
+        }, 1200);
+      }
+    }
+
+    function skipToFinale() {
+      SoundFX.play('click');
+      currentPhase = 'done';
+      try { sessionStorage.setItem('sandwich_battle_ready', 'true'); } catch(e) {}
+      Room.advance('finale');
+    }
+
+    /* ── Hide all screens and videos ── */
+    function hideAll() {
+      sandwichVideo.style.display = 'none';
+      sandwichVideo.pause();
+      monsterVideo.style.display = 'none';
+      monsterVideo.pause();
+      finishScreen.style.display = 'none';
+      interruptScreen.style.display = 'none';
+      battlecryScreen.style.display = 'none';
+      redFlash.style.display = 'none';
+      skipBtn.style.display = 'none';
+    }
+
+    /* ═══ SOCKET.IO SYNC ═══ */
+
+    // Host broadcasts cutscene_phase → all screens transition together
+    Room.on('cutscene_phase', (data) => {
+      switch (data.phase) {
+        case 'interrupt':
+          showInterrupt();
+          break;
+        case 'monster':
+          playMonsterVideo();
+          break;
+        case 'battlecry':
+          showBattlecry();
+          break;
+        case 'finale':
+          goToFinale();
+          break;
+      }
+    });
+
+    Room.on('room_updated', () => {
+      // Update skip button visibility
+      if (Room.isHost() && currentPhase !== 'interrupt' && currentPhase !== 'done') {
+        skipBtn.style.display = 'block';
+      }
+    });
+
+    /* ═══ AUTO-START ON PAGE LOAD ═══ */
+    // Start the cutscene sequence immediately
+    window.addEventListener('DOMContentLoaded', () => {
+      // Small delay to ensure video is preloaded
+      setTimeout(() => {
+        startCutscene();
+      }, 500);
+    });
+
+    // Also handle if DOMContentLoaded already fired
+    if (document.readyState !== 'loading') {
+      setTimeout(() => {
+        startCutscene();
+      }, 500);
+    }
+  </script>
+</body>
+</html>

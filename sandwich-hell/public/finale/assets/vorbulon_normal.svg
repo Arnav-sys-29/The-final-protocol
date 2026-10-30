@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="spaceCore" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ec4899" />
+      <stop offset="40%" stop-color="#8b5cf6" />
+      <stop offset="85%" stop-color="#1e1035" />
+      <stop offset="100%" stop-color="#05020a" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="60%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#dc2626" />
+    </radialGradient>
+    <filter id="cosmicGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Aura Halo -->
+  <circle cx="100" cy="95" r="75" fill="url(#spaceCore)" filter="url(#cosmicGlow)" opacity="0.85">
+    <animate attributeName="r" values="70;78;70" dur="3s" repeatCount="indefinite" />
+  </circle>
+
+  <!-- Eldritch Tentacles -->
+  <g stroke="#7c3aed" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9">
+    <path d="M45,110 Q20,135 30,165 Q40,180 25,195">
+      <animate attributeName="d" values="M45,110 Q20,135 30,165 Q40,180 25,195; M45,110 Q15,140 25,170 Q35,185 20,195; M45,110 Q20,135 30,165 Q40,180 25,195" dur="4s" repeatCount="indefinite" />
+    </path>
+    <path d="M70,125 Q55,160 70,185 Q75,195 65,200">
+      <animate attributeName="d" values="M70,125 Q55,160 70,185 Q75,195 65,200; M70,125 Q60,155 75,180 Q80,195 70,200; M70,125 Q55,160 70,185 Q75,195 65,200" dur="3.5s" repeatCount="indefinite" />
+    </path>
+    <path d="M130,125 Q145,160 130,185 Q125,195 135,200">
+      <animate attributeName="d" values="M130,125 Q145,160 130,185 Q125,195 135,200; M130,125 Q140,155 125,180 Q120,195 130,200; M130,125 Q145,160 130,185 Q125,195 135,200" dur="3.8s" repeatCount="indefinite" />
+    </path>
+    <path d="M155,110 Q180,135 170,165 Q160,180 175,195">
+      <animate attributeName="d" values="M155,110 Q180,135 170,165 Q160,180 175,195; M155,110 Q185,140 175,170 Q165,185 180,195; M155,110 Q180,135 170,165 Q160,180 175,195" dur="4.2s" repeatCount="indefinite" />
+    </path>
+  </g>
+
+  <!-- Monster Main Head / Shell -->
+  <path d="M100,30 C50,30 35,70 40,105 C45,135 75,145 100,145 C125,145 155,135 160,105 C165,70 150,30 100,30 Z" fill="#2e1065" stroke="#a855f7" stroke-width="4" />
+
+  <!-- Cosmic Crown Horns -->
+  <path d="M70,40 L50,15 L78,32 Z" fill="#4c1d95" stroke="#c084fc" stroke-width="2" />
+  <path d="M130,40 L150,15 L122,32 Z" fill="#4c1d95" stroke="#c084fc" stroke-width="2" />
+  <path d="M100,32 L100,8 L108,30 Z" fill="#6b21a8" stroke="#e879f9" stroke-width="2" />
+
+  <!-- Glowing Eyes (Pokemon Style Monster Eyes) -->
+  <!-- Main Eye Center -->
+  <ellipse cx="100" cy="80" rx="18" ry="24" fill="#000" stroke="#f43f5e" stroke-width="2" />
+  <ellipse cx="100" cy="80" rx="14" ry="18" fill="url(#eyeGlow)" />
+  <ellipse cx="100" cy="80" rx="4" ry="16" fill="#000" />
+  <circle cx="96" cy="74" r="3" fill="#fff" />
+
+  <!-- Left Secondary Eye -->
+  <ellipse cx="65" cy="88" rx="8" ry="11" fill="url(#eyeGlow)" />
+  <circle cx="65" cy="88" r="3" fill="#000" />
+  <circle cx="63" cy="85" r="1.5" fill="#fff" />
+
+  <!-- Right Secondary Eye -->
+  <ellipse cx="135" cy="88" rx="8" ry="11" fill="url(#eyeGlow)" />
+  <circle cx="135" cy="88" r="3" fill="#000" />
+  <circle cx="133" cy="85" r="1.5" fill="#fff" />
+
+  <!-- Starry Mouth / Void Singularity -->
+  <path d="M75,115 Q100,138 125,115 Q100,128 75,115 Z" fill="#0f0728" stroke="#c084fc" stroke-width="2" />
+  <!-- Sharp Teeth -->
+  <polygon points="82,116 86,122 90,117" fill="#f8fafc" />
+  <polygon points="95,118 100,126 105,118" fill="#f8fafc" />
+  <polygon points="110,117 114,122 118,116" fill="#f8fafc" />
+
+  <!-- Floating Cosmic Sparkles -->
+  <circle cx="45" cy="60" r="2" fill="#38bdf8" opacity="0.8">
+    <animate attributeName="opacity" values="0.2;1;0.2" dur="2s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="155" cy="55" r="2.5" fill="#f43f5e" opacity="0.8">
+    <animate attributeName="opacity" values="1;0.2;1" dur="2.5s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="100" cy="165" r="2" fill="#fbbf24" opacity="0.9">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="1.8s" repeatCount="indefinite" />
+  </circle>
+</svg>

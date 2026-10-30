@@ -3,286 +3,390 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Legendary Sandwich From Hell — The Prophecy</title>
+  <title>The Legendary Sandwich From Hell — The Story</title>
   <link rel="stylesheet" href="/shared/theme.css">
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      background: #040208;
+      background: #000;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .cinematic-stage {
-      position: relative;
       width: 100vw;
       height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      z-index: 10;
     }
 
-    /* Autoplay / Gesture Overlay */
+    /* ── Sync / Start Overlay ── */
     #sync-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(4, 2, 8, 0.95);
+      background: radial-gradient(ellipse at center, #110522 0%, #05020a 60%, #000 100%);
       z-index: 1000;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(16px);
       text-align: center;
       padding: 2rem;
     }
 
-    .sync-btn {
-      font-size: 1.4rem;
-      padding: 1.2rem 3rem;
-      border-radius: 50px;
-      margin-top: 2rem;
-    }
-
-    /* Narrative Slide Container */
-    .slide-wrapper {
-      max-width: 850px;
-      text-align: center;
-      min-height: 280px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .act-tag {
-      font-size: 0.9rem;
-      letter-spacing: 0.25em;
-      color: #c084fc;
-      text-transform: uppercase;
-      font-family: var(--font-code);
+    .sync-title {
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-family: var(--font-display);
+      font-weight: 900;
+      background: linear-gradient(135deg, #fff 0%, #fed7aa 35%, #f97316 70%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 30px rgba(249, 115, 22, 0.6));
       margin-bottom: 1rem;
     }
 
-    .act-title {
-      font-size: clamp(2.2rem, 5vw, 3.8rem);
-      font-family: var(--font-display);
-      font-weight: 900;
-      line-height: 1.15;
-      margin-bottom: 1.5rem;
-      background: linear-gradient(135deg, #facc15, #f97316, #ec4899);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 25px rgba(249, 115, 22, 0.4));
+    .sync-subtitle {
+      font-size: 1.2rem;
+      color: #c4b5fd;
+      font-family: var(--font-code);
+      letter-spacing: 0.1em;
+      margin-bottom: 2.5rem;
+      text-shadow: 0 0 15px rgba(192, 132, 252, 0.5);
     }
 
-    .act-description {
-      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-      line-height: 1.6;
-      color: #e2e8f0;
-      max-width: 720px;
-      font-weight: 300;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-    }
-
-    /* Ingredient Hologram Icons */
-    .ingredient-grid {
-      display: flex;
-      gap: 2rem;
-      margin-top: 2rem;
-      justify-content: center;
-    }
-
-    .ing-holo {
-      font-size: 2.8rem;
-      filter: drop-shadow(0 0 15px currentColor);
-      animation: float 3s ease-in-out infinite alternate;
-    }
-
-    .ing-holo:nth-child(2) { animation-delay: 0.5s; }
-    .ing-holo:nth-child(3) { animation-delay: 1.0s; }
-    .ing-holo:nth-child(4) { animation-delay: 1.5s; }
-
-    @keyframes float {
-      from { transform: translateY(0px) rotate(0deg); }
-      to { transform: translateY(-12px) rotate(4deg); }
-    }
-
-    /* Bottom Timeline HUD */
-    .timeline-bar {
-      position: fixed;
-      bottom: 2rem;
-      width: min(650px, 90vw);
-      height: 6px;
-      background: rgba(255, 255, 255, 0.1);
+    .sync-btn {
+      font-size: 1.3rem;
+      padding: 1.2rem 3.5rem;
       border-radius: 999px;
-      overflow: hidden;
-      z-index: 50;
+      border: 2px solid rgba(249, 115, 22, 0.7);
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.25), rgba(139, 92, 246, 0.25));
+      color: #fed7aa;
+      font-family: var(--font-display);
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 30px rgba(249, 115, 22, 0.4), 0 0 60px rgba(139, 92, 246, 0.2);
+      animation: pulse-glow 2s ease-in-out infinite;
     }
 
-    .timeline-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #f97316, #a855f7, #06b6d4);
-      transition: width 0.3s linear;
-      box-shadow: 0 0 15px rgba(168, 85, 247, 0.8);
+    .sync-btn:hover {
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.5), rgba(139, 92, 246, 0.5));
+      transform: scale(1.08);
+      box-shadow: 0 0 50px rgba(249, 115, 22, 0.7), 0 0 80px rgba(139, 92, 246, 0.4);
     }
 
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 30px rgba(249, 115, 22, 0.4), 0 0 60px rgba(139, 92, 246, 0.2); }
+      50% { box-shadow: 0 0 50px rgba(249, 115, 22, 0.7), 0 0 90px rgba(139, 92, 246, 0.45); }
+    }
+
+    /* Waiting state for non-host players */
+    .waiting-msg {
+      font-size: 1.1rem;
+      color: #a78bfa;
+      font-family: var(--font-code);
+      letter-spacing: 0.08em;
+      animation: fade-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes fade-pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* ── Fullscreen Video ── */
+    #prologue-video {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+      background: #000;
+      z-index: 500;
+      display: none;
+    }
+
+    /* ── Locked Skip Button (Square, Solid, Non-Neon, Positioned Over clideo.com at Bottom Right) ── */
     .skip-btn {
       position: fixed;
-      top: 1.5rem;
-      right: 1.5rem;
-      z-index: 200;
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: var(--text-muted);
-      font-family: var(--font-display);
-      padding: 0.6rem 1.4rem;
-      border-radius: 8px;
+      z-index: 99999;
+      background: #18181b; /* Solid 100% opaque - completely covers clideo.com */
+      border: 2px solid #a1a1aa; /* Solid clean non-neon border */
+      color: #ffffff;
+      font-family: var(--font-code, monospace);
+      font-weight: 700;
+      font-size: clamp(15px, 1.6vw, 22px);
+      letter-spacing: 0.05em;
+      border-radius: 0px; /* Square */
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.95); /* Clean drop shadow, non-neon */
+      text-shadow: none; /* Non-neon */
+      padding: 10px 18px;
       cursor: pointer;
-      font-size: 0.85rem;
-      transition: all 0.2s;
+      user-select: none;
+      resize: none; /* Locked - no resizing */
+      overflow: hidden;
+      display: none; /* Revealed on all 4 screens when video plays */
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-sizing: border-box;
+      transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
     }
 
     .skip-btn:hover {
-      background: rgba(168, 85, 247, 0.3);
-      color: #fff;
-      border-color: #a855f7;
+      background: #27272a;
+      border-color: #ffffff;
+      color: #ffffff;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.95);
+      text-shadow: none;
+    }
+
+    /* Teammate / Non-host disabled state */
+    .skip-btn.disabled-teammate {
+      background: #18181b;
+      border-color: #52525b;
+      color: #a1a1aa;
+      cursor: not-allowed;
+      opacity: 0.9;
+    }
+
+    .skip-btn.disabled-teammate:hover {
+      background: #18181b;
+      border-color: #52525b;
+      color: #a1a1aa;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.85);
+    }
+
+    .skip-btn-text {
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    /* ── Cosmic orbs for the overlay ── */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      pointer-events: none;
+      animation: orb-drift 8s ease-in-out infinite alternate;
+    }
+
+    .orb-1 { width: 400px; height: 400px; background: #8b5cf6; top: -10%; left: -5%; }
+    .orb-2 { width: 350px; height: 350px; background: #f97316; bottom: -8%; right: -5%; animation-delay: 2s; }
+    .orb-3 { width: 250px; height: 250px; background: #c084fc; top: 50%; left: 60%; animation-delay: 4s; }
+
+    @keyframes orb-drift {
+      from { transform: translate(0, 0) scale(1); }
+      to { transform: translate(30px, -20px) scale(1.1); }
     }
   </style>
 </head>
 <body>
-  <!-- AUTOPLAY UNLOCK OVERLAY -->
+  <!-- FULLSCREEN PROLOGUE VIDEO -->
+  <video id="prologue-video" preload="auto" playsinline>
+    <source src="/intro/assets/prologue.mp4" type="video/mp4">
+  </video>
+
+  <!-- START OVERLAY -->
   <div id="sync-overlay">
-    <h1 class="title-hero" style="font-size: 2.8rem;">THE AWAKENING</h1>
-    <p class="subtitle-hero">Touch the altar to synchronize this monitor with the cosmic network.</p>
-    <button class="btn btn-primary sync-btn animate-pulse-glow" id="start-sync-btn" onclick="startCinematic()">
-      ⚡ SYNCHRONIZE MONITOR ⚡
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <h1 class="sync-title">THE STORY</h1>
+    <p class="sync-subtitle" id="sync-subtitle">Get ready to watch the story...</p>
+
+    <!-- Host sees the button, teammates see waiting text -->
+    <button class="sync-btn" id="start-sync-btn" style="display: none;" onclick="triggerPrologue()">
+      ⚡ START STORY ⚡
     </button>
+    <p class="waiting-msg" id="waiting-msg" style="display: none;">
+      Waiting for the host to start the story...
+    </p>
   </div>
 
-  <!-- SKIP BUTTON (Host Only) -->
-  <button id="host-skip-btn" class="skip-btn" style="display: none;" onclick="skipToPick()">
-    Skip To Ingredients ⏩
-  </button>
-
-  <!-- CINEMATIC STAGE -->
-  <div class="cinematic-stage">
-    <div class="slide-wrapper" id="slide-wrapper">
-      <div class="act-tag" id="act-tag">PROLOGUE</div>
-      <h2 class="act-title" id="act-title">BEFORE TIME BEGAN...</h2>
-      <p class="act-description" id="act-desc">
-        A hunger stirred between the dying stars. An ancient, bottomless maw that whispers for one thing and one thing alone...
-      </p>
-
-      <div class="ingredient-grid" id="ingredient-display" style="display: none;">
-        <span class="ing-holo" style="color: #f97316;">🧀</span>
-        <span class="ing-holo" style="color: #10b981;">🥬</span>
-        <span class="ing-holo" style="color: #06b6d4;">🥫</span>
-        <span class="ing-holo" style="color: #eab308;">🍞</span>
-      </div>
-    </div>
-
-    <!-- TIMELINE PROGRESS -->
-    <div class="timeline-bar">
-      <div class="timeline-fill" id="timeline-fill"></div>
-    </div>
+  <!-- SKIP BUTTON (Visible on all 4 screens; leader clicks to skip, teammates view status) -->
+  <div id="host-skip-btn" class="skip-btn" role="button" tabindex="0" onclick="handleSkipClick()">
+    <span id="skip-btn-text" class="skip-btn-text">Skip Story ⏩</span>
   </div>
 
   <script src="/shared/audio.js"></script>
   <script src="/shared/room-client.js"></script>
   <script>
-    const ACTS = [
-      {
-        tag: "ACT I: THE VOID AWAKENS",
-        title: "BEFORE TIME BEGAN...",
-        desc: "A terrible, ancient hunger stirred between the dying stars. An endless void known in dread whispers as Vorbulon...",
-        showIngredients: false,
-        duration: 4500
-      },
-      {
-        tag: "ACT II: THE FORBIDDEN FEAST",
-        title: "THE LEGENDARY SANDWICH",
-        desc: "Ancient scripture speaks of a single cosmic artifact capable of staying the monster's wrath: The Legendary Sandwich From Hell.",
-        showIngredients: true,
-        duration: 5000
-      },
-      {
-        tag: "ACT III: FOUR CHEFS, FOUR TRIALS",
-        title: "SCATTERED ACROSS REALITY",
-        desc: "Four cursed components await in the depths of Hell, Alien Space, the Oceanic Trench, and the Black Market. Four monitors. Four chosen chefs. Claim your destiny!",
-        showIngredients: true,
-        duration: 5500
+    const video = document.getElementById('prologue-video');
+    const overlay = document.getElementById('sync-overlay');
+    const startBtn = document.getElementById('start-sync-btn');
+    const waitingMsg = document.getElementById('waiting-msg');
+    const skipBtn = document.getElementById('host-skip-btn');
+
+    /* ── Show correct UI based on host / teammate ── */
+    function updateHostUI() {
+      if (Room.isHost()) {
+        startBtn.style.display = 'inline-block';
+        waitingMsg.style.display = 'none';
+        document.getElementById('sync-subtitle').textContent = 'Press the button to start the story on all screens.';
+      } else {
+        startBtn.style.display = 'none';
+        waitingMsg.style.display = 'block';
+        document.getElementById('sync-subtitle').textContent = 'The host will start the story soon...';
       }
-    ];
+    }
 
-    let currentActIndex = 0;
-    let actTimer = null;
-    let timelineTimer = null;
-    let startTime = 0;
-    let totalDuration = ACTS.reduce((sum, a) => sum + a.duration, 0);
-
-    function startCinematic() {
+    /* ── Host clicks START STORY → broadcast to all ── */
+    function triggerPrologue() {
       SoundFX.unlock();
       SoundFX.play('teleport');
-      document.getElementById('sync-overlay').style.display = 'none';
+      startBtn.disabled = true;
+      startBtn.textContent = '⏳ STARTING...';
 
+      // Send Socket.IO event to server → server broadcasts to all
+      Room.startPrologue();
+
+      // Fallback: if no socket event comes back within 2s, play locally
+      setTimeout(() => {
+        if (overlay.style.display !== 'none') {
+          playVideo();
+        }
+      }, 2000);
+    }
+
+    /* ── Lock Position & Size covering clideo.com at bottom right of the video frame ── */
+    function applyLockedPosition() {
+      // The video is 16:9 (1920x1080) rendered with object-fit: contain inside the viewport
+      const videoAspect = 16 / 9;
+      const winW = window.innerWidth;
+      const winH = window.innerHeight;
+      const winAspect = winW / winH;
+
+      let renderedW, renderedH, renderedLeft, renderedTop;
+      if (winAspect > videoAspect) {
+        // Window is wider than 16:9 (pillarbox on left/right)
+        renderedH = winH;
+        renderedW = winH * videoAspect;
+        renderedLeft = (winW - renderedW) / 2;
+        renderedTop = 0;
+      } else {
+        // Window is taller than 16:9 (letterbox on top/bottom)
+        renderedW = winW;
+        renderedH = winW / videoAspect;
+        renderedLeft = 0;
+        renderedTop = (winH - renderedH) / 2;
+      }
+
+      // Clideo watermark is located at:
+      // X: ~70% to 95% of video width
+      // Y: ~87% to 98% of video height
+      // The button dimensions and position are calculated to guarantee 100% opaque coverage of clideo.com:
+      const btnW = Math.max(310, Math.round(renderedW * 0.30));
+      const btnH = Math.max(64, Math.round(renderedH * 0.14));
+      const marginRight = Math.max(6, Math.round(renderedW * 0.010));
+      const marginBottom = Math.max(3, Math.round(renderedH * 0.006));
+
+      const targetLeft = Math.round(renderedLeft + renderedW - marginRight - btnW);
+      const targetTop = Math.round(renderedTop + renderedH - marginBottom - btnH);
+
+      skipBtn.style.left = targetLeft + 'px';
+      skipBtn.style.top = targetTop + 'px';
+      skipBtn.style.width = btnW + 'px';
+      skipBtn.style.height = btnH + 'px';
+      skipBtn.style.right = 'auto';
+      skipBtn.style.bottom = 'auto';
+    }
+
+    /* ── Update role UI: Leader can skip, teammates see non-skippable status ── */
+    function updateSkipButtonRole() {
+      const isLeader = Room.isHost();
+      const textEl = document.getElementById('skip-btn-text');
+
+      if (isLeader) {
+        skipBtn.classList.remove('disabled-teammate');
+        skipBtn.style.cursor = 'pointer';
+        skipBtn.title = 'Click to skip the intro story for all players';
+        if (textEl) {
+          textEl.innerHTML = 'Skip Story ⏩';
+        }
+      } else {
+        skipBtn.classList.add('disabled-teammate');
+        skipBtn.style.cursor = 'not-allowed';
+        skipBtn.title = 'Only the Team Leader can skip the intro story';
+        if (textEl) {
+          textEl.innerHTML = 'Skip Story ⏩ <span style="display:block; font-size:clamp(10px, 1.1vw, 14px); opacity:0.8; letter-spacing:0.02em; margin-top:2px;">(Leader Only)</span>';
+        }
+      }
+    }
+
+    /* ── Handle Click on Skip Button (Leader skips, Teammate gets notification) ── */
+    function handleSkipClick() {
       if (Room.isHost()) {
-        document.getElementById('host-skip-btn').style.display = 'block';
+        SoundFX.play('click');
+        skipToPick();
+      } else {
+        if (window.SoundFX) {
+          try { SoundFX.play('reject'); } catch(e) {}
+        }
+        const textEl = document.getElementById('skip-btn-text');
+        if (textEl) {
+          const orig = textEl.innerHTML;
+          textEl.innerHTML = '🔒 ONLY LEADER CAN SKIP!';
+          setTimeout(() => {
+            textEl.innerHTML = orig;
+          }, 1800);
+        }
       }
-
-      startTime = Date.now();
-      playAct(0);
-      startTimeline();
     }
 
-    function playAct(index) {
-      if (index >= ACTS.length) {
-        finishIntro();
-        return;
+    /* ── Play the video (called on all screens via Socket.IO) ── */
+    function playVideo() {
+      overlay.style.display = 'none';
+      video.style.display = 'block';
+
+      // Display skip button on ALL 4 screens!
+      applyLockedPosition();
+      updateSkipButtonRole();
+      skipBtn.style.display = 'inline-flex';
+
+      video.currentTime = 0;
+      video.play().catch(err => {
+        console.warn('Autoplay blocked, showing click-to-play:', err);
+        // Fallback: show a minimal play button on the video
+        video.setAttribute('controls', 'true');
+        video.style.cursor = 'pointer';
+        video.addEventListener('click', () => {
+          video.play();
+          video.removeAttribute('controls');
+          video.style.cursor = 'default';
+        }, { once: true });
+      });
+    }
+
+    // Keyboard accessibility for Leader
+    skipBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleSkipClick();
       }
+    });
 
-      currentActIndex = index;
-      const act = ACTS[index];
+    window.addEventListener('resize', applyLockedPosition);
+    video.addEventListener('loadedmetadata', applyLockedPosition);
+    video.addEventListener('play', applyLockedPosition);
+    video.addEventListener('playing', applyLockedPosition);
 
-      SoundFX.play('click');
-      document.getElementById('act-tag').textContent = act.tag;
-      document.getElementById('act-title').textContent = act.title;
-      document.getElementById('act-desc').textContent = act.desc;
-
-      const ingGrid = document.getElementById('ingredient-display');
-      ingGrid.style.display = act.showIngredients ? 'flex' : 'none';
-
-      actTimer = setTimeout(() => {
-        playAct(index + 1);
-      }, act.duration);
-    }
-
-    function startTimeline() {
-      const fill = document.getElementById('timeline-fill');
-      timelineTimer = setInterval(() => {
-        const elapsed = Date.now() - startTime;
-        const pct = Math.min(100, (elapsed / totalDuration) * 100);
-        fill.style.width = pct + '%';
-        if (pct >= 100) clearInterval(timelineTimer);
-      }, 100);
-    }
+    /* ── When video ends, advance to pick phase ── */
+    video.addEventListener('ended', () => {
+      finishIntro();
+    });
 
     function finishIntro() {
-      clearTimeout(actTimer);
-      clearInterval(timelineTimer);
+      video.pause();
+      skipBtn.style.display = 'none';
+
       SoundFX.play('success');
 
-      // If host, advance the entire room to picking phase
       if (Room.isHost()) {
         Room.advance('pick');
       } else {
-        // Fallback redirection
+        // Fallback: redirect after short delay
         setTimeout(() => {
           if (window.location.pathname !== '/pick') {
             window.location.href = '/pick';
@@ -296,12 +400,35 @@
       Room.advance('pick');
     }
 
-    // Auto-check host status
-    Room.on('room_updated', () => {
-      if (Room.isHost()) {
-        document.getElementById('host-skip-btn').style.display = 'block';
-      }
+    /* ── Socket.IO Event Listeners ── */
+
+    // When the server broadcasts play_prologue, all clients play the video
+    Room.on('play_prologue', (data) => {
+      playVideo();
     });
+
+    Room.on('room_updated', () => {
+      updateHostUI();
+      updateSkipButtonRole();
+    });
+
+    Room.on('sync_success', () => {
+      updateHostUI();
+      updateSkipButtonRole();
+    });
+
+    // Initial UI setup once Room client is ready
+    Room.on('connect', () => {
+      updateHostUI();
+      updateSkipButtonRole();
+    });
+
+    // Immediate check in case Room already initialized
+    setTimeout(() => {
+      updateHostUI();
+      updateSkipButtonRole();
+      applyLockedPosition();
+    }, 500);
   </script>
 </body>
 </html>

@@ -60,9 +60,11 @@ app.get('/api/server-info', (req, res) => {
 // Serve static assets from public
 app.use(express.static(publicDir));
 
-// Serve cinematics directly from root CINEMATICS folder
+// Serve cinematics directly from root CINEMATICS folder with fallback to public/finale/assets
 const cinematicsDir = path.join(__dirname, '..', 'CINEMATICS');
+const finaleAssetsDir = path.join(publicDir, 'finale', 'assets');
 app.use('/cinematics', express.static(cinematicsDir));
+app.use('/cinematics', express.static(finaleAssetsDir));
 
 // Market Chapter Judge Engine (supporting C, C++, and Java)
 const fs = require('fs');
